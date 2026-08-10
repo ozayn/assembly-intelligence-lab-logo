@@ -3,68 +3,37 @@
 import { motion } from 'framer-motion'
 
 const size = 200
+const centerX = size / 2
+const centerY = size / 2
 
 export function Concept08Static() {
   return (
     <svg viewBox={`0 0 ${size} ${size}`} width={size} height={size}>
-      <circle cx="60" cy="100" r="6" fill="var(--logo-primary)" />
-      <circle cx="85" cy="85" r="6" fill="var(--logo-primary)" />
-      <circle cx="110" cy="70" r="6" fill="var(--logo-primary)" />
-      <circle cx="135" cy="85" r="6" fill="var(--logo-primary)" />
-      <circle cx="140" cy="115" r="6" fill="var(--logo-primary)" />
-      <path
-        d="M 60 100 Q 72.5 92.5 85 85 T 110 70 T 135 85 T 140 115"
-        fill="none"
-        stroke="var(--logo-primary)"
-        strokeWidth="2"
-      />
+      {/* Radial bloom: particles around central core */}
+      <circle cx={centerX} cy={centerY - 28} r="8" fill="var(--logo-primary)" />
+      <circle cx={centerX + 24} cy={centerY - 14} r="8" fill="var(--logo-primary)" />
+      <circle cx={centerX + 24} cy={centerY + 14} r="8" fill="var(--logo-primary)" />
+      <circle cx={centerX} cy={centerY + 28} r="8" fill="var(--logo-primary)" />
+      <circle cx={centerX - 24} cy={centerY + 14} r="8" fill="var(--logo-accent)" opacity="0.85" />
+      <circle cx={centerX - 24} cy={centerY - 14} r="8" fill="var(--logo-accent)" opacity="0.85" />
+
+      {/* Core */}
+      <circle cx={centerX} cy={centerY} r="6" fill="var(--logo-primary)" />
     </svg>
   )
 }
 
 export function Concept08Animated() {
-  const nodes = [
-    { x: 60, y: 100, sx: 60, sy: 30 },
-    { x: 85, y: 85, sx: 85, sy: 20 },
-    { x: 110, y: 70, sx: 110, sy: 15 },
-    { x: 135, y: 85, sx: 135, sy: 25 },
-    { x: 140, y: 115, sx: 140, sy: 150 },
-  ]
-
   return (
     <svg viewBox={`0 0 ${size} ${size}`} width={size} height={size}>
-      {nodes.map((node, i) => (
-        <motion.circle
-          key={`node-${i}`}
-          cx={node.sx}
-          cy={node.sy}
-          r="6"
-          fill="var(--logo-primary)"
-          animate={{
-            cx: node.x,
-            cy: node.y,
-          }}
-          transition={{
-            duration: 2.5,
-            ease: 'easeInOut',
-            delay: i * 0.2,
-          }}
-        />
-      ))}
+      <motion.circle cx={100} cy={40} r="8" fill="var(--logo-primary)" animate={{ cx: centerX, cy: centerY - 28 }} transition={{ duration: 2.3, ease: 'easeInOut', delay: 0 }} />
+      <motion.circle cx={150} cy={80} r="8" fill="var(--logo-primary)" animate={{ cx: centerX + 24, cy: centerY - 14 }} transition={{ duration: 2.3, ease: 'easeInOut', delay: 0.12 }} />
+      <motion.circle cx={150} cy={120} r="8" fill="var(--logo-primary)" animate={{ cx: centerX + 24, cy: centerY + 14 }} transition={{ duration: 2.3, ease: 'easeInOut', delay: 0.24 }} />
+      <motion.circle cx={100} cy={160} r="8" fill="var(--logo-primary)" animate={{ cx: centerX, cy: centerY + 28 }} transition={{ duration: 2.3, ease: 'easeInOut', delay: 0.36 }} />
+      <motion.circle cx={50} cy={120} r="8" fill="var(--logo-accent)" opacity="0.85" animate={{ cx: centerX - 24, cy: centerY + 14 }} transition={{ duration: 2.3, ease: 'easeInOut', delay: 0.48 }} />
+      <motion.circle cx={50} cy={80} r="8" fill="var(--logo-accent)" opacity="0.85" animate={{ cx: centerX - 24, cy: centerY - 14 }} transition={{ duration: 2.3, ease: 'easeInOut', delay: 0.6 }} />
 
-      <motion.path
-        d="M 60 100 Q 72.5 92.5 85 85 T 110 70 T 135 85 T 140 115"
-        fill="none"
-        stroke="var(--logo-primary)"
-        strokeWidth="2"
-        initial={{ opacity: 0, pathLength: 0 }}
-        animate={{ opacity: 1, pathLength: 1 }}
-        transition={{
-          duration: 1.5,
-          delay: 1.5,
-          ease: 'easeInOut',
-        }}
-      />
+      <motion.circle cx={centerX} cy={centerY} r="6" fill="var(--logo-primary)" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.8 }} />
     </svg>
   )
 }

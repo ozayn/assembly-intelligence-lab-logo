@@ -3,52 +3,41 @@
 import { motion } from 'framer-motion'
 
 const size = 200
+const centerX = size / 2
+const centerY = size / 2
 
 export function Concept07Static() {
   return (
     <svg viewBox={`0 0 ${size} ${size}`} width={size} height={size}>
-      <circle cx="95" cy="75" r="5" fill="var(--logo-primary)" />
-      <circle cx="105" cy="75" r="5" fill="var(--logo-primary)" />
-      <circle cx="90" cy="90" r="5" fill="var(--logo-primary)" />
-      <circle cx="110" cy="90" r="5" fill="var(--logo-primary)" />
-      <circle cx="100" cy="105" r="5" fill="var(--logo-primary)" />
-      <circle cx="85" cy="105" r="5" fill="var(--logo-primary)" />
-      <circle cx="115" cy="105" r="5" fill="var(--logo-primary)" />
+      {/* Clustered nodes: tight core with one approaching */}
+      <circle cx={centerX - 10} cy={centerY - 10} r="8" fill="var(--logo-primary)" />
+      <circle cx={centerX + 8} cy={centerY - 8} r="8" fill="var(--logo-primary)" />
+      <circle cx={centerX - 6} cy={centerY + 10} r="8" fill="var(--logo-primary)" />
+      <circle cx={centerX + 10} cy={centerY + 8} r="8" fill="var(--logo-primary)" />
+
+      {/* Joining particle */}
+      <circle cx={centerX + 28} cy={centerY - 15} r="8" fill="var(--logo-accent)" opacity="0.9" />
+
+      {/* Center highlight */}
+      <circle cx={centerX} cy={centerY} r="4" fill="var(--logo-accent)" opacity="0.6" />
     </svg>
   )
 }
 
 export function Concept07Animated() {
-  const positions = [
-    { start: [30, 40], end: [95, 75] },
-    { start: [170, 35], end: [105, 75] },
-    { start: [20, 100], end: [90, 90] },
-    { start: [180, 110], end: [110, 90] },
-    { start: [60, 160], end: [100, 105] },
-    { start: [140, 170], end: [85, 105] },
-    { start: [100, 20], end: [115, 105] },
-  ]
-
   return (
     <svg viewBox={`0 0 ${size} ${size}`} width={size} height={size}>
-      {positions.map((pos, i) => (
-        <motion.circle
-          key={i}
-          cx={pos.start[0]}
-          cy={pos.start[1]}
-          r="5"
-          fill="var(--logo-primary)"
-          animate={{
-            cx: pos.end[0],
-            cy: pos.end[1],
-          }}
-          transition={{
-            duration: 2.8,
-            ease: 'easeInOut',
-            delay: i * 0.1,
-          }}
-        />
-      ))}
+      {/* Core cluster assembles first */}
+      <motion.circle cx={60} cy={80} r="8" fill="var(--logo-primary)" animate={{ cx: centerX - 10, cy: centerY - 10 }} transition={{ duration: 2.2, ease: 'easeInOut', delay: 0 }} />
+      <motion.circle cx={140} cy={70} r="8" fill="var(--logo-primary)" animate={{ cx: centerX + 8, cy: centerY - 8 }} transition={{ duration: 2.2, ease: 'easeInOut', delay: 0.1 }} />
+      <motion.circle cx={70} cy={130} r="8" fill="var(--logo-primary)" animate={{ cx: centerX - 6, cy: centerY + 10 }} transition={{ duration: 2.2, ease: 'easeInOut', delay: 0.2 }} />
+      <motion.circle cx={130} cy={120} r="8" fill="var(--logo-primary)" animate={{ cx: centerX + 10, cy: centerY + 8 }} transition={{ duration: 2.2, ease: 'easeInOut', delay: 0.3 }} />
+
+      {/* Joining particle approaches */}
+      <motion.circle cx={160} cy={50} r="8" fill="var(--logo-accent)" opacity="0.9" animate={{ cx: centerX + 28, cy: centerY - 15 }} transition={{ duration: 2.2, ease: 'easeInOut', delay: 0.4 }} />
+
+      {/* Center highlight */}
+      <motion.circle cx={centerX} cy={centerY} r="4" fill="var(--logo-accent)" opacity="0.6" />
     </svg>
   )
 }

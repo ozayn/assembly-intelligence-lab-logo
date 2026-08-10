@@ -3,74 +3,111 @@
 import { motion } from 'framer-motion'
 
 const size = 200
+const centerX = size / 2
+const centerY = size / 2
 
 export function Concept04Static() {
   return (
     <svg viewBox={`0 0 ${size} ${size}`} width={size} height={size}>
-      <circle cx="60" cy="100" r="7" fill="var(--logo-primary)" />
-      <circle cx="85" cy="85" r="7" fill="var(--logo-primary)" />
-      <circle cx="100" cy="60" r="7" fill="var(--logo-primary)" />
-      <circle cx="130" cy="70" r="7" fill="var(--logo-primary)" />
-      <circle cx="145" cy="100" r="7" fill="var(--logo-primary)" />
-      <line x1="60" y1="100" x2="85" y2="85" stroke="var(--logo-primary)" strokeWidth="1.5" />
-      <line x1="85" y1="85" x2="100" y2="60" stroke="var(--logo-primary)" strokeWidth="1.5" />
-      <line x1="100" y1="60" x2="130" y2="70" stroke="var(--logo-primary)" strokeWidth="1.5" />
-      <line x1="130" y1="70" x2="145" y2="100" stroke="var(--logo-primary)" strokeWidth="1.5" />
+      {/* Inner ring: 3 small particles */}
+      <circle cx={centerX} cy={centerY - 12} r="6" fill="var(--logo-primary)" />
+      <circle cx={centerX + 10} cy={centerY + 6} r="6" fill="var(--logo-primary)" />
+      <circle cx={centerX - 10} cy={centerY + 6} r="6" fill="var(--logo-primary)" />
+
+      {/* Middle ring: 4 medium particles */}
+      <circle cx={centerX + 18} cy={centerY - 10} r="7" fill="var(--logo-primary)" />
+      <circle cx={centerX + 15} cy={centerY + 18} r="7" fill="var(--logo-primary)" />
+      <circle cx={centerX - 15} cy={centerY + 18} r="7" fill="var(--logo-primary)" />
+      <circle cx={centerX - 18} cy={centerY - 10} r="7" fill="var(--logo-primary)" />
+
+      {/* Outer accent: 2 larger particles with teal */}
+      <circle cx={centerX + 28} cy={centerY + 2} r="7" fill="var(--logo-accent)" opacity="0.8" />
+      <circle cx={centerX - 28} cy={centerY + 2} r="7" fill="var(--logo-accent)" opacity="0.8" />
     </svg>
   )
 }
 
 export function Concept04Animated() {
-  const nodes = [
-    { x: 60, y: 100, sx: 60, sy: 20 },
-    { x: 85, y: 85, sx: 65, sy: 30 },
-    { x: 100, y: 60, sx: 70, sy: 40 },
-    { x: 130, y: 70, sx: 120, sy: 50 },
-    { x: 145, y: 100, sx: 140, sy: 140 },
+  const innerRing = [
+    { startX: 100, startY: 50, finalX: centerX, finalY: centerY - 12 },
+    { startX: 130, startY: 110, finalX: centerX + 10, finalY: centerY + 6 },
+    { startX: 70, startY: 110, finalX: centerX - 10, finalY: centerY + 6 },
+  ]
+
+  const middleRing = [
+    { startX: 140, startY: 60, finalX: centerX + 18, finalY: centerY - 10 },
+    { startX: 130, startY: 140, finalX: centerX + 15, finalY: centerY + 18 },
+    { startX: 70, startY: 140, finalX: centerX - 15, finalY: centerY + 18 },
+    { startX: 60, startY: 60, finalX: centerX - 18, finalY: centerY - 10 },
+  ]
+
+  const outerRing = [
+    { startX: 160, startY: 100, finalX: centerX + 28, finalY: centerY + 2 },
+    { startX: 40, startY: 100, finalX: centerX - 28, finalY: centerY + 2 },
   ]
 
   return (
     <svg viewBox={`0 0 ${size} ${size}`} width={size} height={size}>
-      {nodes.map((node, i) => (
+      {/* Inner ring animates first */}
+      {innerRing.map((p, i) => (
         <motion.circle
-          key={`node-${i}`}
-          cx={node.sx}
-          cy={node.sy}
-          r="7"
+          key={`inner-${i}`}
+          cx={p.startX}
+          cy={p.startY}
+          r="6"
           fill="var(--logo-primary)"
           animate={{
-            cx: node.x,
-            cy: node.y,
+            cx: p.finalX,
+            cy: p.finalY,
           }}
           transition={{
-            duration: 2.5,
+            duration: 2.0,
             ease: 'easeInOut',
-            delay: i * 0.25,
+            delay: i * 0.1,
           }}
         />
       ))}
 
-      {nodes.map((node, i) => {
-        if (i === nodes.length - 1) return null
-        const nextNode = nodes[i + 1]
-        return (
-          <motion.line
-            key={`line-${i}`}
-            x1={node.x}
-            y1={node.y}
-            x2={nextNode.x}
-            y2={nextNode.y}
-            stroke="var(--logo-primary)"
-            strokeWidth="1.5"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{
-              duration: 0.3,
-              delay: i * 0.25 + 0.3,
-            }}
-          />
-        )
-      })}
+      {/* Middle ring follows */}
+      {middleRing.map((p, i) => (
+        <motion.circle
+          key={`mid-${i}`}
+          cx={p.startX}
+          cy={p.startY}
+          r="7"
+          fill="var(--logo-primary)"
+          animate={{
+            cx: p.finalX,
+            cy: p.finalY,
+          }}
+          transition={{
+            duration: 2.0,
+            ease: 'easeInOut',
+            delay: 0.4 + i * 0.12,
+          }}
+        />
+      ))}
+
+      {/* Outer ring with teal accent comes last */}
+      {outerRing.map((p, i) => (
+        <motion.circle
+          key={`outer-${i}`}
+          cx={p.startX}
+          cy={p.startY}
+          r="7"
+          fill="var(--logo-accent)"
+          opacity="0.8"
+          animate={{
+            cx: p.finalX,
+            cy: p.finalY,
+          }}
+          transition={{
+            duration: 2.0,
+            ease: 'easeInOut',
+            delay: 0.8 + i * 0.15,
+          }}
+        />
+      ))}
     </svg>
   )
 }

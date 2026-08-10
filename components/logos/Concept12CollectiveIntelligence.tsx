@@ -3,88 +3,34 @@
 import { motion } from 'framer-motion'
 
 const size = 200
+const centerX = size / 2
+const centerY = size / 2
 
 export function Concept12Static() {
   return (
     <svg viewBox={`0 0 ${size} ${size}`} width={size} height={size}>
-      <path
-        d="M 100 60 L 125 80 L 120 110 L 100 120 L 80 110 L 75 80 Z"
-        fill="var(--logo-primary)"
-      />
-      <circle cx="100" cy="90" r="3" fill="white" opacity="0.5" />
-      <circle cx="90" cy="82" r="2" fill="white" opacity="0.5" />
-      <circle cx="110" cy="82" r="2" fill="white" opacity="0.5" />
-      <circle cx="85" cy="100" r="2" fill="white" opacity="0.5" />
-      <circle cx="115" cy="100" r="2" fill="white" opacity="0.5" />
+      {/* Distributed lattice: loosely organized particles */}
+      <circle cx={centerX - 22} cy={centerY - 20} r="8" fill="var(--logo-primary)" />
+      <circle cx={centerX} cy={centerY - 25} r="8" fill="var(--logo-primary)" />
+      <circle cx={centerX + 22} cy={centerY - 20} r="8" fill="var(--logo-primary)" />
+      <circle cx={centerX - 15} cy={centerY + 5} r="8" fill="var(--logo-primary)" />
+      <circle cx={centerX + 18} cy={centerY + 8} r="8" fill="var(--logo-primary)" />
+      <circle cx={centerX - 8} cy={centerY + 22} r="8" fill="var(--logo-accent)" opacity="0.85" />
+      <circle cx={centerX + 12} cy={centerY + 20} r="8" fill="var(--logo-accent)" opacity="0.85" />
     </svg>
   )
 }
 
 export function Concept12Animated() {
-  const units = [
-    { sx: 50, sy: 50, ex: 100, ey: 60 },
-    { sx: 150, sy: 50, ex: 125, ey: 80 },
-    { sx: 150, sy: 150, ex: 120, ey: 110 },
-    { sx: 100, sy: 170, ex: 100, ey: 120 },
-    { sx: 50, sy: 150, ex: 80, ey: 110 },
-    { sx: 50, sy: 50, ex: 75, ey: 80 },
-  ]
-
   return (
     <svg viewBox={`0 0 ${size} ${size}`} width={size} height={size}>
-      {units.map((unit, i) => (
-        <motion.g key={i}>
-          <motion.circle
-            cx={unit.sx}
-            cy={unit.sy}
-            r="5"
-            fill="var(--logo-primary)"
-            animate={{
-              cx: unit.ex,
-              cy: unit.ey,
-            }}
-            transition={{
-              duration: 2.5,
-              ease: 'easeInOut',
-              delay: i * 0.12,
-            }}
-          />
-        </motion.g>
-      ))}
-
-      <motion.path
-        d="M 100 60 L 125 80 L 120 110 L 100 120 L 80 110 L 75 80 Z"
-        fill="var(--logo-primary)"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{
-          duration: 0.5,
-          delay: 2.2,
-        }}
-      />
-
-      {[
-        { cx: 100, cy: 90 },
-        { cx: 90, cy: 82 },
-        { cx: 110, cy: 82 },
-        { cx: 85, cy: 100 },
-        { cx: 115, cy: 100 },
-      ].map((dot, i) => (
-        <motion.circle
-          key={`dot-${i}`}
-          cx={dot.cx}
-          cy={dot.cy}
-          r={i === 0 ? 3 : 2}
-          fill="white"
-          opacity="0.5"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 0.5 }}
-          transition={{
-            duration: 0.3,
-            delay: 2.4,
-          }}
-        />
-      ))}
+      <motion.circle cx={60} cy={50} r="8" fill="var(--logo-primary)" animate={{ cx: centerX - 22, cy: centerY - 20 }} transition={{ duration: 2.4, ease: 'easeInOut', delay: 0 }} />
+      <motion.circle cx={100} cy={30} r="8" fill="var(--logo-primary)" animate={{ cx: centerX, cy: centerY - 25 }} transition={{ duration: 2.4, ease: 'easeInOut', delay: 0.1 }} />
+      <motion.circle cx={140} cy={50} r="8" fill="var(--logo-primary)" animate={{ cx: centerX + 22, cy: centerY - 20 }} transition={{ duration: 2.4, ease: 'easeInOut', delay: 0.2 }} />
+      <motion.circle cx={70} cy={110} r="8" fill="var(--logo-primary)" animate={{ cx: centerX - 15, cy: centerY + 5 }} transition={{ duration: 2.4, ease: 'easeInOut', delay: 0.3 }} />
+      <motion.circle cx={140} cy={120} r="8" fill="var(--logo-primary)" animate={{ cx: centerX + 18, cy: centerY + 8 }} transition={{ duration: 2.4, ease: 'easeInOut', delay: 0.4 }} />
+      <motion.circle cx={50} cy={150} r="8" fill="var(--logo-accent)" opacity="0.85" animate={{ cx: centerX - 8, cy: centerY + 22 }} transition={{ duration: 2.4, ease: 'easeInOut', delay: 0.5 }} />
+      <motion.circle cx={130} cy={160} r="8" fill="var(--logo-accent)" opacity="0.85" animate={{ cx: centerX + 12, cy: centerY + 20 }} transition={{ duration: 2.4, ease: 'easeInOut', delay: 0.6 }} />
     </svg>
   )
 }
