@@ -62,7 +62,7 @@ interface ExplorationPageProps {
 
 export function ExplorationPage({ currentPage }: ExplorationPageProps) {
   const { reviewerName } = useReviewer()
-  const [displayMode, setDisplayMode] = useState<DisplayMode>('static')
+  const [displayMode, setDisplayMode] = useState<DisplayMode>('animated')
   const [logoBackground, setLogoBackground] = useState<'light' | 'dark'>('light')
   const [sizeMode, setSizeMode] = useState<SizeMode>('full')
   const [playAll, setPlayAll] = useState(false)

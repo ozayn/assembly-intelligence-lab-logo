@@ -60,7 +60,7 @@ interface SingleConceptPageProps {
 
 export function SingleConceptPage({ conceptId }: SingleConceptPageProps) {
   const { reviewerName } = useReviewer()
-  const [displayMode, setDisplayMode] = useState<DisplayMode>('static')
+  const [displayMode, setDisplayMode] = useState<DisplayMode>('animated')
   const [logoBackground, setLogoBackground] = useState<'light' | 'dark'>('light')
   const [sizeMode, setSizeMode] = useState<SizeMode>('full')
   const [collectedFeedback, setCollectedFeedback] = useState<LogoFeedback[]>([])
