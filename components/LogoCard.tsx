@@ -13,6 +13,9 @@ interface LogoCardProps {
   animatedLogo: React.ReactNode
   onPlayAll?: boolean
   onFeedbackSubmit?: (feedback: LogoFeedback) => void
+  displayMode?: 'static' | 'animated'
+  isDark?: boolean
+  sizeMode?: 'full' | '64px' | '32px' | '16px'
 }
 
 export function LogoCard({
@@ -23,10 +26,14 @@ export function LogoCard({
   animatedLogo,
   onPlayAll = false,
   onFeedbackSubmit,
+  displayMode,
+  isDark,
+  sizeMode,
 }: LogoCardProps) {
   const [isAnimating, setIsAnimating] = useState(onPlayAll)
   const [showAnimated, setShowAnimated] = useState(false)
   const [showFeedback, setShowFeedback] = useState(false)
+  const [copyLinkFeedback, setCopyLinkFeedback] = useState(false)
   const logoContainerRef = useRef<HTMLDivElement>(null)
 
   // Handle Play All/Stop All prop changes
@@ -71,6 +78,16 @@ export function LogoCard({
     setShowFeedback(false)
   }
 
+  const handleCopyLink = () => {
+    const conceptUrl = `${window.location.origin}/concept/${id.toString().padStart(2, '0')}`
+    navigator.clipboard.writeText(conceptUrl)
+    setCopyLinkFeedback(true)
+    setTimeout(() => setCopyLinkFeedback(false), 2000)
+  }
+
+  // Determine what to show based on animation state or onPlayAll
+  const shouldDisplayAnimated = onPlayAll ? (isAnimating && showAnimated) : (isAnimating && showAnimated)
+
   return (
     <div className="logo-card">
       <div className="logo-card-header">
@@ -80,7 +97,7 @@ export function LogoCard({
 
       <div className="logo-display">
         <div className="logo-container" ref={logoContainerRef}>
-          {showAnimated && isAnimating ? animatedLogo : staticLogo}
+          {shouldDisplayAnimated ? animatedLogo : staticLogo}
         </div>
       </div>
 
@@ -111,6 +128,14 @@ export function LogoCard({
           title="Download SVG"
         >
           ↓ SVG
+        </button>
+        <button
+          className="btn-copy-link"
+          onClick={handleCopyLink}
+          style={{ fontSize: '1.1rem', opacity: 0.6 }}
+          title="Copy shareable link"
+        >
+          {copyLinkFeedback ? '✓' : '🔗'}
         </button>
       </div>
 
