@@ -1,26 +1,6 @@
-export { Concept01Static, Concept01Animated } from './Concept01Convergence'
-export { Concept02Static, Concept02Animated } from './Concept02Interlocking'
-export { Concept03Static, Concept03Animated } from './Concept03Emergence'
-export { Concept04Static, Concept04Animated } from './Concept04Propagation'
-export { Concept05Static, Concept05Animated } from './Concept05Equilibrium'
-export { Concept06Static, Concept06Animated } from './Concept06NegativeSpace'
-export { Concept07Static, Concept07Animated } from './Concept07Clustering'
-export { Concept08Static, Concept08Animated } from './Concept08ChainAssembly'
-export { Concept09Static, Concept09Animated } from './Concept09Folding'
-export { Concept10Static, Concept10Animated } from './Concept10ModularGrowth'
-export { Concept11Static, Concept11Animated } from './Concept11Reconfiguration'
-export { Concept12Static, Concept12Animated } from './Concept12CollectiveIntelligence'
-
-export { Round3Concept01Static, Round3Concept01StaticMonochrome, Round3Concept01Animated } from './Round3Concept01Emergence'
-export { Round3Concept02Static, Round3Concept02StaticMonochrome, Round3Concept02Animated } from './Round3Concept02PhaseTransition'
-export { Round3Concept03Static, Round3Concept03StaticMonochrome, Round3Concept03Animated } from './Round3Concept03Complementarity'
-export { Round3Concept04Static, Round3Concept04StaticMonochrome, Round3Concept04Animated } from './Round3Concept04FoldTransformation'
-export { Round3Concept05Static, Round3Concept05StaticMonochrome, Round3Concept05Animated } from './Round3Concept05NegativeSpace'
-export { Round3Concept06Static, Round3Concept06StaticMonochrome, Round3Concept06Animated } from './Round3Concept06PropagatingRule'
-
-export { ALL_LOGO_CONCEPTS, getConceptsForPage, TOTAL_PAGES, CONCEPTS_PER_PAGE } from './AllConcepts'
-
-export const LOGO_CONCEPTS = [
+// Unified continuous concept numbering (1-18) for reviewer facing
+export const ALL_LOGO_CONCEPTS = [
+  // Concepts 1-6
   {
     id: 1,
     name: 'Hexagon Assembly',
@@ -51,6 +31,7 @@ export const LOGO_CONCEPTS = [
     name: 'Twin Spirals',
     description: 'Two interlocking spiral patterns approach and interleave, creating a unified structure.',
   },
+  // Concepts 7-12
   {
     id: 7,
     name: 'Clustered Approach',
@@ -81,43 +62,49 @@ export const LOGO_CONCEPTS = [
     name: 'Distributed Lattice',
     description: 'Seven particles assemble into a loosely organized lattice that suggests ongoing structure.',
   },
-]
-
-export const ROUND_3_CONCEPTS = [
+  // Concepts 13-18 (former Round 3)
   {
     id: 13,
     name: 'Emergence',
     description: 'Three organic curves reveal a unified mark through assembly. Individual pieces suggest nothing until unified.',
-    round: 3,
   },
   {
     id: 14,
     name: 'Phase Transition',
     description: 'Eight elements transition from disorder to a crystalline grid, suggesting ordered matter through motion.',
-    round: 3,
   },
   {
     id: 15,
     name: 'Complementarity',
     description: 'A central solid and three curved complements complete one another. Meaning emerges through interaction.',
-    round: 3,
   },
   {
     id: 16,
     name: 'Fold/Transformation',
     description: 'Vertical elements transform into nested arcs. Reorganization reveals the final structure.',
-    round: 3,
   },
   {
     id: 17,
     name: 'Negative-Space Assembly',
     description: 'Four segments assemble around a meaningful void. The empty space is the identity.',
-    round: 3,
   },
   {
     id: 18,
     name: 'Propagating Rule',
     description: 'A center node spawns branches through local connections. Structure grows from simple repeated rules.',
-    round: 3,
   },
 ]
+
+export const CONCEPTS_PER_PAGE = 6
+
+export function getPageNumber(conceptId: number): number {
+  return Math.ceil(conceptId / CONCEPTS_PER_PAGE)
+}
+
+export function getConceptsForPage(pageNumber: number): typeof ALL_LOGO_CONCEPTS {
+  const startIdx = (pageNumber - 1) * CONCEPTS_PER_PAGE
+  const endIdx = startIdx + CONCEPTS_PER_PAGE
+  return ALL_LOGO_CONCEPTS.slice(startIdx, endIdx)
+}
+
+export const TOTAL_PAGES = Math.ceil(ALL_LOGO_CONCEPTS.length / CONCEPTS_PER_PAGE)
