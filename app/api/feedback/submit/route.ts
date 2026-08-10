@@ -21,7 +21,7 @@ export async function POST(request: NextRequest) {
     emailContent += `---\n\n`
 
     feedbacks.forEach((feedback: any) => {
-      emailContent += `Concept ${feedback.conceptId}:\n`
+      emailContent += `Concept ${feedback.conceptId}: ${feedback.conceptName}\n`
       emailContent += `  Static Logo Like: ${feedback.likeStatic ? 'Yes' : 'No'}\n`
       emailContent += `  Animation Like: ${feedback.likeAnimation ? 'Yes' : 'No'}\n`
 
@@ -38,7 +38,8 @@ export async function POST(request: NextRequest) {
 
     // Submit to Formspree
     const formspreeData = {
-      email: reviewer_name,
+      email: 'feedback@assemblylablogo.test',
+      name: reviewer_name,
       message: emailContent,
       _subject: `Logo Feedback from ${reviewer_name}`,
     }
@@ -51,19 +52,22 @@ export async function POST(request: NextRequest) {
       body: JSON.stringify(formspreeData),
     })
 
+    const responseData = await response.json()
+
     if (!response.ok) {
-      console.error('Formspree error:', response.status, response.statusText)
+      console.error('Formspree error:', response.status, responseData)
       return NextResponse.json(
-        { error: 'Failed to submit feedback' },
+        { error: 'Failed to submit feedback', details: responseData },
         { status: 500 }
       )
     }
 
-    return NextResponse.json({ success: true })
+    console.log('Feedback submitted to Formspree successfully:', responseData)
+    return NextResponse.json({ success: true, formspreeResponse: responseData })
   } catch (error) {
     console.error('API error:', error)
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: 'Internal server error', details: String(error) },
       { status: 500 }
     )
   }
