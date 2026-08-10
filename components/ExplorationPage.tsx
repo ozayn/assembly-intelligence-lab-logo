@@ -29,7 +29,7 @@ import {
   getConceptsForPage,
   TOTAL_PAGES,
 } from './logos'
-import '../app/page.css'
+import '@/app/page.css'
 
 const ALL_COMPONENTS = [
   { Static: Concept01Static, Animated: Concept01Animated },
