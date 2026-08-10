@@ -61,7 +61,7 @@ interface SingleConceptPageProps {
 export function SingleConceptPage({ conceptId }: SingleConceptPageProps) {
   const { reviewerName } = useReviewer()
   const [displayMode, setDisplayMode] = useState<DisplayMode>('static')
-  const [isDark, setIsDark] = useState(false)
+  const [logoBackground, setLogoBackground] = useState<'light' | 'dark'>('light')
   const [sizeMode, setSizeMode] = useState<SizeMode>('full')
   const [collectedFeedback, setCollectedFeedback] = useState<LogoFeedback[]>([])
   const [submittingFeedback, setSubmittingFeedback] = useState(false)
@@ -129,7 +129,7 @@ export function SingleConceptPage({ conceptId }: SingleConceptPageProps) {
   }
 
   return (
-    <div className={`page ${isDark ? 'dark' : 'light'}`}>
+    <div className="page light">
       <header className="page-header">
         <div className="header-container">
           <div className="logo-area">
@@ -157,17 +157,17 @@ export function SingleConceptPage({ conceptId }: SingleConceptPageProps) {
             </div>
 
             <div className="control-group">
-              <label>Theme</label>
+              <label>Website Preview</label>
               <div className="button-group">
                 <button
-                  className={!isDark ? 'active' : ''}
-                  onClick={() => setIsDark(false)}
+                  className={logoBackground === 'light' ? 'active' : ''}
+                  onClick={() => setLogoBackground('light')}
                 >
                   Light
                 </button>
                 <button
-                  className={isDark ? 'active' : ''}
-                  onClick={() => setIsDark(true)}
+                  className={logoBackground === 'dark' ? 'active' : ''}
+                  onClick={() => setLogoBackground('dark')}
                 >
                   Dark
                 </button>
@@ -220,7 +220,7 @@ export function SingleConceptPage({ conceptId }: SingleConceptPageProps) {
               onPlayAll={false}
               onFeedbackSubmit={handleFeedbackSubmit}
               displayMode={displayMode}
-              isDark={isDark}
+              logoBackground={logoBackground}
               sizeMode={sizeMode}
             />
           </div>

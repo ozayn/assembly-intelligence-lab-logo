@@ -62,7 +62,7 @@ interface ExplorationPageProps {
 export function ExplorationPage({ currentPage }: ExplorationPageProps) {
   const { reviewerName } = useReviewer()
   const [displayMode, setDisplayMode] = useState<DisplayMode>('static')
-  const [isDark, setIsDark] = useState(false)
+  const [logoBackground, setLogoBackground] = useState<'light' | 'dark'>('light')
   const [sizeMode, setSizeMode] = useState<SizeMode>('full')
   const [playAll, setPlayAll] = useState(false)
   const [collectedFeedback, setCollectedFeedback] = useState<LogoFeedback[]>([])
@@ -135,7 +135,7 @@ export function ExplorationPage({ currentPage }: ExplorationPageProps) {
   }, [playAll])
 
   return (
-    <div className={`page ${isDark ? 'dark' : 'light'}`}>
+    <div className="page light">
       <header className="page-header">
         <div className="header-container">
           <div className="logo-area">
@@ -163,17 +163,17 @@ export function ExplorationPage({ currentPage }: ExplorationPageProps) {
             </div>
 
             <div className="control-group">
-              <label>Theme</label>
+              <label>Website Preview</label>
               <div className="button-group">
                 <button
-                  className={!isDark ? 'active' : ''}
-                  onClick={() => setIsDark(false)}
+                  className={logoBackground === 'light' ? 'active' : ''}
+                  onClick={() => setLogoBackground('light')}
                 >
                   Light
                 </button>
                 <button
-                  className={isDark ? 'active' : ''}
-                  onClick={() => setIsDark(true)}
+                  className={logoBackground === 'dark' ? 'active' : ''}
+                  onClick={() => setLogoBackground('dark')}
                 >
                   Dark
                 </button>
@@ -236,6 +236,7 @@ export function ExplorationPage({ currentPage }: ExplorationPageProps) {
                   animatedLogo={<Animated />}
                   onPlayAll={playAll}
                   onFeedbackSubmit={handleFeedbackSubmit}
+                  logoBackground={logoBackground}
                 />
               )
             })}
@@ -243,19 +244,19 @@ export function ExplorationPage({ currentPage }: ExplorationPageProps) {
         </section>
       </main>
 
-      <section className="pagination-section" style={{ padding: '2rem', textAlign: 'center' }}>
+      <section className="pagination-section">
         <div style={{ marginBottom: '1rem', color: 'var(--text-muted)', fontSize: '0.9rem' }}>
           {currentPage} / {TOTAL_PAGES}
         </div>
         <div className="pagination-nav" style={{ display: 'flex', justifyContent: 'center', gap: '1rem', flexWrap: 'wrap' }}>
           {currentPage > 1 && (
             <Link href={currentPage === 2 ? '/' : `/page/${currentPage - 1}`}>
-              <button style={{ padding: '0.5rem 1rem' }}>← Previous</button>
+              <button>← Previous</button>
             </Link>
           )}
           {currentPage < TOTAL_PAGES && (
             <Link href={`/page/${currentPage + 1}`}>
-              <button style={{ padding: '0.5rem 1rem' }}>Next →</button>
+              <button>Next →</button>
             </Link>
           )}
         </div>

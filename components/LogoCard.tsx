@@ -14,7 +14,7 @@ interface LogoCardProps {
   onPlayAll?: boolean
   onFeedbackSubmit?: (feedback: LogoFeedback) => void
   displayMode?: 'static' | 'animated'
-  isDark?: boolean
+  logoBackground?: 'light' | 'dark'
   sizeMode?: 'full' | '64px' | '32px' | '16px'
 }
 
@@ -27,7 +27,7 @@ export function LogoCard({
   onPlayAll = false,
   onFeedbackSubmit,
   displayMode,
-  isDark,
+  logoBackground,
   sizeMode,
 }: LogoCardProps) {
   const [isAnimating, setIsAnimating] = useState(onPlayAll)
@@ -95,7 +95,7 @@ export function LogoCard({
         <h3 className="logo-name">{name}</h3>
       </div>
 
-      <div className="logo-display">
+      <div className={`logo-display logo-background-${logoBackground || 'light'}`}>
         <div className="logo-container" ref={logoContainerRef}>
           {shouldDisplayAnimated ? animatedLogo : staticLogo}
         </div>

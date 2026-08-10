@@ -255,3 +255,25 @@ html.dark .feedback-link:hover {
   background-color: var(--bg-dark);
   border-color: var(--accent-teal);
 }
+
+/* Website Preview background overrides for logo display area */
+.logo-background-light {
+  background-color: #ffffff !important;
+  color-scheme: light;
+}
+
+.logo-background-dark {
+  background-color: #151b34 !important;
+  color-scheme: dark;
+}
+
+/* Size previews should also respond to website preview background */
+.logo-background-light ~ .logo-sizes .size-container {
+  background-color: #f5f5f5;
+  border-color: #e0e0e0;
+}
+
+.logo-background-dark ~ .logo-sizes .size-container {
+  background-color: #1a2236;
+  border-color: #2a3345;
+}
