@@ -37,11 +37,14 @@ export async function POST(request: NextRequest) {
     })
 
     // Submit to Formspree
+    // Note: Formspree requires an email field for notifications
+    // Using noreply as sender since we don't collect user emails
     const formspreeData = {
-      email: 'feedback@assemblylablogo.test',
+      email: 'noreply@assemblylablogo.local',
       name: reviewer_name,
       message: emailContent,
       _subject: `Logo Feedback from ${reviewer_name}`,
+      _replyto: 'feedback@assemblylablogo.test',
     }
 
     const response = await fetch(FORMSPREE_ENDPOINT, {
