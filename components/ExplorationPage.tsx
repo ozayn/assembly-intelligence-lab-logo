@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { useReviewer } from './ReviewerContext'
 import { ReviewerModal, ReviewerBadge } from './ReviewerModal'
 import { LogoCard } from './LogoCard'
+import { ExportButton } from './ExportButton'
 import Link from 'next/link'
 import type { LogoFeedback } from './FeedbackForm'
 import {
@@ -214,6 +215,10 @@ export function ExplorationPage({ currentPage }: ExplorationPageProps) {
               <button className="btn-play-all" onClick={togglePlayAll}>
                 {playAll ? 'Stop All' : 'Play All'}
               </button>
+            </div>
+
+            <div className="control-group">
+              <ExportButton />
             </div>
           </div>
           <ReviewerBadge />
