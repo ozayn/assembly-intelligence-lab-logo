@@ -1,7 +1,6 @@
 'use client'
 
-import { useState } from 'react'
-import styles from './PasswordGate.module.css'
+import { useState, useEffect } from 'react'
 
 interface PasswordGateProps {
   children: React.ReactNode
@@ -13,10 +12,10 @@ export function PasswordGate({ children }: PasswordGateProps) {
   const [error, setError] = useState('')
 
   // Check authentication on mount
-  if (isAuthenticated === null) {
+  useEffect(() => {
     const stored = typeof window !== 'undefined' ? sessionStorage.getItem('_auth') : null
     setIsAuthenticated(stored === 'true')
-  }
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -45,26 +44,26 @@ export function PasswordGate({ children }: PasswordGateProps) {
 
   if (!isAuthenticated) {
     return (
-      <div className={styles.gateContainer}>
-        <div className={styles.gateContent}>
-          <h1 className={styles.title}>Assembly Intelligence Lab</h1>
-          <p className={styles.subtitle}>Identity Exploration — Private Review</p>
+      <div className="pwd-gate-outer">
+        <div className="pwd-gate-inner">
+          <h1>Assembly Intelligence Lab</h1>
+          <p>Identity Exploration — Private Review</p>
 
-          <form onSubmit={handleSubmit} className={styles.form}>
+          <form onSubmit={handleSubmit} className="pwd-gate-form">
             <input
               type="password"
               placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className={styles.input}
+              className="pwd-gate-input"
               autoFocus
             />
-            <button type="submit" className={styles.button}>
+            <button type="submit" className="pwd-gate-button">
               Enter Review
             </button>
           </form>
 
-          {error && <p className={styles.error}>{error}</p>}
+          {error && <p className="pwd-gate-error">{error}</p>}
         </div>
       </div>
     )

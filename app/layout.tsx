@@ -3,6 +3,7 @@ import { ThemeProvider } from '@/components/ThemeProvider'
 import { ReviewerProvider } from '@/components/ReviewerContext'
 import { PasswordGate } from '@/components/PasswordGate'
 import './globals.css'
+import './password-gate.css'
 
 export const metadata: Metadata = {
   title: 'Assembly Intelligence Lab | Logo Exploration',
