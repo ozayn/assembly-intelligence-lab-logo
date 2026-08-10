@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { FeedbackForm, type LogoFeedback } from './FeedbackForm'
 import './LogoCard.css'
@@ -27,10 +27,43 @@ export function LogoCard({
   const [isAnimating, setIsAnimating] = useState(onPlayAll)
   const [showAnimated, setShowAnimated] = useState(false)
   const [showFeedback, setShowFeedback] = useState(false)
+  const logoContainerRef = useRef<HTMLDivElement>(null)
+
+  // Handle Play All/Stop All prop changes
+  useEffect(() => {
+    if (onPlayAll) {
+      setIsAnimating(true)
+      setShowAnimated(true)
+    } else {
+      setIsAnimating(false)
+    }
+  }, [onPlayAll])
 
   const handlePlay = () => {
     setIsAnimating(true)
     setShowAnimated(true)
+  }
+
+  const handleDownloadSVG = () => {
+    if (!logoContainerRef.current) return
+
+    const svgElement = logoContainerRef.current.querySelector('svg')
+    if (!svgElement) return
+
+    const svgClone = svgElement.cloneNode(true) as SVGElement
+    svgClone.setAttribute('xmlns', 'http://www.w3.org/2000/svg')
+
+    const svgString = new XMLSerializer().serializeToString(svgClone)
+    const blob = new Blob([svgString], { type: 'image/svg+xml' })
+    const url = URL.createObjectURL(blob)
+
+    const link = document.createElement('a')
+    link.href = url
+    link.download = `AIL-concept-${id.toString().padStart(2, '0')}.svg`
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    URL.revokeObjectURL(url)
   }
 
   const handleFeedbackSubmit = (feedback: LogoFeedback) => {
@@ -46,7 +79,7 @@ export function LogoCard({
       </div>
 
       <div className="logo-display">
-        <div className="logo-container">
+        <div className="logo-container" ref={logoContainerRef}>
           {showAnimated && isAnimating ? animatedLogo : staticLogo}
         </div>
       </div>
@@ -71,6 +104,13 @@ export function LogoCard({
           disabled={!showAnimated && !isAnimating}
         >
           Replay
+        </button>
+        <button
+          className="btn-download"
+          onClick={handleDownloadSVG}
+          title="Download SVG"
+        >
+          ↓ SVG
         </button>
       </div>
 

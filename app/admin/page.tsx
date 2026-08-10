@@ -67,10 +67,18 @@ export default function AdminPage() {
         <main className="admin-main">
           <section style={{ padding: '2rem', textAlign: 'center' }}>
             <p style={{ fontSize: '1.1rem', marginBottom: '1rem' }}>
-              Supabase is not configured yet.
+              Feedback is collected via Formspree.
             </p>
-            <p style={{ color: 'var(--text-light-secondary)' }}>
-              Feedback will be available once the backend is set up.
+            <p style={{ color: 'var(--text-light-secondary)', marginBottom: '1.5rem' }}>
+              To view submitted feedback, check the Formspree dashboard at:
+            </p>
+            <p>
+              <a href="https://formspree.io/forms/meajayba/submissions" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--logo-primary)', textDecoration: 'none', fontWeight: '500' }}>
+                formspree.io/forms/meajayba/submissions
+              </a>
+            </p>
+            <p style={{ color: 'var(--text-light-secondary)', marginTop: '1rem', fontSize: '0.9rem' }}>
+              (You'll need to log in with the account that created the form)
             </p>
           </section>
         </main>

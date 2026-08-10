@@ -124,6 +124,31 @@ html.dark .btn-replay:hover:not(:disabled) {
   opacity: 0.4;
 }
 
+.btn-download {
+  padding: 0.75rem 1rem;
+  background-color: var(--bg-light-secondary);
+  color: var(--text-light);
+  border: 1px solid var(--border-light);
+  border-radius: 0.375rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+html.dark .btn-download {
+  background-color: var(--bg-dark);
+  color: var(--text-dark);
+  border-color: var(--border-dark);
+}
+
+.btn-download:hover {
+  background-color: var(--accent-teal);
+  color: white;
+  border-color: var(--accent-teal);
+}
+
 .logo-sizes {
   display: flex;
   gap: 1.5rem;

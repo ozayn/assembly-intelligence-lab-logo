@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { LogoCard } from '@/components/LogoCard'
 import { ReviewerModal, ReviewerBadge } from '@/components/ReviewerModal'
 import { useReviewer } from '@/components/ReviewerContext'
@@ -96,6 +96,16 @@ function HomeContent() {
   const togglePlayAll = () => {
     setPlayAll(!playAll)
   }
+
+  // Auto-reset Play All after animation completes (max animation duration is ~2.5s)
+  useEffect(() => {
+    if (playAll) {
+      const timer = setTimeout(() => {
+        setPlayAll(false)
+      }, 2600)
+      return () => clearTimeout(timer)
+    }
+  }, [playAll])
 
   const toggleConceptSelection = (id: number) => {
     setSelectedConcepts((prev) =>
