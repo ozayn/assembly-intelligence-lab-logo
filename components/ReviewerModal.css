@@ -97,3 +97,50 @@ html.dark .reviewer-modal input:focus {
   opacity: 0.5;
   cursor: not-allowed;
 }
+
+.reviewer-badge {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background-color: var(--bg-light-secondary);
+  border: 1px solid var(--border-light);
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  color: var(--text-light-secondary);
+}
+
+html.dark .reviewer-badge {
+  background-color: var(--bg-dark-secondary);
+  border-color: var(--border-dark);
+  color: var(--text-dark-secondary);
+}
+
+.reviewer-badge strong {
+  color: var(--text-light);
+  font-weight: 600;
+}
+
+html.dark .reviewer-badge strong {
+  color: var(--text-dark);
+}
+
+.reviewer-badge .change-btn {
+  padding: 0.25rem 0.75rem;
+  margin: 0 !important;
+  background-color: var(--logo-primary);
+  color: white;
+  border: none;
+  border-radius: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.reviewer-badge .change-btn:hover {
+  opacity: 0.9;
+}

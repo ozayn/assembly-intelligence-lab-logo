@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { LogoCard } from '@/components/LogoCard'
-import { ReviewerModal } from '@/components/ReviewerModal'
+import { ReviewerModal, ReviewerBadge } from '@/components/ReviewerModal'
 import { useReviewer } from '@/components/ReviewerContext'
 import type { LogoFeedback } from '@/components/FeedbackForm'
 import {
@@ -185,6 +185,7 @@ function HomeContent() {
               </button>
             </div>
           </div>
+          <ReviewerBadge />
         </div>
       </header>
 
@@ -280,7 +281,7 @@ function HomeContent() {
         </section>
       </main>
 
-      {process.env.NEXT_PUBLIC_SUPABASE_URL && reviewerName && collectedFeedback.length > 0 && (
+      {reviewerName && collectedFeedback.length > 0 && (
         <section className="feedback-submission-bar">
           <div className="submission-content">
             <div className="submission-info">
