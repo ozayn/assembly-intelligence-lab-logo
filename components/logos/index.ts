@@ -11,6 +11,14 @@ export { Concept10Static, Concept10Animated } from './Concept10ModularGrowth'
 export { Concept11Static, Concept11Animated } from './Concept11Reconfiguration'
 export { Concept12Static, Concept12Animated } from './Concept12CollectiveIntelligence'
 
+// Round 3 — Experimental Concepts
+export { Round3Concept01Static, Round3Concept01StaticMonochrome, Round3Concept01Animated } from './Round3Concept01Emergence'
+export { Round3Concept02Static, Round3Concept02StaticMonochrome, Round3Concept02Animated } from './Round3Concept02PhaseTransition'
+export { Round3Concept03Static, Round3Concept03StaticMonochrome, Round3Concept03Animated } from './Round3Concept03Complementarity'
+export { Round3Concept04Static, Round3Concept04StaticMonochrome, Round3Concept04Animated } from './Round3Concept04FoldTransformation'
+export { Round3Concept05Static, Round3Concept05StaticMonochrome, Round3Concept05Animated } from './Round3Concept05NegativeSpace'
+export { Round3Concept06Static, Round3Concept06StaticMonochrome, Round3Concept06Animated } from './Round3Concept06PropagatingRule'
+
 export const LOGO_CONCEPTS = [
   {
     id: 1,
@@ -71,5 +79,44 @@ export const LOGO_CONCEPTS = [
     id: 12,
     name: 'Distributed Lattice',
     description: 'Seven particles assemble into a loosely organized lattice that suggests ongoing structure.',
+  },
+]
+
+export const ROUND_3_CONCEPTS = [
+  {
+    id: 13,
+    name: 'Emergence',
+    description: 'Three organic curves reveal a unified mark through assembly. Individual pieces suggest nothing until unified.',
+    round: 3,
+  },
+  {
+    id: 14,
+    name: 'Phase Transition',
+    description: 'Eight elements transition from disorder to a crystalline grid, suggesting ordered matter through motion.',
+    round: 3,
+  },
+  {
+    id: 15,
+    name: 'Complementarity',
+    description: 'A central solid and three curved complements complete one another. Meaning emerges through interaction.',
+    round: 3,
+  },
+  {
+    id: 16,
+    name: 'Fold/Transformation',
+    description: 'Vertical elements transform into nested arcs. Reorganization reveals the final structure.',
+    round: 3,
+  },
+  {
+    id: 17,
+    name: 'Negative-Space Assembly',
+    description: 'Four segments assemble around a meaningful void. The empty space is the identity.',
+    round: 3,
+  },
+  {
+    id: 18,
+    name: 'Propagating Rule',
+    description: 'A center node spawns branches through local connections. Structure grows from simple repeated rules.',
+    round: 3,
   },
 ]

@@ -1,13 +1,17 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useReviewer } from './ReviewerContext'
 import './ReviewerModal.css'
 
 export function ReviewerModal() {
   const { reviewerName, setReviewerName } = useReviewer()
   const [inputValue, setInputValue] = useState('')
-  const [showModal, setShowModal] = useState(!reviewerName)
+  const [showModal, setShowModal] = useState(false)
+
+  useEffect(() => {
+    setShowModal(!reviewerName)
+  }, [reviewerName])
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -45,7 +49,7 @@ export function ReviewerModal() {
 export function ReviewerBadge() {
   const { reviewerName, setReviewerName } = useReviewer()
   const [showChangeModal, setShowChangeModal] = useState(false)
-  const [inputValue, setInputValue] = useState(reviewerName || '')
+  const [inputValue, setInputValue] = useState('')
 
   const handleChange = (e: React.FormEvent) => {
     e.preventDefault()
@@ -55,13 +59,18 @@ export function ReviewerBadge() {
     }
   }
 
+  const openChangeModal = () => {
+    setInputValue(reviewerName || '')
+    setShowChangeModal(true)
+  }
+
   if (!reviewerName) return null
 
   return (
     <>
       <div className="reviewer-badge">
         Reviewing as <strong>{reviewerName}</strong>
-        <button onClick={() => setShowChangeModal(true)} className="change-btn">
+        <button onClick={openChangeModal} className="change-btn">
           Change
         </button>
       </div>
