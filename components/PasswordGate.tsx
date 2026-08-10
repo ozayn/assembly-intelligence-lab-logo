@@ -13,8 +13,13 @@ export function PasswordGate({ children }: PasswordGateProps) {
 
   // Check authentication on mount
   useEffect(() => {
-    const stored = typeof window !== 'undefined' ? sessionStorage.getItem('_auth') : null
-    setIsAuthenticated(stored === 'true')
+    const checkAuth = () => {
+      if (typeof window === 'undefined') return false
+      // Check for auth marker cookie (client-readable marker for httpOnly session cookie)
+      const cookies = document.cookie.split(';')
+      return cookies.some(cookie => cookie.trim().startsWith('_auth_marker='))
+    }
+    setIsAuthenticated(checkAuth())
   }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -26,14 +31,21 @@ export function PasswordGate({ children }: PasswordGateProps) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ password }),
+        credentials: 'include', // Include cookies in request
       })
 
       const data = await response.json()
 
       if (data.success) {
-        sessionStorage.setItem('_auth', 'true')
-        setIsAuthenticated(true)
-        setPassword('')
+        // Server has set the auth marker cookie; check for it
+        const cookies = document.cookie.split(';')
+        const isAuthCookieSet = cookies.some(cookie => cookie.trim().startsWith('_auth_marker='))
+        if (isAuthCookieSet) {
+          setIsAuthenticated(true)
+          setPassword('')
+        } else {
+          setError('Authentication failed. Please try again.')
+        }
       } else {
         setError('Incorrect password')
       }

@@ -15,9 +15,32 @@ export async function POST(request: NextRequest) {
 
     const isCorrect = password === correctPassword
 
-    return NextResponse.json({
+    const response = NextResponse.json({
       success: isCorrect,
     })
+
+    // Set authentication cookies if password is correct
+    if (isCorrect) {
+      // HttpOnly cookie for secure server-side validation
+      response.cookies.set('_auth_session', 'authenticated', {
+        path: '/',
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        maxAge: 30 * 24 * 60 * 60, // 30 days
+      })
+
+      // Non-HttpOnly marker cookie for client-side detection
+      response.cookies.set('_auth_marker', 'true', {
+        path: '/',
+        httpOnly: false,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        maxAge: 30 * 24 * 60 * 60, // 30 days
+      })
+    }
+
+    return response
   } catch (error) {
     return NextResponse.json(
       { success: false, error: 'Invalid request' },
