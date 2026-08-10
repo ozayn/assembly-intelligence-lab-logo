@@ -85,8 +85,21 @@ export function LogoCard({
     setTimeout(() => setCopyLinkFeedback(false), 2000)
   }
 
-  // Determine what to show based on animation state or onPlayAll
-  const shouldDisplayAnimated = onPlayAll ? (isAnimating && showAnimated) : (isAnimating && showAnimated)
+  // Determine what to show based on displayMode, animation state, or onPlayAll
+  const shouldDisplayAnimated = displayMode === 'animated' ? (isAnimating && showAnimated) : false
+
+  const getSizeStyle = (mode: string) => {
+    switch (mode) {
+      case '64px':
+        return { width: '80px', height: '80px' }
+      case '32px':
+        return { width: '50px', height: '50px' }
+      case '16px':
+        return { width: '35px', height: '35px' }
+      default:
+        return {}
+    }
+  }
 
   return (
     <div className="logo-card">
@@ -95,8 +108,8 @@ export function LogoCard({
         <h3 className="logo-name">{name}</h3>
       </div>
 
-      <div className={`logo-display logo-background-${logoBackground || 'light'}`}>
-        <div className="logo-container" ref={logoContainerRef}>
+      <div className={`logo-display logo-background-${logoBackground || 'light'}`} style={sizeMode && sizeMode !== 'full' ? { minHeight: '120px' } : {}}>
+        <div className="logo-container" ref={logoContainerRef} style={sizeMode ? getSizeStyle(sizeMode) : {}}>
           {shouldDisplayAnimated ? animatedLogo : staticLogo}
         </div>
       </div>

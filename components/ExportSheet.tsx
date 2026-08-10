@@ -58,10 +58,11 @@ export const ExportSheet = forwardRef<HTMLDivElement, ExportSheetProps>(
       <div
         ref={ref}
         style={{
-          display: 'none',
-          position: 'absolute',
+          display: 'block',
+          position: 'fixed',
           top: '-9999px',
           left: '-9999px',
+          visibility: 'hidden',
         }}
       >
         <div
