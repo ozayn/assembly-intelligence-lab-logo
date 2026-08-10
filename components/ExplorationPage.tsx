@@ -241,7 +241,9 @@ export function ExplorationPage({ currentPage }: ExplorationPageProps) {
                   animatedLogo={<Animated />}
                   onPlayAll={playAll}
                   onFeedbackSubmit={handleFeedbackSubmit}
+                  displayMode={displayMode}
                   logoBackground={logoBackground}
+                  sizeMode={sizeMode}
                 />
               )
             })}

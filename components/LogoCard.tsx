@@ -60,6 +60,21 @@ export function LogoCard({
     const svgClone = svgElement.cloneNode(true) as SVGElement
     svgClone.setAttribute('xmlns', 'http://www.w3.org/2000/svg')
 
+    // Compute CSS variables to actual colors
+    const computedStyle = getComputedStyle(document.documentElement)
+    const primaryColor = computedStyle.getPropertyValue('--logo-primary').trim() || '#2d5a7b'
+    const accentColor = computedStyle.getPropertyValue('--logo-accent').trim() || '#5ba3c7'
+
+    // Replace CSS variables with computed colors
+    svgClone.querySelectorAll('[fill*="var("]').forEach((el) => {
+      const fillValue = el.getAttribute('fill') || ''
+      if (fillValue.includes('--logo-primary')) {
+        el.setAttribute('fill', primaryColor)
+      } else if (fillValue.includes('--logo-accent')) {
+        el.setAttribute('fill', accentColor)
+      }
+    })
+
     const svgString = new XMLSerializer().serializeToString(svgClone)
     const blob = new Blob([svgString], { type: 'image/svg+xml' })
     const url = URL.createObjectURL(blob)
