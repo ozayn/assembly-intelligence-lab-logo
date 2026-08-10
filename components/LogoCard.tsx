@@ -85,8 +85,10 @@ export function LogoCard({
     setTimeout(() => setCopyLinkFeedback(false), 2000)
   }
 
-  // Determine what to show based on displayMode, animation state, or onPlayAll
-  const shouldDisplayAnimated = displayMode === 'animated' ? (isAnimating && showAnimated) : false
+  // Determine what to show based on displayMode and animation state
+  // On ExplorationPage: onPlayAll triggers animations, displayMode controls if animations are allowed
+  // On SingleConceptPage: onPlayAll is false, only individual Play Assembly button matters
+  const shouldDisplayAnimated = displayMode === 'animated' && (onPlayAll || (isAnimating && showAnimated))
 
   const getSizeStyle = (mode: string) => {
     switch (mode) {
