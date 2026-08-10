@@ -15,14 +15,16 @@ export function ExportButton() {
     try {
       // Temporarily make the export sheet visible for rendering
       const originalDisplay = exportRef.current.style.display
+      const originalVisibility = exportRef.current.style.visibility
       exportRef.current.style.display = 'block'
+      exportRef.current.style.visibility = 'visible'
       exportRef.current.style.position = 'fixed'
       exportRef.current.style.top = '0'
       exportRef.current.style.left = '0'
-      exportRef.current.style.zIndex = '-9999'
+      exportRef.current.style.zIndex = '9999'
 
-      // Wait for DOM to update
-      await new Promise(resolve => setTimeout(resolve, 100))
+      // Wait for DOM and SVG components to render
+      await new Promise(resolve => setTimeout(resolve, 500))
 
       const canvas = await html2canvas(exportRef.current, {
         backgroundColor: '#ffffff',
@@ -34,6 +36,7 @@ export function ExportButton() {
 
       // Restore original display
       exportRef.current.style.display = originalDisplay
+      exportRef.current.style.visibility = originalVisibility
 
       const link = document.createElement('a')
       link.href = canvas.toDataURL('image/png')
