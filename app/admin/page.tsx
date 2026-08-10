@@ -61,7 +61,19 @@ export default function AdminPage() {
   if (error) {
     return (
       <div className="admin-page">
-        <div className="admin-error">Error: {error}</div>
+        <header className="admin-header">
+          <h1>Feedback Results</h1>
+        </header>
+        <main className="admin-main">
+          <section style={{ padding: '2rem', textAlign: 'center' }}>
+            <p style={{ fontSize: '1.1rem', marginBottom: '1rem' }}>
+              Supabase is not configured yet.
+            </p>
+            <p style={{ color: 'var(--text-light-secondary)' }}>
+              Feedback will be available once the backend is set up.
+            </p>
+          </section>
+        </main>
       </div>
     )
   }
