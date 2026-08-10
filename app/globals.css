@@ -24,6 +24,13 @@
   --logo-secondary: #0d8b8f;
   --logo-accent: #0d8b8f;
   --logo-muted: #57606a;
+
+  /* Page styling */
+  --page-background: var(--bg-light);
+  --text-primary: var(--text-light);
+  --text-muted: var(--text-light-secondary);
+  --border-color: var(--border-light);
+  --input-background: var(--bg-light);
 }
 
 html.dark {
@@ -32,6 +39,13 @@ html.dark {
   --logo-secondary: #b1f0d1;
   --logo-accent: #58a6ff;
   --logo-muted: #8b949e;
+
+  /* Page styling - dark mode */
+  --page-background: var(--bg-dark);
+  --text-primary: var(--text-dark);
+  --text-muted: var(--text-dark-secondary);
+  --border-color: var(--border-dark);
+  --input-background: rgba(255, 255, 255, 0.05);
 }
 
 html {

@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { ThemeProvider } from '@/components/ThemeProvider'
 import { ReviewerProvider } from '@/components/ReviewerContext'
+import { PasswordGate } from '@/components/PasswordGate'
 import './globals.css'
 
 export const metadata: Metadata = {
@@ -17,9 +18,11 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body>
         <ThemeProvider>
-          <ReviewerProvider>
-            {children}
-          </ReviewerProvider>
+          <PasswordGate>
+            <ReviewerProvider>
+              {children}
+            </ReviewerProvider>
+          </PasswordGate>
         </ThemeProvider>
       </body>
     </html>
