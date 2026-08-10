@@ -16,6 +16,7 @@ export const FEEDBACK_TAGS = [
 
 export interface LogoFeedback {
   conceptId: number
+  conceptName: string
   likeStatic: boolean
   likeAnimation: boolean
   tags: string[]
@@ -24,11 +25,12 @@ export interface LogoFeedback {
 
 interface FeedbackFormProps {
   conceptId: number
+  conceptName: string
   onSubmit: (feedback: LogoFeedback) => void
   isExpanded?: boolean
 }
 
-export function FeedbackForm({ conceptId, onSubmit, isExpanded = false }: FeedbackFormProps) {
+export function FeedbackForm({ conceptId, conceptName, onSubmit, isExpanded = false }: FeedbackFormProps) {
   const [expanded, setExpanded] = useState(isExpanded)
   const [likeStatic, setLikeStatic] = useState(false)
   const [likeAnimation, setLikeAnimation] = useState(false)
@@ -44,6 +46,7 @@ export function FeedbackForm({ conceptId, onSubmit, isExpanded = false }: Feedba
   const handleSubmit = () => {
     onSubmit({
       conceptId,
+      conceptName,
       likeStatic,
       likeAnimation,
       tags,

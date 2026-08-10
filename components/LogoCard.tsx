@@ -132,6 +132,7 @@ export function LogoCard({
       {showFeedback && (
         <FeedbackForm
           conceptId={id}
+          conceptName={name}
           onSubmit={handleFeedbackSubmit}
           isExpanded={true}
         />

@@ -37,6 +37,7 @@ function Round3Content() {
   const [collectedFeedback, setCollectedFeedback] = useState<LogoFeedback[]>([])
   const [submittingFeedback, setSubmittingFeedback] = useState(false)
   const [feedbackSubmitted, setFeedbackSubmitted] = useState(false)
+  const [feedbackError, setFeedbackError] = useState<string | null>(null)
 
   const handleFeedbackSubmit = (feedback: LogoFeedback) => {
     setCollectedFeedback((prev) => {
@@ -49,6 +50,7 @@ function Round3Content() {
     if (!reviewerName || collectedFeedback.length === 0) return
 
     setSubmittingFeedback(true)
+    setFeedbackError(null)
     try {
       const response = await fetch('/api/feedback/submit', {
         method: 'POST',
@@ -62,14 +64,23 @@ function Round3Content() {
         }),
       })
 
-      if (response.ok) {
+      const data = await response.json()
+
+      if (response.ok && data.success) {
         setFeedbackSubmitted(true)
         setTimeout(() => {
           setCollectedFeedback([])
           setFeedbackSubmitted(false)
+          setFeedbackError(null)
         }, 2000)
+      } else {
+        const errorMsg = data.error || 'Failed to submit feedback'
+        setFeedbackError(errorMsg)
+        console.error('Feedback submission failed:', errorMsg)
       }
     } catch (error) {
+      const errorMsg = error instanceof Error ? error.message : 'Network error'
+      setFeedbackError(errorMsg)
       console.error('Error submitting feedback:', error)
     } finally {
       setSubmittingFeedback(false)
@@ -215,14 +226,18 @@ function Round3Content() {
         <section className="feedback-submission-bar">
           <div className="submission-content">
             <div className="submission-info">
-              <p>You have {collectedFeedback.length} piece{collectedFeedback.length !== 1 ? 's' : ''} of feedback ready</p>
+              {feedbackError ? (
+                <p style={{ color: '#d32f2f' }}>Error: {feedbackError}</p>
+              ) : (
+                <p>You have {collectedFeedback.length} piece{collectedFeedback.length !== 1 ? 's' : ''} of feedback ready</p>
+              )}
             </div>
             <button
-              className={`btn-submit-all ${submittingFeedback ? 'submitting' : ''} ${feedbackSubmitted ? 'submitted' : ''}`}
+              className={`btn-submit-all ${submittingFeedback ? 'submitting' : ''} ${feedbackSubmitted ? 'submitted' : ''} ${feedbackError ? 'error' : ''}`}
               onClick={submitAllFeedback}
               disabled={submittingFeedback || feedbackSubmitted}
             >
-              {feedbackSubmitted ? '✓ Submitted!' : submittingFeedback ? 'Submitting...' : 'Submit Feedback'}
+              {feedbackSubmitted ? '✓ Submitted!' : feedbackError ? 'Retry' : submittingFeedback ? 'Submitting...' : 'Submit Feedback'}
             </button>
           </div>
         </section>
