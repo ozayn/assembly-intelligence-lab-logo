@@ -51,8 +51,9 @@ interface ExportSheetProps {
 
 export const ExportSheet = forwardRef<HTMLDivElement, ExportSheetProps>(
   ({ title = 'AIL Logo Concepts', includeNames = true }, ref) => {
-    const columns = ALL_LOGO_CONCEPTS.length <= 12 ? 4 : 3
-    const conceptsPerColumn = Math.ceil(ALL_LOGO_CONCEPTS.length / columns)
+    const activeConcepts = ALL_LOGO_CONCEPTS.filter(c => c.active)
+    const columns = activeConcepts.length <= 12 ? 4 : 3
+    const conceptsPerColumn = Math.ceil(activeConcepts.length / columns)
 
     return (
       <div
@@ -98,7 +99,7 @@ export const ExportSheet = forwardRef<HTMLDivElement, ExportSheetProps>(
                 margin: '0',
               }}
             >
-              {ALL_LOGO_CONCEPTS.length} concepts
+              {activeConcepts.length} concepts
             </p>
           </div>
 
@@ -112,8 +113,8 @@ export const ExportSheet = forwardRef<HTMLDivElement, ExportSheetProps>(
               alignItems: 'start',
             }}
           >
-            {ALL_LOGO_CONCEPTS.map((concept, idx) => {
-              const Component = LOGO_COMPONENTS[idx]
+            {activeConcepts.map((concept) => {
+              const Component = LOGO_COMPONENTS[concept.id - 1]
               if (!Component) return null
 
               return (

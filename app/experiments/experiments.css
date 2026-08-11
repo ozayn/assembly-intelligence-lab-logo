@@ -1,0 +1,279 @@
+.experiments-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 3rem;
+  padding-bottom: 2rem;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.experiments-header h1 {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.experiments-header .subtitle {
+  font-size: 1rem;
+  color: #666;
+  max-width: 60ch;
+}
+
+.experiments-header .controls {
+  display: flex;
+  gap: 1rem;
+}
+
+.experiments-header button {
+  padding: 0.5rem 1rem;
+  border: 1px solid #e0e0e0;
+  background: white;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.experiments-header button:hover {
+  border-color: #2d5a7b;
+  background: #f5f5f5;
+}
+
+.experiments-header button.active {
+  background: #2d5a7b;
+  color: white;
+  border-color: #2d5a7b;
+}
+
+.experiments-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+  gap: 3rem;
+  margin-bottom: 3rem;
+}
+
+.experiment-card {
+  background: white;
+  border: 1px solid #e8e5e0;
+  border-radius: 8px;
+  padding: 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.experiment-card:hover {
+  border-color: #5ba3c7;
+  box-shadow: 0 4px 12px rgba(91, 163, 199, 0.1);
+}
+
+.experiment-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #e8e5e0;
+}
+
+.experiment-id {
+  font-family: "Courier New", monospace;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  color: #2d5a7b;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.experiment-card h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0;
+  margin-bottom: 0.25rem;
+}
+
+.experiment-category {
+  font-size: 0.9rem;
+  color: #999;
+  margin: 0;
+}
+
+.experiment-controls {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.btn-play {
+  padding: 0.5rem 1rem;
+  background: #2d5a7b;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.btn-play:hover:not(:disabled) {
+  background: #1a3a5a;
+}
+
+.btn-play:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* View sections */
+.view-section {
+  margin-bottom: 2rem;
+}
+
+.view-label {
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #999;
+  margin-bottom: 1rem;
+}
+
+/* Large static view */
+.view-large {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #fafaf7;
+  border-radius: 6px;
+  padding: 2rem;
+  min-height: 300px;
+}
+
+.view-large svg {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Sizes view */
+.view-sizes {
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+  align-items: flex-end;
+  background: #fafaf7;
+  padding: 2rem;
+  border-radius: 6px;
+  min-height: 120px;
+}
+
+.size-slot {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  padding: 1rem;
+  min-width: 80px;
+  min-height: 80px;
+}
+
+.size-slot svg {
+  display: block;
+}
+
+/* Background views */
+.view-background {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 6px;
+  padding: 2rem;
+  min-height: 200px;
+}
+
+.light-bg {
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+}
+
+.dark-bg {
+  background: #151b34;
+  border: 1px solid #2a2f45;
+}
+
+/* Responsive */
+@media (prefers-color-scheme: dark) {
+  .experiments-header {
+    border-bottom-color: #3a3630;
+  }
+
+  .experiment-card {
+    background: #2a2724;
+    border-color: #3a3630;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  }
+
+  .experiment-card:hover {
+    border-color: #5ba3c7;
+    box-shadow: 0 4px 12px rgba(91, 163, 199, 0.2);
+  }
+
+  .experiment-header {
+    border-bottom-color: #3a3630;
+  }
+
+  .experiments-header button {
+    background: #2a2724;
+    border-color: #3a3630;
+    color: #f5f3f0;
+  }
+
+  .experiments-header button:hover {
+    border-color: #5ba3c7;
+    background: #3a3630;
+  }
+
+  .view-large {
+    background: #242220;
+  }
+
+  .view-sizes {
+    background: #242220;
+  }
+
+  .size-slot {
+    background: #2a2724;
+    border-color: #3a3630;
+  }
+
+  .light-bg {
+    background: #ffffff;
+  }
+}
+
+@media (max-width: 768px) {
+  .experiments-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .experiments-header {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .experiment-header {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .view-sizes {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .size-slot {
+    width: 100%;
+  }
+}
