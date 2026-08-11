@@ -5,6 +5,14 @@
 }
 
 :root {
+  /* Assembly Intelligence Lab brand palette — official, from Shiva.
+     Brand-only: never referenced by review-tool UI chrome below. */
+  --ail-navy: #08255A;
+  --ail-blue: #0B4B70;
+  --ail-teal: #109596;
+  --ail-light-teal: #58B7B1;
+  --ail-pale-teal: #B7DEDA;
+
   --bg-light: #ffffff;
   --bg-light-secondary: #f9f9f9;
   --bg-dark: #0f1117;
@@ -15,14 +23,18 @@
   --text-dark-secondary: #8b949e;
   --border-light: #d0d7de;
   --border-dark: #30363d;
+  /* Review-tool UI accents — intentionally separate from the brand palette
+     above, so the interface stays neutral for judging the logos. */
   --accent-navy: #001e3c;
   --accent-teal: #0d8b8f;
   --accent-aqua: #b1f0d1;
 
-  /* Semantic logo colors - light mode */
-  --logo-primary: #001e3c;
-  --logo-secondary: #0d8b8f;
-  --logo-accent: #0d8b8f;
+  /* Semantic logo colors — light target website background.
+     Only --logo-primary and --logo-accent are currently referenced by
+     concept geometry; secondary/muted are reserved for future use. */
+  --logo-primary: var(--ail-navy);
+  --logo-secondary: var(--ail-blue);
+  --logo-accent: var(--ail-teal);
   --logo-muted: #57606a;
 
   /* Page styling */
@@ -34,13 +46,9 @@
 }
 
 html.dark {
-  /* Semantic logo colors - dark mode */
-  --logo-primary: #e6edf3;
-  --logo-secondary: #b1f0d1;
-  --logo-accent: #58a6ff;
-  --logo-muted: #8b949e;
-
-  /* Page styling - dark mode */
+  /* Page styling - dark mode (review-tool theme, not the logo's target
+     website background — see .logo-background-dark in LogoCard.css for
+     that). */
   --page-background: var(--bg-dark);
   --text-primary: var(--text-dark);
   --text-muted: var(--text-dark-secondary);

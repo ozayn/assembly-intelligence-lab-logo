@@ -129,7 +129,7 @@ export default function ArchivePage() {
                         width: '100%',
                         padding: '0.6rem 1rem',
                         fontSize: '0.85rem',
-                        background: '#001e3c',
+                        background: 'var(--accent-navy)',
                         color: 'white',
                         border: 'none',
                         borderRadius: '0.375rem',

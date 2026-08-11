@@ -32,6 +32,70 @@ html.dark .logo-card {
   font-weight: 500;
 }
 
+/* Logo Version toggle (Symbol Only / With Company Name) */
+.logo-version-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.version-label,
+.control-mini-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-light-secondary);
+  white-space: nowrap;
+}
+
+html.dark .version-label,
+html.dark .control-mini-label {
+  color: var(--text-dark-secondary);
+}
+
+.button-group-mini {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.button-group-mini button {
+  padding: 0.35rem 0.7rem;
+  border: 1px solid var(--border-light);
+  border-radius: 0.375rem;
+  background-color: var(--bg-light);
+  color: var(--text-light-secondary);
+  font-size: 0.78rem;
+  transition: all 0.2s;
+}
+
+html.dark .button-group-mini button {
+  border-color: var(--border-dark);
+  background-color: var(--bg-dark-secondary);
+  color: var(--text-dark-secondary);
+}
+
+.button-group-mini button.active {
+  background-color: var(--accent-navy);
+  color: white;
+  border-color: var(--accent-navy);
+}
+
+.lockup-controls-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+}
+
+.lockup-control-group {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
 .logo-display {
   display: flex;
   justify-content: center;
@@ -40,6 +104,7 @@ html.dark .logo-card {
   background-color: var(--bg-light-secondary);
   border-radius: 0.5rem;
   transition: background-color 0.3s;
+  position: relative;
 }
 
 html.dark .logo-display {
@@ -59,6 +124,53 @@ html.dark .logo-display {
   max-height: 150px;
   width: auto;
   height: auto;
+}
+
+/* With Company Name — symbol + wordmark lockup preview */
+.lockup-preview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 1.5rem;
+}
+
+.lockup-preview.lockup-stacked {
+  flex-direction: column;
+}
+
+.lockup-preview.lockup-horizontal {
+  flex-direction: row;
+}
+
+.lockup-symbol {
+  flex-shrink: 0;
+}
+
+.lockup-symbol svg {
+  width: 100%;
+  height: 100%;
+}
+
+.lockup-wordmark {
+  color: var(--logo-primary);
+  white-space: nowrap;
+  text-align: center;
+}
+
+.lockup-horizontal .lockup-wordmark {
+  text-align: left;
+}
+
+/* Always-mounted, invisible source for lockup SVG export — kept out of both
+   layout and paint regardless of which mode is currently displayed. */
+.export-source-hidden {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
 }
 
 .logo-description {
@@ -292,17 +404,22 @@ html.dark .feedback-link:hover {
    sit on a colored rectangle. */
 .logo-background-light,
 .logo-background-light ~ .logo-sizes {
-  --logo-primary: #001e3c;
-  --logo-secondary: #0d8b8f;
-  --logo-accent: #0d8b8f;
+  /* Official AIL palette (Shiva) — light target background: prioritize
+     navy/blue/teal for structural contrast. */
+  --logo-primary: var(--ail-navy);
+  --logo-secondary: var(--ail-blue);
+  --logo-accent: var(--ail-teal);
   --logo-muted: #57606a;
 }
 
 .logo-background-dark,
 .logo-background-dark ~ .logo-sizes {
-  --logo-primary: #e6edf3;
-  --logo-secondary: #b1f0d1;
-  --logo-accent: #58a6ff;
+  /* Official AIL palette (Shiva) — dark target background: the two
+     lightest palette colors remain sufficiently visible; teal used as a
+     mid-tone secondary. Not an inversion of the light variant. */
+  --logo-primary: var(--ail-pale-teal);
+  --logo-secondary: var(--ail-teal);
+  --logo-accent: var(--ail-light-teal);
   --logo-muted: #8b949e;
 }
 

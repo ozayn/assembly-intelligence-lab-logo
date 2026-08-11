@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { TYPOGRAPHY_SYSTEMS, COMPANY_NAME, type TypographyDirection } from './typographySystems'
 import './typography-lockup.css'
 
 interface TypographyLockupProps {
@@ -8,40 +9,6 @@ interface TypographyLockupProps {
   conceptId: number
   conceptName: string
 }
-
-type TypographyDirection = 'scientific' | 'editorial' | 'technical'
-
-const TYPOGRAPHY_SYSTEMS = {
-  scientific: {
-    name: 'Scientific / Precise',
-    fontFamily: '"IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
-    fontWeight: 400,
-    fontSize: 18,
-    letterSpacing: 0,
-    lineHeight: 1.2,
-    description: 'Clean, rational, contemporary. High clarity.',
-  },
-  editorial: {
-    name: 'Editorial / Research',
-    fontFamily: '"Newsreader", "Lora", Georgia, serif',
-    fontWeight: 400,
-    fontSize: 18,
-    letterSpacing: 0,
-    lineHeight: 1.3,
-    description: 'Distinctive, intellectual. Contemporary editorial quality.',
-  },
-  technical: {
-    name: 'Technical / Experimental',
-    fontFamily: '"Space Mono", "IBM Plex Mono", monospace',
-    fontWeight: 400,
-    fontSize: 16,
-    letterSpacing: 0.5,
-    lineHeight: 1.2,
-    description: 'Geometric, engineered. Deliberate clarity.',
-  },
-}
-
-const COMPANY_NAME = 'Assembly Intelligence Lab'
 
 export function TypographyLockup({ symbolComponent, conceptId, conceptName }: TypographyLockupProps) {
   const [direction, setDirection] = useState<TypographyDirection>('scientific')
