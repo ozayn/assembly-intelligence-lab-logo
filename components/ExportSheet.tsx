@@ -20,29 +20,45 @@ import {
   Round3Concept04Static,
   Round3Concept05Static,
   Round3Concept06Static,
-  ALL_LOGO_CONCEPTS,
+  Concept25Static,
+  Concept26Static,
+  Concept27Static,
+  Concept28Static,
+  Concept29Static,
+  Concept30Static,
+  Concept31Static,
+  Concept32Static,
+  REVIEW_CONCEPTS,
 } from './logos'
 
-const LOGO_COMPONENTS = [
-  Concept01Static,
-  Concept02Static,
-  Concept03Static,
-  Concept04Static,
-  Concept05Static,
-  Concept06Static,
-  Concept07Static,
-  Concept08Static,
-  Concept09Static,
-  Concept10Static,
-  Concept11Static,
-  Concept12Static,
-  Round3Concept01Static,
-  Round3Concept02Static,
-  Round3Concept03Static,
-  Round3Concept04Static,
-  Round3Concept05Static,
-  Round3Concept06Static,
-]
+const LOGO_COMPONENTS: Record<number, React.ComponentType> = {
+  1: Concept01Static,
+  2: Concept02Static,
+  3: Concept03Static,
+  4: Concept04Static,
+  5: Concept05Static,
+  6: Concept06Static,
+  7: Concept07Static,
+  8: Concept08Static,
+  9: Concept09Static,
+  10: Concept10Static,
+  11: Concept11Static,
+  12: Concept12Static,
+  13: Round3Concept01Static,
+  14: Round3Concept02Static,
+  15: Round3Concept03Static,
+  16: Round3Concept04Static,
+  17: Round3Concept05Static,
+  18: Round3Concept06Static,
+  25: Concept25Static,
+  26: Concept26Static,
+  27: Concept27Static,
+  28: Concept28Static,
+  29: Concept29Static,
+  30: Concept30Static,
+  31: Concept31Static,
+  32: Concept32Static,
+}
 
 interface ExportSheetProps {
   title?: string
@@ -51,9 +67,9 @@ interface ExportSheetProps {
 
 export const ExportSheet = forwardRef<HTMLDivElement, ExportSheetProps>(
   ({ title = 'AIL Logo Concepts', includeNames = true }, ref) => {
-    const activeConcepts = ALL_LOGO_CONCEPTS.filter(c => c.active)
-    const columns = activeConcepts.length <= 12 ? 4 : 3
-    const conceptsPerColumn = Math.ceil(activeConcepts.length / columns)
+    const reviewConcepts = REVIEW_CONCEPTS
+    const columns = reviewConcepts.length <= 12 ? 4 : 3
+    const conceptsPerColumn = Math.ceil(reviewConcepts.length / columns)
 
     return (
       <div
@@ -99,7 +115,7 @@ export const ExportSheet = forwardRef<HTMLDivElement, ExportSheetProps>(
                 margin: '0',
               }}
             >
-              {activeConcepts.length} concepts
+              {reviewConcepts.length} concepts
             </p>
           </div>
 
@@ -113,8 +129,8 @@ export const ExportSheet = forwardRef<HTMLDivElement, ExportSheetProps>(
               alignItems: 'start',
             }}
           >
-            {activeConcepts.map((concept) => {
-              const Component = LOGO_COMPONENTS[concept.id - 1]
+            {reviewConcepts.map((concept) => {
+              const Component = LOGO_COMPONENTS[concept.id]
               if (!Component) return null
 
               return (

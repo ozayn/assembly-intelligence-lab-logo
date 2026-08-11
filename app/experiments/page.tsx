@@ -8,7 +8,7 @@ import { LogoCard } from '@/components/LogoCard'
 import { useFeedbackSubmission } from '@/components/useFeedbackSubmission'
 import { EXPERIMENT_CONCEPTS } from '@/components/experimentsData'
 import {
-  EXPERIMENTAL_CONCEPTS,
+  NEW_ROUND_CONCEPTS,
   Concept19Static, Concept19Animated,
   Concept20Static, Concept20Animated,
   Concept21Static, Concept21Animated,
@@ -93,7 +93,7 @@ export default function ExperimentsPage() {
           </div>
         </div>
         <div className="concepts-grid">
-          {EXPERIMENTAL_CONCEPTS.map((concept) => {
+          {NEW_ROUND_CONCEPTS.map((concept) => {
             const { Static, Animated } = NEW_ROUND_COMPONENTS[concept.id]
             return (
               <div key={concept.id} style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>

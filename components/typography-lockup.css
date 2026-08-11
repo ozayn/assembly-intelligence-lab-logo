@@ -79,14 +79,10 @@
   border: 1px solid #2a2f45;
 }
 
-.symbol-only-dark svg {
-  filter: brightness(1.2);
-}
-
 /* Horizontal Lockup */
 .horizontal-lockup-container {
   display: grid;
-  gap: 2rem;
+  gap: 8px;
 }
 
 .lockup-size-group {
@@ -131,7 +127,7 @@
 .horizontal-light-small,
 .horizontal-dark-small {
   min-height: 80px;
-  gap: 1rem;
+  gap: 8px;
   padding: 1rem 1.5rem;
 }
 
@@ -173,11 +169,35 @@
   color: var(--text-primary, #1a1a18);
 }
 
+.symbol-only-light,
+.horizontal-light,
+.horizontal-light-small,
+.stacked-light,
+.stacked-light-compact {
+  --logo-primary: var(--ail-navy);
+  --logo-secondary: var(--ail-blue);
+  --logo-accent: var(--ail-teal);
+  --logo-light: var(--ail-light-teal);
+  --logo-pale: var(--ail-pale-teal);
+}
+
 .stacked-dark,
 .stacked-dark-compact {
   background: #151b34;
   border: 1px solid #2a2f45;
   color: #ffffff;
+}
+
+.symbol-only-dark,
+.horizontal-dark,
+.horizontal-dark-small,
+.stacked-dark,
+.stacked-dark-compact {
+  --logo-primary: var(--ail-pale-teal);
+  --logo-secondary: var(--ail-light-teal);
+  --logo-accent: var(--ail-teal);
+  --logo-light: var(--ail-blue);
+  --logo-pale: var(--ail-navy);
 }
 
 .stacked-light-compact,

@@ -6,10 +6,14 @@ import { FeedbackForm, type LogoFeedback } from './FeedbackForm'
 import {
   TYPOGRAPHY_SYSTEMS,
   APPLICATION_TIERS,
-  COMPANY_NAME,
+  WORDMARK_LINE_1,
+  WORDMARK_LINE_2,
+  WORDMARK_SECONDARY_SCALE,
+  WORDMARK_SECONDARY_TRACKING_SCALE,
   type TypographyDirection,
   type ApplicationTier,
 } from './typographySystems'
+import { BrandWordmark } from './BrandWordmark'
 import './LogoCard.css'
 
 type ExportSize = '64' | '32' | '16'
@@ -31,6 +35,7 @@ interface LogoCardProps {
   // will use it instead of scaling down staticLogo.
   microMark32?: React.ReactNode
   microMark16?: React.ReactNode
+  reviewCandidate?: boolean
 }
 
 export function LogoCard({
@@ -46,6 +51,7 @@ export function LogoCard({
   sizeMode,
   microMark32,
   microMark16,
+  reviewCandidate = false,
 }: LogoCardProps) {
   const [isAnimating, setIsAnimating] = useState(onPlayAll)
   const [showAnimated, setShowAnimated] = useState(false)
@@ -115,11 +121,15 @@ export function LogoCard({
     const primaryColor = computedStyle.getPropertyValue('--logo-primary').trim() || '#08255A'
     const secondaryColor = computedStyle.getPropertyValue('--logo-secondary').trim() || '#0B4B70'
     const accentColor = computedStyle.getPropertyValue('--logo-accent').trim() || '#109596'
+    const lightColor = computedStyle.getPropertyValue('--logo-light').trim() || '#58B7B1'
+    const paleColor = computedStyle.getPropertyValue('--logo-pale').trim() || '#B7DEDA'
     const mutedColor = computedStyle.getPropertyValue('--logo-muted').trim() || '#57606a'
     const colorForVar: Record<string, string> = {
       '--logo-primary': primaryColor,
       '--logo-secondary': secondaryColor,
       '--logo-accent': accentColor,
+      '--logo-light': lightColor,
+      '--logo-pale': paleColor,
       '--logo-muted': mutedColor,
     }
 
@@ -187,11 +197,15 @@ export function LogoCard({
     const primaryColor = computedStyle.getPropertyValue('--logo-primary').trim() || '#08255A'
     const secondaryColor = computedStyle.getPropertyValue('--logo-secondary').trim() || '#0B4B70'
     const accentColor = computedStyle.getPropertyValue('--logo-accent').trim() || '#109596'
+    const lightColor = computedStyle.getPropertyValue('--logo-light').trim() || '#58B7B1'
+    const paleColor = computedStyle.getPropertyValue('--logo-pale').trim() || '#B7DEDA'
     const mutedColor = computedStyle.getPropertyValue('--logo-muted').trim() || '#57606a'
     const colorForVar: Record<string, string> = {
       '--logo-primary': primaryColor,
       '--logo-secondary': secondaryColor,
       '--logo-accent': accentColor,
+      '--logo-light': lightColor,
+      '--logo-pale': paleColor,
       '--logo-muted': mutedColor,
     }
     symbolClone.querySelectorAll('[fill*="var("], [stroke*="var("], [stop-color*="var("]').forEach((el) => {
@@ -208,39 +222,54 @@ export function LogoCard({
     const typeSystem = TYPOGRAPHY_SYSTEMS[typographyDirection]
     const fontSize = tier.fontSizeOverride ?? typeSystem.fontSize
     const letterSpacing = typeSystem.letterSpacing * tier.letterSpacingScale
+    const secondaryFontSize = fontSize * WORDMARK_SECONDARY_SCALE
+    const secondaryLetterSpacing = letterSpacing * WORDMARK_SECONDARY_TRACKING_SCALE
 
-    const { width: textWidth, height: textHeight } = measureText(
-      COMPANY_NAME,
+    const { width: primaryTextWidth } = measureText(
+      WORDMARK_LINE_1,
       typeSystem.fontFamily,
       fontSize,
       typeSystem.fontWeight,
       letterSpacing
     )
+    const { width: secondaryTextWidth } = measureText(
+      WORDMARK_LINE_2,
+      typeSystem.fontFamily,
+      secondaryFontSize,
+      typeSystem.fontWeight,
+      secondaryLetterSpacing
+    )
+    const wordmarkWidth = Math.max(primaryTextWidth, secondaryTextWidth)
+    const secondaryMargin = secondaryFontSize * 0.18
+    const primaryLineHeight = fontSize * typeSystem.lineHeight
+    const secondaryLineHeight = secondaryFontSize * typeSystem.lineHeight
+    const wordmarkHeight = primaryLineHeight + secondaryMargin + secondaryLineHeight
 
     const symbolScale = tier.symbolPx / 200
+    const padding = 6
     let svgWidth: number
     let svgHeight: number
     let symbolTransform: string
     let textX: number
-    let textY: number
     let textAnchor: string
+    let wordmarkTop: number
 
     if (tier.orientation === 'stacked') {
-      svgWidth = Math.max(tier.symbolPx, textWidth) + 24
-      svgHeight = tier.symbolPx + tier.gap + textHeight + 12
+      svgWidth = Math.max(tier.symbolPx, wordmarkWidth) + padding * 2
+      svgHeight = tier.symbolPx + tier.gap + wordmarkHeight + padding * 2
       const symbolX = (svgWidth - tier.symbolPx) / 2
-      symbolTransform = `translate(${symbolX}, 0) scale(${symbolScale})`
+      symbolTransform = `translate(${symbolX}, ${padding}) scale(${symbolScale})`
       textX = svgWidth / 2
-      textY = tier.symbolPx + tier.gap + textHeight * 0.8
       textAnchor = 'middle'
+      wordmarkTop = padding + tier.symbolPx + tier.gap
     } else {
-      svgWidth = tier.symbolPx + tier.gap + textWidth + 24
-      svgHeight = Math.max(tier.symbolPx, textHeight) + 12
+      svgWidth = tier.symbolPx + tier.gap + wordmarkWidth + padding * 2
+      svgHeight = Math.max(tier.symbolPx, wordmarkHeight) + padding * 2
       const symbolY = (svgHeight - tier.symbolPx) / 2
-      symbolTransform = `translate(0, ${symbolY}) scale(${symbolScale})`
-      textX = tier.symbolPx + tier.gap
-      textY = svgHeight / 2 + textHeight * 0.35
+      symbolTransform = `translate(${padding}, ${symbolY}) scale(${symbolScale})`
+      textX = padding + tier.symbolPx + tier.gap
       textAnchor = 'start'
+      wordmarkTop = (svgHeight - wordmarkHeight) / 2
     }
 
     const svgNS = 'http://www.w3.org/2000/svg'
@@ -255,20 +284,36 @@ export function LogoCard({
     Array.from(symbolClone.childNodes).forEach((child) => g.appendChild(child.cloneNode(true)))
     outSvg.appendChild(g)
 
-    const textEl = document.createElementNS(svgNS, 'text')
-    textEl.setAttribute('x', String(textX))
-    textEl.setAttribute('y', String(textY))
-    textEl.setAttribute('text-anchor', textAnchor)
-    textEl.setAttribute('font-family', typeSystem.exportFontFamily)
-    textEl.setAttribute('font-size', String(fontSize))
-    textEl.setAttribute('font-weight', String(typeSystem.fontWeight))
-    textEl.setAttribute('letter-spacing', String(letterSpacing))
-    textEl.setAttribute('fill', primaryColor)
-    // Real, editable text — never rasterized. The font isn't embedded, so it
-    // must be available (installed, or loaded via @font-face) wherever this
-    // SVG is opened, or it will render with a fallback font.
-    textEl.textContent = COMPANY_NAME
-    outSvg.appendChild(textEl)
+    const appendTextLine = (
+      text: string,
+      y: number,
+      size: number,
+      tracking: number
+    ) => {
+      const textEl = document.createElementNS(svgNS, 'text')
+      textEl.setAttribute('x', String(textX))
+      textEl.setAttribute('y', String(y))
+      textEl.setAttribute('text-anchor', textAnchor)
+      textEl.setAttribute('font-family', typeSystem.exportFontFamily)
+      textEl.setAttribute('font-size', String(size))
+      textEl.setAttribute('font-weight', String(typeSystem.fontWeight))
+      textEl.setAttribute('letter-spacing', String(tracking))
+      textEl.setAttribute('fill', primaryColor)
+      // Real editable text: never converted to paths or rasterized.
+      textEl.textContent = text
+      outSvg.appendChild(textEl)
+    }
+
+    const primaryBaseline = wordmarkTop + fontSize * 0.82
+    const secondaryBaseline =
+      wordmarkTop + primaryLineHeight + secondaryMargin + secondaryFontSize * 0.82
+    appendTextLine(WORDMARK_LINE_1, primaryBaseline, fontSize, letterSpacing)
+    appendTextLine(
+      WORDMARK_LINE_2,
+      secondaryBaseline,
+      secondaryFontSize,
+      secondaryLetterSpacing
+    )
 
     const svgString = new XMLSerializer().serializeToString(outSvg)
     const blob = new Blob([svgString], { type: 'image/svg+xml' })
@@ -324,6 +369,7 @@ export function LogoCard({
       <div className="logo-card-header">
         <span className="logo-number">{id.toString().padStart(2, '0')}</span>
         <h3 className="logo-name">{name}</h3>
+        {reviewCandidate && <span className="candidate-badge">New Candidate</span>}
       </div>
 
       <div className="logo-version-toggle">
@@ -350,21 +396,20 @@ export function LogoCard({
             {shouldDisplayAnimated ? animatedLogo : staticLogo}
           </div>
         ) : (
-          <div className={`lockup-preview lockup-${tier.orientation}`}>
+          <div
+            className={`lockup-preview lockup-${tier.orientation}`}
+            style={{ gap: `${tier.gap}px` }}
+          >
             <div className="lockup-symbol" style={{ width: tier.symbolPx, height: tier.symbolPx }}>
               {shouldDisplayAnimated ? animatedLogo : staticLogo}
             </div>
-            <div
-              className="lockup-wordmark"
-              style={{
-                fontFamily: typeSystem.fontFamily,
-                fontSize: `${lockupFontSize}px`,
-                fontWeight: typeSystem.fontWeight,
-                letterSpacing: `${lockupLetterSpacing}px`,
-                lineHeight: typeSystem.lineHeight,
-              }}
-            >
-              {COMPANY_NAME}
+            <div className="lockup-wordmark">
+              <BrandWordmark
+                typeSystem={typeSystem}
+                fontSize={lockupFontSize}
+                letterSpacing={lockupLetterSpacing}
+                align={tier.orientation === 'stacked' ? 'center' : 'left'}
+              />
             </div>
           </div>
         )}
@@ -415,8 +460,8 @@ export function LogoCard({
         <button
           className="btn-copy-link"
           onClick={handleCopyLink}
-          style={{ fontSize: '1.1rem', opacity: 0.6 }}
-          title="Copy shareable link"
+          aria-label={copyLinkFeedback ? 'Concept link copied' : 'Copy concept link'}
+          title={copyLinkFeedback ? 'Copied' : 'Copy link'}
         >
           {copyLinkFeedback ? '✓' : '🔗'}
         </button>

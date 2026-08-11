@@ -27,6 +27,14 @@ import {
   Round3Concept04Static, Round3Concept04Animated,
   Round3Concept05Static, Round3Concept05Animated,
   Round3Concept06Static, Round3Concept06Animated,
+  Concept25Static, Concept25Animated,
+  Concept26Static, Concept26Animated,
+  Concept27Static, Concept27Animated,
+  Concept28Static, Concept28Animated,
+  Concept29Static, Concept29Animated,
+  Concept30Static, Concept30Animated,
+  Concept31Static, Concept31Animated,
+  Concept32Static, Concept32Animated,
   ALL_LOGO_CONCEPTS,
   getConceptsForPage,
   TOTAL_PAGES,
@@ -53,6 +61,23 @@ const ALL_COMPONENTS = [
   { Static: Round3Concept05Static, Animated: Round3Concept05Animated },
   { Static: Round3Concept06Static, Animated: Round3Concept06Animated },
 ]
+
+const REVIEW_COMPONENTS: Record<number, { Static: React.ComponentType; Animated: React.ComponentType }> = {
+  1: ALL_COMPONENTS[0],
+  3: ALL_COMPONENTS[2],
+  4: ALL_COMPONENTS[3],
+  16: ALL_COMPONENTS[15],
+  17: ALL_COMPONENTS[16],
+  18: ALL_COMPONENTS[17],
+  25: { Static: Concept25Static, Animated: Concept25Animated },
+  26: { Static: Concept26Static, Animated: Concept26Animated },
+  27: { Static: Concept27Static, Animated: Concept27Animated },
+  28: { Static: Concept28Static, Animated: Concept28Animated },
+  29: { Static: Concept29Static, Animated: Concept29Animated },
+  30: { Static: Concept30Static, Animated: Concept30Animated },
+  31: { Static: Concept31Static, Animated: Concept31Animated },
+  32: { Static: Concept32Static, Animated: Concept32Animated },
+}
 
 type DisplayMode = 'static' | 'animated'
 type SizeMode = 'full' | '64px' | '32px' | '16px'
@@ -186,8 +211,7 @@ export function ExplorationPage({ currentPage }: ExplorationPageProps) {
         <section className="concepts-section">
           <div className="concepts-grid">
             {concepts.map((concept) => {
-              const componentIdx = concept.id - 1
-              const { Static, Animated } = ALL_COMPONENTS[componentIdx]
+              const { Static, Animated } = REVIEW_COMPONENTS[concept.id]
               return (
                 <LogoCard
                   key={concept.id}
@@ -201,6 +225,7 @@ export function ExplorationPage({ currentPage }: ExplorationPageProps) {
                   displayMode={displayMode}
                   logoBackground={logoBackground}
                   sizeMode={sizeMode}
+                  reviewCandidate={concept.reviewCandidate === true}
                 />
               )
             })}

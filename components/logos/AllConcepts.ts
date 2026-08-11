@@ -155,26 +155,89 @@ export const ALL_LOGO_CONCEPTS = [
     active: false,
     experimental: true,
   },
+  // Concepts 25-32 — reference refinement round, reviewer candidates.
+  // Close descendants of the historical logo sheet's marks 01, 07, 11 and 24,
+  // measured off the sheet rather than reinterpreted.
+  {
+    id: 25,
+    name: 'Axis',
+    description: 'A chevron at the historical proportions with a column of particles rising along its centre axis into place.',
+    active: false,
+    reviewCandidate: true,
+  },
+  {
+    id: 26,
+    name: 'Tetractys',
+    description: 'Fifteen particles in five rows build a triangular hierarchy, consolidating from a pale base toward a navy apex.',
+    active: false,
+    reviewCandidate: true,
+  },
+  {
+    id: 27,
+    name: 'Aperture',
+    description: 'Two interacting particle flows aggregate into a porous collective around an open centre.',
+    active: false,
+    reviewCandidate: true,
+  },
+  {
+    id: 28,
+    name: 'Half-Assembled',
+    description: 'One chevron leg is drawn and the other is still discrete units, with the axial particles arriving beneath.',
+    active: false,
+    reviewCandidate: true,
+  },
+  {
+    id: 29,
+    name: 'Wavefront',
+    description: 'Nine particles travel a rhythmic wave, bonding where they crowd and dispersing as the amplitude falls away.',
+    active: false,
+    reviewCandidate: true,
+  },
+  {
+    id: 30,
+    name: 'Assembly',
+    description: 'Discrete particles trace a triangular perimeter around an open centre, dark at the apex and dissolving along the base.',
+    active: false,
+    reviewCandidate: true,
+  },
+  {
+    id: 31,
+    name: 'Interlock',
+    description: 'Two open hexagonal structures overlap through facing apertures, creating one restrained interlocking composition.',
+    active: false,
+    reviewCandidate: true,
+  },
+  {
+    id: 32,
+    name: 'Enclosed Chain',
+    description: 'An open hexagonal enclosure holds a vertically organized node chain whose internal cells assemble around a shared centre.',
+    active: false,
+    reviewCandidate: true,
+  },
 ]
 
-export const CONCEPTS_PER_PAGE = 4
+export const CONCEPTS_PER_PAGE = 6
 
 export const ACTIVE_CONCEPTS = ALL_LOGO_CONCEPTS.filter(c => c.active)
-export const ARCHIVED_CONCEPTS = ALL_LOGO_CONCEPTS.filter(c => !c.active && !c.experimental)
+export const REVIEW_CANDIDATES = ALL_LOGO_CONCEPTS.filter(c => c.reviewCandidate === true)
+export const REVIEW_CONCEPTS = ALL_LOGO_CONCEPTS.filter(c => c.active || c.reviewCandidate === true)
+export const ARCHIVED_CONCEPTS = ALL_LOGO_CONCEPTS.filter(
+  c => !c.active && !c.experimental && !c.reviewCandidate
+)
 export const EXPERIMENTAL_CONCEPTS = ALL_LOGO_CONCEPTS.filter(c => c.experimental === true)
+export const NEW_ROUND_CONCEPTS = EXPERIMENTAL_CONCEPTS.filter(c => c.id >= 19 && c.id <= 24)
+export const REFERENCE_REFINEMENT_CONCEPTS = REVIEW_CANDIDATES
 
 export function getPageNumber(conceptId: number): number {
-  const activeConcepts = ACTIVE_CONCEPTS
-  const conceptIndex = activeConcepts.findIndex(c => c.id === conceptId)
+  const conceptIndex = REVIEW_CONCEPTS.findIndex(c => c.id === conceptId)
   if (conceptIndex === -1) return 1
   return Math.ceil((conceptIndex + 1) / CONCEPTS_PER_PAGE)
 }
 
 export function getConceptsForPage(pageNumber: number): typeof ALL_LOGO_CONCEPTS {
-  const activeConcepts = ACTIVE_CONCEPTS
   const startIdx = (pageNumber - 1) * CONCEPTS_PER_PAGE
   const endIdx = startIdx + CONCEPTS_PER_PAGE
-  return activeConcepts.slice(startIdx, endIdx)
+  return REVIEW_CONCEPTS.slice(startIdx, endIdx)
 }
 
-export const TOTAL_PAGES = Math.ceil(ACTIVE_CONCEPTS.length / CONCEPTS_PER_PAGE)
+export const TOTAL_PAGES = Math.ceil(REVIEW_CONCEPTS.length / CONCEPTS_PER_PAGE)

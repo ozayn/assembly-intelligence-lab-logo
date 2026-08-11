@@ -33,7 +33,16 @@ import {
   Concept22Static, Concept22Animated,
   Concept23Static, Concept23Animated,
   Concept24Static, Concept24Animated,
+  Concept25Static, Concept25Animated,
+  Concept26Static, Concept26Animated,
+  Concept27Static, Concept27Animated,
+  Concept28Static, Concept28Animated,
+  Concept29Static, Concept29Animated,
+  Concept30Static, Concept30Animated,
+  Concept31Static, Concept31Animated,
+  Concept32Static, Concept32Animated,
   ALL_LOGO_CONCEPTS,
+  REVIEW_CONCEPTS,
   getPageNumber,
 } from './logos'
 import '@/app/page.css'
@@ -63,6 +72,14 @@ const ALL_COMPONENTS = [
   { Static: Concept22Static, Animated: Concept22Animated },
   { Static: Concept23Static, Animated: Concept23Animated },
   { Static: Concept24Static, Animated: Concept24Animated },
+  { Static: Concept25Static, Animated: Concept25Animated },
+  { Static: Concept26Static, Animated: Concept26Animated },
+  { Static: Concept27Static, Animated: Concept27Animated },
+  { Static: Concept28Static, Animated: Concept28Animated },
+  { Static: Concept29Static, Animated: Concept29Animated },
+  { Static: Concept30Static, Animated: Concept30Animated },
+  { Static: Concept31Static, Animated: Concept31Animated },
+  { Static: Concept32Static, Animated: Concept32Animated },
 ]
 
 type DisplayMode = 'static' | 'animated'
@@ -95,8 +112,13 @@ export function SingleConceptPage({ conceptId }: SingleConceptPageProps) {
   const { Static, Animated } = ALL_COMPONENTS[componentIdx]
 
   const currentPage = getPageNumber(conceptId)
-  const previousConceptId = conceptId > 1 ? conceptId - 1 : null
-  const nextConceptId = conceptId < ALL_LOGO_CONCEPTS.length ? conceptId + 1 : null
+  const reviewIndex = REVIEW_CONCEPTS.findIndex(c => c.id === conceptId)
+  const previousConceptId = reviewIndex >= 0
+    ? REVIEW_CONCEPTS[reviewIndex - 1]?.id ?? null
+    : conceptId > 1 ? conceptId - 1 : null
+  const nextConceptId = reviewIndex >= 0
+    ? REVIEW_CONCEPTS[reviewIndex + 1]?.id ?? null
+    : conceptId < ALL_LOGO_CONCEPTS.length ? conceptId + 1 : null
 
   return (
     <div className="page light">
@@ -105,6 +127,23 @@ export function SingleConceptPage({ conceptId }: SingleConceptPageProps) {
           <div className="logo-area">
             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '0.5rem' }}>
               <h1 style={{ margin: 0 }}>Assembly Intelligence Lab</h1>
+              {concept.reviewCandidate && (
+                <span
+                  style={{
+                    display: 'inline-block',
+                    padding: '0.25rem 0.75rem',
+                    fontSize: '0.75rem',
+                    fontWeight: '700',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.05em',
+                    background: '#e4f3f1',
+                    color: '#0B4B70',
+                    borderRadius: '4px',
+                  }}
+                >
+                  New Candidate
+                </span>
+              )}
               {concept.experimental && (
                 <span
                   style={{
@@ -122,7 +161,7 @@ export function SingleConceptPage({ conceptId }: SingleConceptPageProps) {
                   Experimental Concept
                 </span>
               )}
-              {!concept.active && !concept.experimental && (
+              {!concept.active && !concept.experimental && !concept.reviewCandidate && (
                 <span
                   style={{
                     display: 'inline-block',
@@ -228,6 +267,7 @@ export function SingleConceptPage({ conceptId }: SingleConceptPageProps) {
               displayMode={displayMode}
               logoBackground={logoBackground}
               sizeMode={sizeMode}
+              reviewCandidate={concept.reviewCandidate === true}
             />
 
             {/* Typography Lockup Exploration */}

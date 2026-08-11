@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { ACTIVE_CONCEPTS, ARCHIVED_CONCEPTS, EXPERIMENTAL_CONCEPTS } from './logos'
+import { REVIEW_CONCEPTS, ARCHIVED_CONCEPTS, EXPERIMENTAL_CONCEPTS } from './logos'
 import { EXPERIMENT_CONCEPTS } from './experimentsData'
 import './DesignWorkspaceNav.css'
 
@@ -14,14 +14,14 @@ export function DesignWorkspaceNav() {
   // URL prefix.
   const conceptMatch = pathname.match(/^\/concept\/(\d+)/)
   const conceptId = conceptMatch ? parseInt(conceptMatch[1], 10) : null
-  const isActiveConcept = conceptId !== null && ACTIVE_CONCEPTS.some((c) => c.id === conceptId)
+  const isReviewConcept = conceptId !== null && REVIEW_CONCEPTS.some((c) => c.id === conceptId)
   const isArchivedConcept = conceptId !== null && ARCHIVED_CONCEPTS.some((c) => c.id === conceptId)
   const isExperimentalConcept = conceptId !== null && EXPERIMENTAL_CONCEPTS.some((c) => c.id === conceptId)
 
   const experimentsCount = EXPERIMENT_CONCEPTS.length + EXPERIMENTAL_CONCEPTS.length
 
   const items = [
-    { label: 'Active', href: '/', count: ACTIVE_CONCEPTS.length, current: pathname === '/' || pathname.startsWith('/page/') || isActiveConcept },
+    { label: 'Review', href: '/', count: REVIEW_CONCEPTS.length, current: pathname === '/' || pathname.startsWith('/page/') || isReviewConcept },
     { label: 'Experiments', href: '/experiments', count: experimentsCount, current: pathname.startsWith('/experiments') || isExperimentalConcept },
     { label: 'Archive', href: '/archive', count: ARCHIVED_CONCEPTS.length, current: pathname.startsWith('/archive') || isArchivedConcept },
   ]

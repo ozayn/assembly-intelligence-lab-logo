@@ -1,7 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import { TYPOGRAPHY_SYSTEMS, COMPANY_NAME, type TypographyDirection } from './typographySystems'
+import { TYPOGRAPHY_SYSTEMS, type TypographyDirection } from './typographySystems'
+import { BrandWordmark } from './BrandWordmark'
 import './typography-lockup.css'
 
 interface TypographyLockupProps {
@@ -14,6 +15,14 @@ export function TypographyLockup({ symbolComponent, conceptId, conceptName }: Ty
   const [direction, setDirection] = useState<TypographyDirection>('scientific')
 
   const typeSystem = TYPOGRAPHY_SYSTEMS[direction]
+  const wordmark = (fontSize: number, trackingScale: number, align: 'center' | 'left') => (
+    <BrandWordmark
+      typeSystem={typeSystem}
+      fontSize={fontSize}
+      letterSpacing={typeSystem.letterSpacing * trackingScale}
+      align={align}
+    />
+  )
 
   return (
     <div className="typography-lockup">
@@ -68,7 +77,7 @@ export function TypographyLockup({ symbolComponent, conceptId, conceptName }: Ty
                   lineHeight: typeSystem.lineHeight,
                 }}
               >
-                {COMPANY_NAME}
+                {wordmark(typeSystem.fontSize, 1, 'left')}
               </div>
             </div>
             <div className="horizontal-dark">
@@ -85,7 +94,7 @@ export function TypographyLockup({ symbolComponent, conceptId, conceptName }: Ty
                   lineHeight: typeSystem.lineHeight,
                 }}
               >
-                {COMPANY_NAME}
+                {wordmark(typeSystem.fontSize, 1, 'left')}
               </div>
             </div>
           </div>
@@ -107,7 +116,7 @@ export function TypographyLockup({ symbolComponent, conceptId, conceptName }: Ty
                   lineHeight: 1.2,
                 }}
               >
-                {COMPANY_NAME}
+                {wordmark(7, 0.55, 'left')}
               </div>
             </div>
             <div className="horizontal-dark-small">
@@ -124,7 +133,7 @@ export function TypographyLockup({ symbolComponent, conceptId, conceptName }: Ty
                   lineHeight: 1.2,
                 }}
               >
-                {COMPANY_NAME}
+                {wordmark(7, 0.55, 'left')}
               </div>
             </div>
           </div>
@@ -140,7 +149,7 @@ export function TypographyLockup({ symbolComponent, conceptId, conceptName }: Ty
           <div className="lockup-size-group">
             <div className="size-label">Full</div>
             <div className="stacked-light">
-              <div className="symbol-wrapper" style={{ width: '120px', height: '120px', marginBottom: '1.5rem' }}>
+              <div className="symbol-wrapper" style={{ width: '120px', height: '120px', marginBottom: '5px' }}>
                 {symbolComponent}
               </div>
               <div
@@ -154,11 +163,11 @@ export function TypographyLockup({ symbolComponent, conceptId, conceptName }: Ty
                   textAlign: 'center',
                 }}
               >
-                {COMPANY_NAME}
+                {wordmark(typeSystem.fontSize, 1, 'center')}
               </div>
             </div>
             <div className="stacked-dark">
-              <div className="symbol-wrapper" style={{ width: '120px', height: '120px', marginBottom: '1.5rem' }}>
+              <div className="symbol-wrapper" style={{ width: '120px', height: '120px', marginBottom: '5px' }}>
                 {symbolComponent}
               </div>
               <div
@@ -172,7 +181,7 @@ export function TypographyLockup({ symbolComponent, conceptId, conceptName }: Ty
                   textAlign: 'center',
                 }}
               >
-                {COMPANY_NAME}
+                {wordmark(typeSystem.fontSize, 1, 'center')}
               </div>
             </div>
           </div>
@@ -181,7 +190,7 @@ export function TypographyLockup({ symbolComponent, conceptId, conceptName }: Ty
           <div className="lockup-size-group">
             <div className="size-label">Compact</div>
             <div className="stacked-light-compact">
-              <div className="symbol-wrapper" style={{ width: '64px', height: '64px', marginBottom: '1rem' }}>
+              <div className="symbol-wrapper" style={{ width: '64px', height: '64px', marginBottom: '3px' }}>
                 {symbolComponent}
               </div>
               <div
@@ -195,11 +204,11 @@ export function TypographyLockup({ symbolComponent, conceptId, conceptName }: Ty
                   textAlign: 'center',
                 }}
               >
-                {COMPANY_NAME}
+                {wordmark(7, 0.6, 'center')}
               </div>
             </div>
             <div className="stacked-dark-compact">
-              <div className="symbol-wrapper" style={{ width: '64px', height: '64px', marginBottom: '1rem' }}>
+              <div className="symbol-wrapper" style={{ width: '64px', height: '64px', marginBottom: '3px' }}>
                 {symbolComponent}
               </div>
               <div
@@ -213,7 +222,7 @@ export function TypographyLockup({ symbolComponent, conceptId, conceptName }: Ty
                   textAlign: 'center',
                 }}
               >
-                {COMPANY_NAME}
+                {wordmark(7, 0.6, 'center')}
               </div>
             </div>
           </div>

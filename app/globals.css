@@ -29,12 +29,13 @@
   --accent-teal: #0d8b8f;
   --accent-aqua: #b1f0d1;
 
-  /* Semantic logo colors — light target website background.
-     Only --logo-primary and --logo-accent are currently referenced by
-     concept geometry; secondary/muted are reserved for future use. */
+  /* Semantic logo colors — all five are direct approved palette values.
+     Target-background scopes may remap roles, but never synthesize colors. */
   --logo-primary: var(--ail-navy);
   --logo-secondary: var(--ail-blue);
   --logo-accent: var(--ail-teal);
+  --logo-light: var(--ail-light-teal);
+  --logo-pale: var(--ail-pale-teal);
   --logo-muted: #57606a;
 
   /* Page styling */
@@ -120,6 +121,24 @@ button {
 
 svg {
   display: block;
+}
+
+.brand-wordmark {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: inherit;
+  color: var(--logo-primary);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.brand-wordmark-primary,
+.brand-wordmark-secondary {
+  display: block;
+}
+
+.brand-wordmark-secondary {
+  margin-top: 0.18em;
 }
 
 @media (prefers-reduced-motion: reduce) {
