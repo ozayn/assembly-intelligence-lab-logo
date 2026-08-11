@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { ACTIVE_CONCEPTS, ARCHIVED_CONCEPTS } from './logos'
+import { ACTIVE_CONCEPTS, ARCHIVED_CONCEPTS, EXPERIMENTAL_CONCEPTS } from './logos'
 import { EXPERIMENT_CONCEPTS } from './experimentsData'
 import './DesignWorkspaceNav.css'
 
@@ -10,15 +10,19 @@ export function DesignWorkspaceNav() {
   const pathname = usePathname() ?? ''
 
   // On /concept/[id], the relevant section depends on whether that specific
-  // concept is currently active or archived — not just the URL prefix.
+  // concept is currently active, archived, or experimental — not just the
+  // URL prefix.
   const conceptMatch = pathname.match(/^\/concept\/(\d+)/)
   const conceptId = conceptMatch ? parseInt(conceptMatch[1], 10) : null
   const isActiveConcept = conceptId !== null && ACTIVE_CONCEPTS.some((c) => c.id === conceptId)
   const isArchivedConcept = conceptId !== null && ARCHIVED_CONCEPTS.some((c) => c.id === conceptId)
+  const isExperimentalConcept = conceptId !== null && EXPERIMENTAL_CONCEPTS.some((c) => c.id === conceptId)
+
+  const experimentsCount = EXPERIMENT_CONCEPTS.length + EXPERIMENTAL_CONCEPTS.length
 
   const items = [
     { label: 'Active', href: '/', count: ACTIVE_CONCEPTS.length, current: pathname === '/' || pathname.startsWith('/page/') || isActiveConcept },
-    { label: 'Experiments', href: '/experiments', count: EXPERIMENT_CONCEPTS.length, current: pathname.startsWith('/experiments') },
+    { label: 'Experiments', href: '/experiments', count: experimentsCount, current: pathname.startsWith('/experiments') || isExperimentalConcept },
     { label: 'Archive', href: '/archive', count: ARCHIVED_CONCEPTS.length, current: pathname.startsWith('/archive') || isArchivedConcept },
   ]
 

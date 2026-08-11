@@ -111,12 +111,57 @@ export const ALL_LOGO_CONCEPTS = [
     description: 'A center node spawns branches through local connections. Structure grows from simple repeated rules.',
     active: true,
   },
+  // Concepts 19-24 — new creative round, experimental status.
+  // Not active, not archived: excluded from both until explicitly curated.
+  {
+    id: 19,
+    name: 'Accretion',
+    description: 'Discrete units settle against their neighbors through purely local contact, building an asymmetric mound with no single unit directing the outcome.',
+    active: false,
+    experimental: true,
+  },
+  {
+    id: 20,
+    name: 'Nested Groups',
+    description: 'Individual units gather into local clusters of varying order, and those clusters arrange into a staggered, asymmetric higher-order structure.',
+    active: false,
+    experimental: true,
+  },
+  {
+    id: 21,
+    name: 'Cascade',
+    description: 'Identical elements along an authored, bent trajectory each shift rotation and tone in sequence, each change triggering the next.',
+    active: false,
+    experimental: true,
+  },
+  {
+    id: 22,
+    name: 'Threaded Channel',
+    description: 'Bold solid components separate to reveal a single continuous channel of negative space threading between them.',
+    active: false,
+    experimental: true,
+  },
+  {
+    id: 23,
+    name: 'Threshold',
+    description: 'One connected form whose boundary shifts from faceted and angular to smooth and flowing along a single continuous edge.',
+    active: false,
+    experimental: true,
+  },
+  {
+    id: 24,
+    name: 'Contour',
+    description: 'A single open contour differentiates into several asymmetric, unevenly spaced layers — one structure becoming organized many.',
+    active: false,
+    experimental: true,
+  },
 ]
 
 export const CONCEPTS_PER_PAGE = 4
 
 export const ACTIVE_CONCEPTS = ALL_LOGO_CONCEPTS.filter(c => c.active)
-export const ARCHIVED_CONCEPTS = ALL_LOGO_CONCEPTS.filter(c => !c.active)
+export const ARCHIVED_CONCEPTS = ALL_LOGO_CONCEPTS.filter(c => !c.active && !c.experimental)
+export const EXPERIMENTAL_CONCEPTS = ALL_LOGO_CONCEPTS.filter(c => c.experimental === true)
 
 export function getPageNumber(conceptId: number): number {
   const activeConcepts = ACTIVE_CONCEPTS

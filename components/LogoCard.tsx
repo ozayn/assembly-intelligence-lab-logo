@@ -123,9 +123,11 @@ export function LogoCard({
       '--logo-muted': mutedColor,
     }
 
-    // Replace CSS variables with computed colors on both fill and stroke
-    svgClone.querySelectorAll('[fill*="var("], [stroke*="var("]').forEach((el) => {
-      ;(['fill', 'stroke'] as const).forEach((attr) => {
+    // Replace CSS variables with computed colors on fill, stroke, and
+    // gradient stop-color (some concepts, e.g. Threshold, fill via a
+    // <linearGradient> whose stops reference these same tokens)
+    svgClone.querySelectorAll('[fill*="var("], [stroke*="var("], [stop-color*="var("]').forEach((el) => {
+      ;(['fill', 'stroke', 'stop-color'] as const).forEach((attr) => {
         const value = el.getAttribute(attr) || ''
         const match = value.match(/var\((--logo-[a-z]+)/)
         if (match && colorForVar[match[1]]) {
@@ -192,8 +194,8 @@ export function LogoCard({
       '--logo-accent': accentColor,
       '--logo-muted': mutedColor,
     }
-    symbolClone.querySelectorAll('[fill*="var("], [stroke*="var("]').forEach((el) => {
-      ;(['fill', 'stroke'] as const).forEach((attr) => {
+    symbolClone.querySelectorAll('[fill*="var("], [stroke*="var("], [stop-color*="var("]').forEach((el) => {
+      ;(['fill', 'stroke', 'stop-color'] as const).forEach((attr) => {
         const value = el.getAttribute(attr) || ''
         const match = value.match(/var\((--logo-[a-z]+)/)
         if (match && colorForVar[match[1]]) {

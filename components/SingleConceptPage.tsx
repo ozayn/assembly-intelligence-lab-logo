@@ -27,6 +27,12 @@ import {
   Round3Concept04Static, Round3Concept04Animated,
   Round3Concept05Static, Round3Concept05Animated,
   Round3Concept06Static, Round3Concept06Animated,
+  Concept19Static, Concept19Animated,
+  Concept20Static, Concept20Animated,
+  Concept21Static, Concept21Animated,
+  Concept22Static, Concept22Animated,
+  Concept23Static, Concept23Animated,
+  Concept24Static, Concept24Animated,
   ALL_LOGO_CONCEPTS,
   getPageNumber,
 } from './logos'
@@ -51,6 +57,12 @@ const ALL_COMPONENTS = [
   { Static: Round3Concept04Static, Animated: Round3Concept04Animated },
   { Static: Round3Concept05Static, Animated: Round3Concept05Animated },
   { Static: Round3Concept06Static, Animated: Round3Concept06Animated },
+  { Static: Concept19Static, Animated: Concept19Animated },
+  { Static: Concept20Static, Animated: Concept20Animated },
+  { Static: Concept21Static, Animated: Concept21Animated },
+  { Static: Concept22Static, Animated: Concept22Animated },
+  { Static: Concept23Static, Animated: Concept23Animated },
+  { Static: Concept24Static, Animated: Concept24Animated },
 ]
 
 type DisplayMode = 'static' | 'animated'
@@ -93,7 +105,24 @@ export function SingleConceptPage({ conceptId }: SingleConceptPageProps) {
           <div className="logo-area">
             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '0.5rem' }}>
               <h1 style={{ margin: 0 }}>Assembly Intelligence Lab</h1>
-              {!concept.active && (
+              {concept.experimental && (
+                <span
+                  style={{
+                    display: 'inline-block',
+                    padding: '0.25rem 0.75rem',
+                    fontSize: '0.75rem',
+                    fontWeight: '700',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.05em',
+                    background: '#ede4f7',
+                    color: '#6b3fa0',
+                    borderRadius: '4px',
+                  }}
+                >
+                  Experimental Concept
+                </span>
+              )}
+              {!concept.active && !concept.experimental && (
                 <span
                   style={{
                     display: 'inline-block',

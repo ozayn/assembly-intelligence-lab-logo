@@ -3,11 +3,43 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { DesignWorkspaceNav } from '@/components/DesignWorkspaceNav'
+import { useReviewer } from '@/components/ReviewerContext'
+import { LogoCard } from '@/components/LogoCard'
+import { useFeedbackSubmission } from '@/components/useFeedbackSubmission'
 import { EXPERIMENT_CONCEPTS } from '@/components/experimentsData'
+import {
+  EXPERIMENTAL_CONCEPTS,
+  Concept19Static, Concept19Animated,
+  Concept20Static, Concept20Animated,
+  Concept21Static, Concept21Animated,
+  Concept22Static, Concept22Animated,
+  Concept23Static, Concept23Animated,
+  Concept24Static, Concept24Animated,
+} from '@/components/logos'
 import '@/app/page.css'
 import './experiments.css'
 
+const NEW_ROUND_COMPONENTS: Record<number, { Static: React.ComponentType; Animated: React.ComponentType }> = {
+  19: { Static: Concept19Static, Animated: Concept19Animated },
+  20: { Static: Concept20Static, Animated: Concept20Animated },
+  21: { Static: Concept21Static, Animated: Concept21Animated },
+  22: { Static: Concept22Static, Animated: Concept22Animated },
+  23: { Static: Concept23Static, Animated: Concept23Animated },
+  24: { Static: Concept24Static, Animated: Concept24Animated },
+}
+
 export default function ExperimentsPage() {
+  const { reviewerName } = useReviewer()
+  const [newRoundBackground, setNewRoundBackground] = useState<'light' | 'dark'>('light')
+  const {
+    collectedFeedback,
+    submittingFeedback,
+    feedbackError,
+    justSubmittedCount,
+    handleFeedbackSubmit,
+    submitAllFeedback,
+  } = useFeedbackSubmission(reviewerName)
+
   const [displayMode, setDisplayMode] = useState<'static' | 'monochrome'>('static')
   const [animating, setAnimating] = useState<{ [key: string]: boolean }>({})
 
@@ -25,9 +57,86 @@ export default function ExperimentsPage() {
       <header className="experiments-header">
         <div>
           <h1>Concept Experiments</h1>
-          <p className="subtitle">Visual prototypes for Territory A and Territory B descendants</p>
+          <p className="subtitle">Internal workspace — not part of the active reviewer collection</p>
         </div>
         <div className="controls">
+          <Link href="/">
+            <button>← Back to Main</button>
+          </Link>
+        </div>
+      </header>
+
+      <section style={{ padding: '0 2rem', marginBottom: '1rem' }}>
+        <h2 style={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', marginBottom: '0.35rem' }}>
+          New Creative Round — 19–24
+        </h2>
+        <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '1rem' }}>
+          Six new experimental concepts, one per creative territory. Not active, not archived.
+        </p>
+        <div className="control-group" style={{ marginBottom: '1.5rem' }}>
+          <label style={{ fontSize: '0.75rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--text-muted)', marginRight: '0.75rem' }}>
+            Website Preview
+          </label>
+          <div className="button-group" style={{ display: 'inline-flex' }}>
+            <button
+              className={newRoundBackground === 'light' ? 'active' : ''}
+              onClick={() => setNewRoundBackground('light')}
+            >
+              Light
+            </button>
+            <button
+              className={newRoundBackground === 'dark' ? 'active' : ''}
+              onClick={() => setNewRoundBackground('dark')}
+            >
+              Dark
+            </button>
+          </div>
+        </div>
+        <div className="concepts-grid">
+          {EXPERIMENTAL_CONCEPTS.map((concept) => {
+            const { Static, Animated } = NEW_ROUND_COMPONENTS[concept.id]
+            return (
+              <div key={concept.id} style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                <LogoCard
+                  id={concept.id}
+                  name={concept.name}
+                  description={concept.description}
+                  staticLogo={<Static />}
+                  animatedLogo={<Animated />}
+                  onPlayAll={false}
+                  onFeedbackSubmit={handleFeedbackSubmit}
+                  displayMode="animated"
+                  logoBackground={newRoundBackground}
+                  sizeMode="full"
+                />
+                <Link href={`/concept/${concept.id}`}>
+                  <button
+                    style={{
+                      width: '100%',
+                      padding: '0.6rem 1rem',
+                      fontSize: '0.85rem',
+                      background: 'var(--accent-navy)',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '0.375rem',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    View Full Details →
+                  </button>
+                </Link>
+              </div>
+            )
+          })}
+        </div>
+      </section>
+
+      <section style={{ padding: '0 2rem', marginTop: '3rem' }}>
+        <h2 style={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', marginBottom: '0.35rem', borderTop: '1px solid #e0e0e0', paddingTop: '2rem' }}>
+          Earlier Descendant Studies — 17A–18C
+        </h2>
+        <p className="subtitle" style={{ marginBottom: '1rem' }}>Visual prototypes for Territory A and Territory B descendants</p>
+        <div className="controls" style={{ marginBottom: '1.5rem' }}>
           <button
             className={displayMode === 'static' ? 'active' : ''}
             onClick={() => setDisplayMode('static')}
@@ -40,25 +149,45 @@ export default function ExperimentsPage() {
           >
             Monochrome
           </button>
-          <Link href="/">
-            <button>← Back to Main</button>
-          </Link>
         </div>
-      </header>
 
-      <div className="experiments-grid">
-        {concepts.map(concept => (
-          <ConceptExperiment
-            key={concept.id}
-            id={concept.id}
-            name={concept.name}
-            category={concept.category}
-            isAnimating={animating[concept.id] || false}
-            onPlayAssembly={() => triggerAnimation(concept.id)}
-            displayMode={displayMode}
-          />
-        ))}
-      </div>
+        <div className="experiments-grid">
+          {concepts.map(concept => (
+            <ConceptExperiment
+              key={concept.id}
+              id={concept.id}
+              name={concept.name}
+              category={concept.category}
+              isAnimating={animating[concept.id] || false}
+              onPlayAssembly={() => triggerAnimation(concept.id)}
+              displayMode={displayMode}
+            />
+          ))}
+        </div>
+      </section>
+
+      {reviewerName && (collectedFeedback.length > 0 || justSubmittedCount !== null) && (
+        <section className="feedback-submission-bar">
+          <div className="submission-content">
+            <div className="submission-info">
+              {feedbackError ? (
+                <p style={{ color: '#d32f2f' }}>Error: {feedbackError}</p>
+              ) : collectedFeedback.length > 0 ? (
+                <p>You have {collectedFeedback.length} piece{collectedFeedback.length !== 1 ? 's' : ''} of feedback ready</p>
+              ) : (
+                <p>✓ {justSubmittedCount} piece{justSubmittedCount !== 1 ? 's' : ''} of feedback submitted</p>
+              )}
+            </div>
+            <button
+              className={`btn-submit-all ${submittingFeedback ? 'submitting' : ''} ${feedbackError ? 'error' : ''}`}
+              onClick={submitAllFeedback}
+              disabled={submittingFeedback || collectedFeedback.length === 0}
+            >
+              {submittingFeedback ? 'Submitting...' : feedbackError ? 'Retry' : collectedFeedback.length === 0 ? '✓ Submitted!' : 'Submit Feedback'}
+            </button>
+          </div>
+        </section>
+      )}
 
       <footer style={{ marginTop: '4rem', paddingTop: '2rem', borderTop: '1px solid #e0e0e0', textAlign: 'center', color: '#999', fontSize: '0.9rem' }}>
         <p>Development experiments only. Do not add to production collection.</p>

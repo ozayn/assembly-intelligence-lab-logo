@@ -18,7 +18,14 @@ export { Round3Concept04Static, Round3Concept04StaticMonochrome, Round3Concept04
 export { Round3Concept05Static, Round3Concept05StaticMonochrome, Round3Concept05Animated } from './Round3Concept05NegativeSpace'
 export { Round3Concept06Static, Round3Concept06StaticMonochrome, Round3Concept06Animated } from './Round3Concept06PropagatingRule'
 
-export { ALL_LOGO_CONCEPTS, ACTIVE_CONCEPTS, ARCHIVED_CONCEPTS, getConceptsForPage, getPageNumber, TOTAL_PAGES, CONCEPTS_PER_PAGE } from './AllConcepts'
+export { ALL_LOGO_CONCEPTS, ACTIVE_CONCEPTS, ARCHIVED_CONCEPTS, EXPERIMENTAL_CONCEPTS, getConceptsForPage, getPageNumber, TOTAL_PAGES, CONCEPTS_PER_PAGE } from './AllConcepts'
+
+export { Concept19Static, Concept19Animated } from './Concept19Accretion'
+export { Concept20Static, Concept20Animated } from './Concept20NestedGroups'
+export { Concept21Static, Concept21Animated } from './Concept21Cascade'
+export { Concept22Static, Concept22Animated } from './Concept22ThreadedChannel'
+export { Concept23Static, Concept23Animated } from './Concept23Threshold'
+export { Concept24Static, Concept24Animated } from './Concept24Contour'
 
 export const LOGO_CONCEPTS = [
   {
