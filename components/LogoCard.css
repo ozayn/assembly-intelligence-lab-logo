@@ -166,6 +166,34 @@ html.dark .logo-sizes {
   flex-direction: column;
   align-items: center;
   gap: 0.5rem;
+  background: none;
+  border: none;
+  padding: 0.5rem 0.25rem 0.25rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.size-preview:hover {
+  background-color: var(--bg-light-secondary);
+}
+
+html.dark .size-preview:hover {
+  background-color: var(--bg-dark);
+}
+
+.size-preview.active {
+  background-color: rgba(91, 163, 199, 0.12);
+}
+
+.size-preview.active .size-label {
+  color: var(--accent-teal);
+  font-weight: 700;
+}
+
+.size-preview.active .size-container {
+  border-color: var(--accent-teal);
+  box-shadow: 0 0 0 1px var(--accent-teal);
 }
 
 .size-label {
@@ -187,6 +215,7 @@ html.dark .size-label {
   background-color: var(--bg-light-secondary);
   border-radius: 0.375rem;
   border: 1px solid var(--border-light);
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 html.dark .size-container {
@@ -256,7 +285,27 @@ html.dark .feedback-link:hover {
   border-color: var(--accent-teal);
 }
 
-/* Website Preview background overrides for logo display area */
+/* Website Preview background overrides for logo display area.
+   Logo color tokens are scoped here to the TARGET AIL website background
+   (Light/Dark), independent of the reviewer's own site theme (html.dark) —
+   the mark itself must use colors intended for that background, not just
+   sit on a colored rectangle. */
+.logo-background-light,
+.logo-background-light ~ .logo-sizes {
+  --logo-primary: #001e3c;
+  --logo-secondary: #0d8b8f;
+  --logo-accent: #0d8b8f;
+  --logo-muted: #57606a;
+}
+
+.logo-background-dark,
+.logo-background-dark ~ .logo-sizes {
+  --logo-primary: #e6edf3;
+  --logo-secondary: #b1f0d1;
+  --logo-accent: #58a6ff;
+  --logo-muted: #8b949e;
+}
+
 .logo-background-light {
   background-color: #ffffff !important;
   color-scheme: light;
