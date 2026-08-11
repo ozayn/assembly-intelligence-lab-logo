@@ -1,0 +1,66 @@
+.design-workspace-nav {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 1.5rem 1rem 2rem;
+  margin-top: 1rem;
+  border-top: 1px solid var(--border-light, #e0e0e0);
+}
+
+html.dark .design-workspace-nav {
+  border-top-color: var(--border-dark, #30363d);
+}
+
+.dwn-label {
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-light-secondary, #999);
+  opacity: 0.8;
+}
+
+html.dark .dwn-label {
+  color: var(--text-dark-secondary, #8b949e);
+}
+
+.dwn-links {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.78rem;
+}
+
+.dwn-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.dwn-links a {
+  color: var(--text-light-secondary, #888);
+  text-decoration: none;
+}
+
+.dwn-links a:hover {
+  color: var(--accent-teal, #0d8b8f);
+  text-decoration: underline;
+}
+
+html.dark .dwn-links a {
+  color: var(--text-dark-secondary, #8b949e);
+}
+
+.dwn-current {
+  color: var(--accent-teal, #0d8b8f);
+  font-weight: 700;
+}
+
+.dwn-sep {
+  color: #ccc;
+}
+
+html.dark .dwn-sep {
+  color: #444;
+}

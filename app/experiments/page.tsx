@@ -2,6 +2,8 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import { DesignWorkspaceNav } from '@/components/DesignWorkspaceNav'
+import { EXPERIMENT_CONCEPTS } from '@/components/experimentsData'
 import '@/app/page.css'
 import './experiments.css'
 
@@ -9,14 +11,7 @@ export default function ExperimentsPage() {
   const [displayMode, setDisplayMode] = useState<'static' | 'monochrome'>('static')
   const [animating, setAnimating] = useState<{ [key: string]: boolean }>({})
 
-  const concepts = [
-    { id: '17A', name: 'Voronoi Void', category: 'Territory A' },
-    { id: '17B', name: 'Interlocking Arcs', category: 'Territory A' },
-    { id: '17C', name: 'Inward-Tapering Petals', category: 'Territory A' },
-    { id: '18A', name: 'Cascading Rotation', category: 'Territory B' },
-    { id: '18B', name: 'Modular Lock', category: 'Territory B' },
-    { id: '18C', name: 'Curve Propagation', category: 'Territory B' },
-  ]
+  const concepts = EXPERIMENT_CONCEPTS
 
   const triggerAnimation = (id: string) => {
     setAnimating(prev => ({ ...prev, [id]: true }))
@@ -68,6 +63,7 @@ export default function ExperimentsPage() {
       <footer style={{ marginTop: '4rem', paddingTop: '2rem', borderTop: '1px solid #e0e0e0', textAlign: 'center', color: '#999', fontSize: '0.9rem' }}>
         <p>Development experiments only. Do not add to production collection.</p>
       </footer>
+      <DesignWorkspaceNav />
     </div>
   )
 }

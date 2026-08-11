@@ -115,7 +115,8 @@ export const ALL_LOGO_CONCEPTS = [
 
 export const CONCEPTS_PER_PAGE = 4
 
-const ACTIVE_CONCEPTS = ALL_LOGO_CONCEPTS.filter(c => c.active)
+export const ACTIVE_CONCEPTS = ALL_LOGO_CONCEPTS.filter(c => c.active)
+export const ARCHIVED_CONCEPTS = ALL_LOGO_CONCEPTS.filter(c => !c.active)
 
 export function getPageNumber(conceptId: number): number {
   const activeConcepts = ACTIVE_CONCEPTS

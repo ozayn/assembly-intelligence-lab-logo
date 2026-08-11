@@ -4,27 +4,108 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { useReviewer } from '@/components/ReviewerContext'
 import { ReviewerModal, ReviewerBadge } from '@/components/ReviewerModal'
+import { LogoCard } from '@/components/LogoCard'
+import { DesignWorkspaceNav } from '@/components/DesignWorkspaceNav'
+import type { LogoFeedback } from '@/components/FeedbackForm'
 import {
-  Concept01Static, Concept02Static, Concept03Static, Concept04Static, Concept05Static, Concept06Static,
-  Concept07Static, Concept08Static, Concept09Static, Concept10Static, Concept11Static, Concept12Static,
-  Round3Concept01Static, Round3Concept02Static, Round3Concept03Static, Round3Concept04Static,
-  Round3Concept05Static, Round3Concept06Static,
-  ALL_LOGO_CONCEPTS,
+  Concept01Static, Concept01Animated,
+  Concept02Static, Concept02Animated,
+  Concept03Static, Concept03Animated,
+  Concept04Static, Concept04Animated,
+  Concept05Static, Concept05Animated,
+  Concept06Static, Concept06Animated,
+  Concept07Static, Concept07Animated,
+  Concept08Static, Concept08Animated,
+  Concept09Static, Concept09Animated,
+  Concept10Static, Concept10Animated,
+  Concept11Static, Concept11Animated,
+  Concept12Static, Concept12Animated,
+  Round3Concept01Static, Round3Concept01Animated,
+  Round3Concept02Static, Round3Concept02Animated,
+  Round3Concept03Static, Round3Concept03Animated,
+  Round3Concept04Static, Round3Concept04Animated,
+  Round3Concept05Static, Round3Concept05Animated,
+  Round3Concept06Static, Round3Concept06Animated,
+  ARCHIVED_CONCEPTS,
 } from '@/components/logos'
 import '@/app/page.css'
 
 const ALL_COMPONENTS = [
-  Concept01Static, Concept02Static, Concept03Static, Concept04Static, Concept05Static, Concept06Static,
-  Concept07Static, Concept08Static, Concept09Static, Concept10Static, Concept11Static, Concept12Static,
-  Round3Concept01Static, Round3Concept02Static, Round3Concept03Static, Round3Concept04Static,
-  Round3Concept05Static, Round3Concept06Static,
+  { Static: Concept01Static, Animated: Concept01Animated },
+  { Static: Concept02Static, Animated: Concept02Animated },
+  { Static: Concept03Static, Animated: Concept03Animated },
+  { Static: Concept04Static, Animated: Concept04Animated },
+  { Static: Concept05Static, Animated: Concept05Animated },
+  { Static: Concept06Static, Animated: Concept06Animated },
+  { Static: Concept07Static, Animated: Concept07Animated },
+  { Static: Concept08Static, Animated: Concept08Animated },
+  { Static: Concept09Static, Animated: Concept09Animated },
+  { Static: Concept10Static, Animated: Concept10Animated },
+  { Static: Concept11Static, Animated: Concept11Animated },
+  { Static: Concept12Static, Animated: Concept12Animated },
+  { Static: Round3Concept01Static, Animated: Round3Concept01Animated },
+  { Static: Round3Concept02Static, Animated: Round3Concept02Animated },
+  { Static: Round3Concept03Static, Animated: Round3Concept03Animated },
+  { Static: Round3Concept04Static, Animated: Round3Concept04Animated },
+  { Static: Round3Concept05Static, Animated: Round3Concept05Animated },
+  { Static: Round3Concept06Static, Animated: Round3Concept06Animated },
 ]
 
 export default function ArchivePage() {
   const { reviewerName } = useReviewer()
   const [logoBackground, setLogoBackground] = useState<'light' | 'dark'>('light')
+  const [collectedFeedback, setCollectedFeedback] = useState<LogoFeedback[]>([])
+  const [submittingFeedback, setSubmittingFeedback] = useState(false)
+  const [feedbackSubmitted, setFeedbackSubmitted] = useState(false)
+  const [feedbackError, setFeedbackError] = useState<string | null>(null)
 
-  const archivedConcepts = ALL_LOGO_CONCEPTS.filter(c => !c.active)
+  const handleFeedbackSubmit = (feedback: LogoFeedback) => {
+    setCollectedFeedback((prev) => {
+      const filtered = prev.filter((f) => f.conceptId !== feedback.conceptId)
+      return [...filtered, feedback]
+    })
+  }
+
+  const submitAllFeedback = async () => {
+    if (!reviewerName || collectedFeedback.length === 0) return
+
+    setSubmittingFeedback(true)
+    setFeedbackError(null)
+    try {
+      const response = await fetch('/api/feedback/submit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          reviewer_name: reviewerName,
+          round: 1,
+          feedbacks: collectedFeedback,
+        }),
+      })
+
+      const data = await response.json()
+
+      if (response.ok && data.success) {
+        setFeedbackSubmitted(true)
+        setTimeout(() => {
+          setCollectedFeedback([])
+          setFeedbackSubmitted(false)
+          setFeedbackError(null)
+        }, 2000)
+      } else {
+        const errorMsg = data.error || 'Failed to submit feedback'
+        setFeedbackError(errorMsg)
+        console.error('Feedback submission failed:', errorMsg)
+      }
+    } catch (error) {
+      const errorMsg = error instanceof Error ? error.message : 'Network error'
+      setFeedbackError(errorMsg)
+      console.error('Error submitting feedback:', error)
+    } finally {
+      setSubmittingFeedback(false)
+    }
+  }
 
   return (
     <div className="page light">
@@ -32,7 +113,10 @@ export default function ArchivePage() {
         <div className="header-container">
           <div className="logo-area">
             <h1>Archived Concepts</h1>
-            <p className="tagline">These concepts are not part of the current reviewer-facing selection but are retained for reference and may be restored.</p>
+            <p className="tagline">Concepts removed from the active review set but retained for reference.</p>
+            <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginTop: '0.35rem' }}>
+              {ARCHIVED_CONCEPTS.length} archived concept{ARCHIVED_CONCEPTS.length !== 1 ? 's' : ''}
+            </p>
           </div>
 
           <div className="controls">
@@ -66,69 +150,34 @@ export default function ArchivePage() {
       <main className="page-main">
         <section className="concepts-section">
           <div className="concepts-grid">
-            {archivedConcepts.map((concept) => {
-              const Component = ALL_COMPONENTS[concept.id - 1]
-              if (!Component) return null
-
+            {ARCHIVED_CONCEPTS.map((concept) => {
+              const componentIdx = concept.id - 1
+              const { Static, Animated } = ALL_COMPONENTS[componentIdx]
               return (
-                <div
-                  key={concept.id}
-                  className="archive-concept-card"
-                  style={{
-                    background: 'white',
-                    border: '1px solid #e0e0e0',
-                    borderRadius: '8px',
-                    padding: '2rem',
-                    display: 'flex',
-                    flexDirection: 'column',
-                  }}
-                >
-                  <div style={{ marginBottom: '1.5rem' }}>
-                    <span
-                      style={{
-                        display: 'inline-block',
-                        fontSize: '0.75rem',
-                        fontWeight: '700',
-                        textTransform: 'uppercase',
-                        letterSpacing: '0.1em',
-                        color: '#666',
-                        marginBottom: '0.5rem',
-                      }}
-                    >
-                      {concept.id.toString().padStart(2, '0')} — Archived
-                    </span>
-                    <h3 style={{ fontSize: '1.25rem', fontWeight: '600', margin: '0.5rem 0 0 0' }}>
-                      {concept.name}
-                    </h3>
-                  </div>
-
-                  {/* Logo Display */}
-                  <div
-                    className={`logo-display logo-background-${logoBackground}`}
-                    style={{
-                      minHeight: '200px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      marginBottom: '1.5rem',
-                      borderRadius: '4px',
-                    }}
-                  >
-                    <Component />
-                  </div>
-
-                  {/* Direct Link */}
+                <div key={concept.id} style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                  <LogoCard
+                    id={concept.id}
+                    name={concept.name}
+                    description={concept.description}
+                    staticLogo={<Static />}
+                    animatedLogo={<Animated />}
+                    onPlayAll={false}
+                    onFeedbackSubmit={handleFeedbackSubmit}
+                    displayMode="animated"
+                    logoBackground={logoBackground}
+                    sizeMode="full"
+                  />
                   <Link href={`/concept/${concept.id.toString().padStart(2, '0')}`}>
                     <button
                       style={{
-                        padding: '0.5rem 1rem',
+                        width: '100%',
+                        padding: '0.6rem 1rem',
                         fontSize: '0.85rem',
-                        background: '#2d5a7b',
+                        background: '#001e3c',
                         color: 'white',
                         border: 'none',
-                        borderRadius: '4px',
+                        borderRadius: '0.375rem',
                         cursor: 'pointer',
-                        marginTop: 'auto',
                       }}
                     >
                       View Full Details →
@@ -141,9 +190,31 @@ export default function ArchivePage() {
         </section>
       </main>
 
+      {reviewerName && collectedFeedback.length > 0 && (
+        <section className="feedback-submission-bar">
+          <div className="submission-content">
+            <div className="submission-info">
+              {feedbackError ? (
+                <p style={{ color: '#d32f2f' }}>Error: {feedbackError}</p>
+              ) : (
+                <p>You have {collectedFeedback.length} piece{collectedFeedback.length !== 1 ? 's' : ''} of feedback ready</p>
+              )}
+            </div>
+            <button
+              className={`btn-submit-all ${submittingFeedback ? 'submitting' : ''} ${feedbackSubmitted ? 'submitted' : ''} ${feedbackError ? 'error' : ''}`}
+              onClick={submitAllFeedback}
+              disabled={submittingFeedback || feedbackSubmitted}
+            >
+              {feedbackSubmitted ? '✓ Submitted!' : feedbackError ? 'Retry' : submittingFeedback ? 'Submitting...' : 'Submit Feedback'}
+            </button>
+          </div>
+        </section>
+      )}
+
       <footer className="page-footer">
         <p>Assembly Intelligence Lab — Archived Concepts</p>
       </footer>
+      <DesignWorkspaceNav />
 
       <ReviewerModal />
     </div>

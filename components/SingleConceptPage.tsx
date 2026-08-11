@@ -5,6 +5,7 @@ import { useReviewer } from './ReviewerContext'
 import { ReviewerModal, ReviewerBadge } from './ReviewerModal'
 import { LogoCard } from './LogoCard'
 import { TypographyLockup } from './TypographyLockup'
+import { DesignWorkspaceNav } from './DesignWorkspaceNav'
 import Link from 'next/link'
 import type { LogoFeedback } from './FeedbackForm'
 import {
@@ -290,6 +291,7 @@ export function SingleConceptPage({ conceptId }: SingleConceptPageProps) {
       <footer className="page-footer">
         <p>Assembly Intelligence Lab — Logo Exploration</p>
       </footer>
+      <DesignWorkspaceNav />
 
       <ReviewerModal />
     </div>

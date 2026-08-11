@@ -1,0 +1,42 @@
+'use client'
+
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+import { ACTIVE_CONCEPTS, ARCHIVED_CONCEPTS } from './logos'
+import { EXPERIMENT_CONCEPTS } from './experimentsData'
+import './DesignWorkspaceNav.css'
+
+export function DesignWorkspaceNav() {
+  const pathname = usePathname() ?? ''
+
+  // On /concept/[id], the relevant section depends on whether that specific
+  // concept is currently active or archived — not just the URL prefix.
+  const conceptMatch = pathname.match(/^\/concept\/(\d+)/)
+  const conceptId = conceptMatch ? parseInt(conceptMatch[1], 10) : null
+  const isActiveConcept = conceptId !== null && ACTIVE_CONCEPTS.some((c) => c.id === conceptId)
+  const isArchivedConcept = conceptId !== null && ARCHIVED_CONCEPTS.some((c) => c.id === conceptId)
+
+  const items = [
+    { label: 'Active', href: '/', count: ACTIVE_CONCEPTS.length, current: pathname === '/' || pathname.startsWith('/page/') || isActiveConcept },
+    { label: 'Experiments', href: '/experiments', count: EXPERIMENT_CONCEPTS.length, current: pathname.startsWith('/experiments') },
+    { label: 'Archive', href: '/archive', count: ARCHIVED_CONCEPTS.length, current: pathname.startsWith('/archive') || isArchivedConcept },
+  ]
+
+  return (
+    <div className="design-workspace-nav">
+      <span className="dwn-label">Design Workspace</span>
+      <nav className="dwn-links" aria-label="Design workspace navigation">
+        {items.map((item, i) => (
+          <span key={item.href} className="dwn-item">
+            {i > 0 && <span className="dwn-sep" aria-hidden="true">·</span>}
+            {item.current ? (
+              <span className="dwn-current" aria-current="page">{item.label} ({item.count})</span>
+            ) : (
+              <Link href={item.href}>{item.label} ({item.count})</Link>
+            )}
+          </span>
+        ))}
+      </nav>
+    </div>
+  )
+}
