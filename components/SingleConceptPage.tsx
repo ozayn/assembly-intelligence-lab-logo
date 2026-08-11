@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { useReviewer } from './ReviewerContext'
 import { ReviewerModal, ReviewerBadge } from './ReviewerModal'
 import { LogoCard } from './LogoCard'
+import { TypographyLockup } from './TypographyLockup'
 import Link from 'next/link'
 import type { LogoFeedback } from './FeedbackForm'
 import {
@@ -222,6 +223,13 @@ export function SingleConceptPage({ conceptId }: SingleConceptPageProps) {
               displayMode={displayMode}
               logoBackground={logoBackground}
               sizeMode={sizeMode}
+            />
+
+            {/* Typography Lockup Exploration */}
+            <TypographyLockup
+              symbolComponent={<Static />}
+              conceptId={conceptId}
+              conceptName={concept.name}
             />
           </div>
         </section>
