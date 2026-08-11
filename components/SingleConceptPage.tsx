@@ -6,8 +6,8 @@ import { ReviewerModal, ReviewerBadge } from './ReviewerModal'
 import { LogoCard } from './LogoCard'
 import { TypographyLockup } from './TypographyLockup'
 import { DesignWorkspaceNav } from './DesignWorkspaceNav'
+import { useFeedbackSubmission } from './useFeedbackSubmission'
 import Link from 'next/link'
-import type { LogoFeedback } from './FeedbackForm'
 import {
   Concept01Static, Concept01Animated,
   Concept02Static, Concept02Animated,
@@ -65,10 +65,14 @@ export function SingleConceptPage({ conceptId }: SingleConceptPageProps) {
   const [displayMode, setDisplayMode] = useState<DisplayMode>('animated')
   const [logoBackground, setLogoBackground] = useState<'light' | 'dark'>('light')
   const [sizeMode, setSizeMode] = useState<SizeMode>('full')
-  const [collectedFeedback, setCollectedFeedback] = useState<LogoFeedback[]>([])
-  const [submittingFeedback, setSubmittingFeedback] = useState(false)
-  const [feedbackSubmitted, setFeedbackSubmitted] = useState(false)
-  const [feedbackError, setFeedbackError] = useState<string | null>(null)
+  const {
+    collectedFeedback,
+    submittingFeedback,
+    feedbackError,
+    justSubmittedCount,
+    handleFeedbackSubmit,
+    submitAllFeedback,
+  } = useFeedbackSubmission(reviewerName)
 
   const concept = ALL_LOGO_CONCEPTS[conceptId - 1]
   if (!concept) {
@@ -81,54 +85,6 @@ export function SingleConceptPage({ conceptId }: SingleConceptPageProps) {
   const currentPage = getPageNumber(conceptId)
   const previousConceptId = conceptId > 1 ? conceptId - 1 : null
   const nextConceptId = conceptId < ALL_LOGO_CONCEPTS.length ? conceptId + 1 : null
-
-  const handleFeedbackSubmit = (feedback: LogoFeedback) => {
-    setCollectedFeedback((prev) => {
-      const filtered = prev.filter((f) => f.conceptId !== feedback.conceptId)
-      return [...filtered, feedback]
-    })
-  }
-
-  const submitAllFeedback = async () => {
-    if (!reviewerName || collectedFeedback.length === 0) return
-
-    setSubmittingFeedback(true)
-    setFeedbackError(null)
-    try {
-      const response = await fetch('/api/feedback/submit', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          reviewer_name: reviewerName,
-          round: 1,
-          feedbacks: collectedFeedback,
-        }),
-      })
-
-      const data = await response.json()
-
-      if (response.ok && data.success) {
-        setFeedbackSubmitted(true)
-        setTimeout(() => {
-          setCollectedFeedback([])
-          setFeedbackSubmitted(false)
-          setFeedbackError(null)
-        }, 2000)
-      } else {
-        const errorMsg = data.error || 'Failed to submit feedback'
-        setFeedbackError(errorMsg)
-        console.error('Feedback submission failed:', errorMsg)
-      }
-    } catch (error) {
-      const errorMsg = error instanceof Error ? error.message : 'Network error'
-      setFeedbackError(errorMsg)
-      console.error('Error submitting feedback:', error)
-    } finally {
-      setSubmittingFeedback(false)
-    }
-  }
 
   return (
     <div className="page light">
@@ -267,22 +223,24 @@ export function SingleConceptPage({ conceptId }: SingleConceptPageProps) {
         </div>
       </section>
 
-      {reviewerName && collectedFeedback.length > 0 && (
+      {reviewerName && (collectedFeedback.length > 0 || justSubmittedCount !== null) && (
         <section className="feedback-submission-bar">
           <div className="submission-content">
             <div className="submission-info">
               {feedbackError ? (
                 <p style={{ color: '#d32f2f' }}>Error: {feedbackError}</p>
-              ) : (
+              ) : collectedFeedback.length > 0 ? (
                 <p>You have {collectedFeedback.length} piece{collectedFeedback.length !== 1 ? 's' : ''} of feedback ready</p>
+              ) : (
+                <p>✓ {justSubmittedCount} piece{justSubmittedCount !== 1 ? 's' : ''} of feedback submitted</p>
               )}
             </div>
             <button
-              className={`btn-submit-all ${submittingFeedback ? 'submitting' : ''} ${feedbackSubmitted ? 'submitted' : ''} ${feedbackError ? 'error' : ''}`}
+              className={`btn-submit-all ${submittingFeedback ? 'submitting' : ''} ${feedbackError ? 'error' : ''}`}
               onClick={submitAllFeedback}
-              disabled={submittingFeedback || feedbackSubmitted}
+              disabled={submittingFeedback || collectedFeedback.length === 0}
             >
-              {feedbackSubmitted ? '✓ Submitted!' : feedbackError ? 'Retry' : submittingFeedback ? 'Submitting...' : 'Submit Feedback'}
+              {submittingFeedback ? 'Submitting...' : feedbackError ? 'Retry' : collectedFeedback.length === 0 ? '✓ Submitted!' : 'Submit Feedback'}
             </button>
           </div>
         </section>
