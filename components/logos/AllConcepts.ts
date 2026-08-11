@@ -79,7 +79,7 @@ export const ALL_LOGO_CONCEPTS = [
     id: 13,
     name: 'Emergence',
     description: 'Three organic curves reveal a unified mark through assembly. Individual pieces suggest nothing until unified.',
-    active: true,
+    active: false,
   },
   {
     id: 14,

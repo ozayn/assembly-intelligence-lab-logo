@@ -134,7 +134,26 @@ export function SingleConceptPage({ conceptId }: SingleConceptPageProps) {
       <header className="page-header">
         <div className="header-container">
           <div className="logo-area">
-            <h1>Assembly Intelligence Lab</h1>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '0.5rem' }}>
+              <h1 style={{ margin: 0 }}>Assembly Intelligence Lab</h1>
+              {!concept.active && (
+                <span
+                  style={{
+                    display: 'inline-block',
+                    padding: '0.25rem 0.75rem',
+                    fontSize: '0.75rem',
+                    fontWeight: '700',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.05em',
+                    background: '#f5e6e6',
+                    color: '#8b4513',
+                    borderRadius: '4px',
+                  }}
+                >
+                  Archived
+                </span>
+              )}
+            </div>
             <p className="tagline">Logo Exploration</p>
           </div>
 
