@@ -3,7 +3,31 @@
 // side-by-side comparison) and LogoCard.tsx (the selectable preview/export
 // that mirrors exactly what downloads) — no separate/duplicated definitions.
 
-export type TypographyDirection = 'scientific' | 'editorial' | 'technical'
+export type TypographyDirection =
+  | 'scientific'
+  | 'editorial'
+  | 'technical'
+  | 'contemporary'
+
+// A width-fitted treatment sizes itself from the symbol's ink rather than from
+// fixed point sizes, and solves tracking per line so both lines finish on the
+// same width. Only systems that carry this spec behave that way; the original
+// three are untouched and keep their fixed metrics.
+export interface FittedSpec {
+  primaryWeight: number
+  secondaryWeight: number
+  // ASSEMBLY's size as a fraction of the symbol's ink width.
+  primarySizeRatio: number
+  // INTELLIGENCE LAB's size as a fraction of ASSEMBLY's.
+  secondarySizeRatio: number
+  // ASSEMBLY baseline to the cap line of INTELLIGENCE LAB, in ems of ASSEMBLY.
+  lineGapEm: number
+  // Symbol's lowest ink to the cap line of ASSEMBLY, as a fraction of the
+  // rendered symbol size.
+  symbolGapRatio: number
+  // Wordmark width as a fraction of the symbol's ink width.
+  widthFactor: number
+}
 
 export interface TypographySystem {
   name: string
@@ -20,6 +44,13 @@ export interface TypographySystem {
   letterSpacing: number
   lineHeight: number
   description: string
+  // Present only on width-fitted systems. Stacked tiers render from these
+  // measurements; horizontal tiers fall back to the fixed metrics above,
+  // since matching the symbol's width is a stacked idea.
+  fitted?: FittedSpec
+  // Two-tone systems colour the second line separately, through the
+  // --logo-wordmark-* tokens rather than a single --logo-primary.
+  twoTone?: boolean
 }
 
 export const TYPOGRAPHY_SYSTEMS: Record<TypographyDirection, TypographySystem> = {
@@ -52,6 +83,32 @@ export const TYPOGRAPHY_SYSTEMS: Record<TypographyDirection, TypographySystem> =
     letterSpacing: 3.5,
     lineHeight: 1,
     description: 'Geometric, engineered. Deliberate clarity.',
+  },
+  // Shiva's selection from /typography-exploration: Direction D at Tight
+  // spacing in the classic two-tone. Every value below is the one that page
+  // uses, not a re-derivation — see app/typography-exploration/directions.ts
+  // (DIRECTIONS[3], SPACING_STEPS 'tight', LIGHT_TREATMENTS 'two-tone').
+  contemporary: {
+    name: 'Contemporary Research',
+    fontFamily: 'var(--font-archivo), "Archivo", sans-serif',
+    exportFontFamily: '"Archivo", "Helvetica Neue", Arial, sans-serif',
+    fontWeight: 500,
+    // Fixed metrics, used only by the horizontal header tier. Matched to the
+    // other systems so that fallback stays consistent with them.
+    fontSize: 17,
+    letterSpacing: 3.5,
+    lineHeight: 1,
+    description: 'Institutional grotesque, sized and tracked to the symbol. From the typography exploration.',
+    fitted: {
+      primaryWeight: 500,
+      secondaryWeight: 400,
+      primarySizeRatio: 0.16,
+      secondarySizeRatio: 0.48,
+      lineGapEm: 0.32,
+      symbolGapRatio: 0.05,
+      widthFactor: 1,
+    },
+    twoTone: true,
   },
 }
 

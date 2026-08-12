@@ -184,6 +184,9 @@
   --logo-accent: var(--ail-teal);
   --logo-light: var(--ail-light-teal);
   --logo-pale: var(--ail-pale-teal);
+  /* Classic two-tone. */
+  --logo-wordmark-primary: var(--ail-navy);
+  --logo-wordmark-secondary: var(--ail-teal);
 }
 
 .stacked-dark,
@@ -203,6 +206,9 @@
   --logo-accent: var(--ail-teal);
   --logo-light: var(--ail-blue);
   --logo-pale: var(--ail-navy);
+  /* Same hierarchy as the light two-tone, roles remapped for contrast. */
+  --logo-wordmark-primary: var(--ail-pale-teal);
+  --logo-wordmark-secondary: var(--ail-light-teal);
 }
 
 .stacked-light-compact,

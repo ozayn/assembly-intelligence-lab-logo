@@ -15,6 +15,8 @@ import {
   type ApplicationTier,
 } from './typographySystems'
 import { BrandWordmark } from './BrandWordmark'
+import { FittedLockup } from './FittedLockup'
+import { buildFittedLockupSvg, measureSymbolInk, FULL_INK } from './lockupFitting'
 import './LogoCard.css'
 
 type ExportSize = '64' | '32' | '16'
@@ -183,6 +185,20 @@ export function LogoCard({
     return { width: bbox.width, height: bbox.height }
   }
 
+  const downloadSvg = (svg: SVGSVGElement) => {
+    const svgString = new XMLSerializer().serializeToString(svg)
+    const blob = new Blob([svgString], { type: 'image/svg+xml' })
+    const url = URL.createObjectURL(blob)
+    const backgroundVariant = logoBackground || 'light'
+    const link = document.createElement('a')
+    link.href = url
+    link.download = `AIL-concept-${id.toString().padStart(2, '0')}-${applicationTier}-${backgroundVariant}-${typographyDirection}-lockup.svg`
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    URL.revokeObjectURL(url)
+  }
+
   const handleDownloadLockupSVG = () => {
     const sourceContainer = exportSourceRef.current
     if (!sourceContainer) return
@@ -221,6 +237,33 @@ export function LogoCard({
 
     const tier = APPLICATION_TIERS[applicationTier]
     const typeSystem = TYPOGRAPHY_SYSTEMS[typographyDirection]
+
+    const wordmarkPrimary =
+      computedStyle.getPropertyValue('--logo-wordmark-primary').trim() || primaryColor
+    const wordmarkSecondary =
+      computedStyle.getPropertyValue('--logo-wordmark-secondary').trim() || primaryColor
+    const linePrimaryColor = typeSystem.twoTone ? wordmarkPrimary : primaryColor
+    const lineSecondaryColor = typeSystem.twoTone ? wordmarkSecondary : primaryColor
+
+    // Width-fitted systems lay out from the symbol's ink, so they build their
+    // own file. Stacked only: fitting the wordmark to the symbol's width has
+    // no meaning beside it.
+    if (typeSystem.fitted && tier.orientation === 'stacked') {
+      const fittedSvg = buildFittedLockupSvg({
+        symbol: symbolClone,
+        ink: measureSymbolInk(sourceContainer) ?? FULL_INK,
+        system: typeSystem,
+        spec: typeSystem.fitted,
+        symbolPx: tier.symbolPx,
+        primaryColor: linePrimaryColor,
+        secondaryColor: lineSecondaryColor,
+      })
+      if (fittedSvg) {
+        downloadSvg(fittedSvg)
+        return
+      }
+    }
+
     const fontSize = tier.fontSizeOverride ?? typeSystem.fontSize
     const letterSpacing = typeSystem.letterSpacing * tier.letterSpacingScale
     const secondaryFontSize = fontSize * WORDMARK_SECONDARY_SCALE
@@ -293,7 +336,8 @@ export function LogoCard({
       text: string,
       y: number,
       size: number,
-      tracking: number
+      tracking: number,
+      fill: string
     ) => {
       const textEl = document.createElementNS(svgNS, 'text')
       textEl.setAttribute('x', String(textX))
@@ -303,7 +347,7 @@ export function LogoCard({
       textEl.setAttribute('font-size', String(size))
       textEl.setAttribute('font-weight', String(typeSystem.fontWeight))
       textEl.setAttribute('letter-spacing', String(tracking))
-      textEl.setAttribute('fill', primaryColor)
+      textEl.setAttribute('fill', fill)
       // Real editable text: never converted to paths or rasterized.
       textEl.textContent = text
       outSvg.appendChild(textEl)
@@ -312,26 +356,22 @@ export function LogoCard({
     const primaryBaseline = wordmarkTop + fontSize * 0.82
     const secondaryBaseline =
       wordmarkTop + primaryLineHeight + secondaryMargin + secondaryFontSize * 0.82
-    appendTextLine(WORDMARK_LINE_1, primaryBaseline, fontSize, letterSpacing)
+    appendTextLine(
+      WORDMARK_LINE_1,
+      primaryBaseline,
+      fontSize,
+      letterSpacing,
+      linePrimaryColor
+    )
     appendTextLine(
       WORDMARK_LINE_2,
       secondaryBaseline,
       secondaryFontSize,
-      secondaryLetterSpacing
+      secondaryLetterSpacing,
+      lineSecondaryColor
     )
 
-    const svgString = new XMLSerializer().serializeToString(outSvg)
-    const blob = new Blob([svgString], { type: 'image/svg+xml' })
-    const url = URL.createObjectURL(blob)
-
-    const backgroundVariant = logoBackground || 'light'
-    const link = document.createElement('a')
-    link.href = url
-    link.download = `AIL-concept-${id.toString().padStart(2, '0')}-${applicationTier}-${backgroundVariant}-${typographyDirection}-lockup.svg`
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-    URL.revokeObjectURL(url)
+    downloadSvg(outSvg)
   }
 
   const handleFeedbackSubmit = (feedback: LogoFeedback) => {
@@ -399,6 +439,16 @@ export function LogoCard({
         {logoVersion === 'symbol' ? (
           <div className="logo-container" ref={logoContainerRef} style={sizeMode ? getSizeStyle(sizeMode) : {}}>
             {shouldDisplayAnimated ? animatedLogo : staticLogo}
+          </div>
+        ) : typeSystem.fitted && tier.orientation === 'stacked' ? (
+          <div className="lockup-preview lockup-stacked">
+            <FittedLockup
+              symbol={shouldDisplayAnimated ? animatedLogo : staticLogo}
+              system={typeSystem}
+              symbolPx={tier.symbolPx}
+              measureRef={exportSourceRef}
+              symbolKey={id}
+            />
           </div>
         ) : (
           <div

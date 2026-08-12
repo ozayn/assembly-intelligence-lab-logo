@@ -21,8 +21,9 @@ const newsreader = Newsreader({ subsets: ['latin'], weight: ['400', '500'], vari
 const spaceMono = Space_Mono({ subsets: ['latin'], weight: ['400'], variable: '--font-space-mono' })
 
 // Candidates for the wordmark typography exploration at /typography-exploration.
-// Loaded so that page compares real webfonts rather than fallbacks; none of
-// them is wired into the production lockup default.
+// Loaded so that page compares real webfonts rather than fallbacks. Archivo
+// also backs the Contemporary Research lockup option in the shared system;
+// none of them is the production default.
 const jost = Jost({ subsets: ['latin'], weight: ['300', '400'], variable: '--font-jost' })
 const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], weight: ['400', '500'], variable: '--font-space-grotesk' })
 const archivo = Archivo({ subsets: ['latin'], weight: ['400', '500'], variable: '--font-archivo' })

@@ -38,6 +38,12 @@
   --logo-pale: var(--ail-pale-teal);
   --logo-muted: #57606a;
 
+  /* Two-tone wordmark roles, used by typography systems that colour the two
+     lines separately. Kept apart from --logo-primary so the single-colour
+     systems are unaffected. */
+  --logo-wordmark-primary: var(--ail-navy);
+  --logo-wordmark-secondary: var(--ail-teal);
+
   /* Page styling */
   --page-background: var(--bg-light);
   --text-primary: var(--text-light);
@@ -139,6 +145,14 @@ svg {
 
 .brand-wordmark-secondary {
   margin-top: 0.18em;
+}
+
+.brand-wordmark-two-tone {
+  color: var(--logo-wordmark-primary);
+}
+
+.brand-wordmark-two-tone .brand-wordmark-secondary {
+  color: var(--logo-wordmark-secondary);
 }
 
 @media (prefers-reduced-motion: reduce) {

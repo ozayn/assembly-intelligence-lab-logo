@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { TYPOGRAPHY_SYSTEMS, type TypographyDirection } from './typographySystems'
 import { BrandWordmark } from './BrandWordmark'
+import { FittedLockup } from './FittedLockup'
 import './typography-lockup.css'
 
 interface TypographyLockupProps {
@@ -23,6 +24,56 @@ export function TypographyLockup({ symbolComponent, conceptId, conceptName }: Ty
       align={align}
     />
   )
+
+  // Width-fitted systems own the whole stacked composition: the symbol is
+  // cropped to its ink and the wordmark is solved against that width, so the
+  // fixed symbol wrapper and wordmark box are replaced rather than restyled.
+  const stacked = (
+    symbolPx: number,
+    marginBottom: number,
+    fontSize: number,
+    trackingScale: number,
+    wordmarkStyle: React.CSSProperties
+  ) =>
+    typeSystem.fitted ? (
+      <FittedLockup
+        symbol={symbolComponent}
+        system={typeSystem}
+        symbolPx={symbolPx}
+        symbolKey={conceptId}
+      />
+    ) : (
+      <>
+        <div className="symbol-wrapper" style={{ width: `${symbolPx}px`, height: `${symbolPx}px`, marginBottom: `${marginBottom}px` }}>
+          {symbolComponent}
+        </div>
+        <div
+          className="wordmark"
+          style={{
+            fontFamily: typeSystem.fontFamily,
+            fontWeight: typeSystem.fontWeight,
+            textAlign: 'center',
+            ...wordmarkStyle,
+          }}
+        >
+          {wordmark(fontSize, trackingScale, 'center')}
+        </div>
+      </>
+    )
+
+  const stackedFull = () =>
+    stacked(120, 5, typeSystem.fontSize, 1, {
+      fontSize: `${typeSystem.fontSize}px`,
+      letterSpacing: `${typeSystem.letterSpacing}px`,
+      lineHeight: typeSystem.lineHeight,
+    })
+
+  const stackedCompact = () =>
+    stacked(64, 3, 7, 0.6, {
+      fontSize: '12px',
+      letterSpacing: `${typeSystem.letterSpacing * 0.5}px`,
+      lineHeight: 1.3,
+    })
 
   return (
     <div className="typography-lockup">
@@ -148,83 +199,15 @@ export function TypographyLockup({ symbolComponent, conceptId, conceptName }: Ty
           {/* Full size */}
           <div className="lockup-size-group">
             <div className="size-label">Full</div>
-            <div className="stacked-light">
-              <div className="symbol-wrapper" style={{ width: '120px', height: '120px', marginBottom: '5px' }}>
-                {symbolComponent}
-              </div>
-              <div
-                className="wordmark"
-                style={{
-                  fontFamily: typeSystem.fontFamily,
-                  fontSize: `${typeSystem.fontSize}px`,
-                  fontWeight: typeSystem.fontWeight,
-                  letterSpacing: `${typeSystem.letterSpacing}px`,
-                  lineHeight: typeSystem.lineHeight,
-                  textAlign: 'center',
-                }}
-              >
-                {wordmark(typeSystem.fontSize, 1, 'center')}
-              </div>
-            </div>
-            <div className="stacked-dark">
-              <div className="symbol-wrapper" style={{ width: '120px', height: '120px', marginBottom: '5px' }}>
-                {symbolComponent}
-              </div>
-              <div
-                className="wordmark"
-                style={{
-                  fontFamily: typeSystem.fontFamily,
-                  fontSize: `${typeSystem.fontSize}px`,
-                  fontWeight: typeSystem.fontWeight,
-                  letterSpacing: `${typeSystem.letterSpacing}px`,
-                  lineHeight: typeSystem.lineHeight,
-                  textAlign: 'center',
-                }}
-              >
-                {wordmark(typeSystem.fontSize, 1, 'center')}
-              </div>
-            </div>
+            <div className="stacked-light">{stackedFull()}</div>
+            <div className="stacked-dark">{stackedFull()}</div>
           </div>
 
           {/* Compact */}
           <div className="lockup-size-group">
             <div className="size-label">Compact</div>
-            <div className="stacked-light-compact">
-              <div className="symbol-wrapper" style={{ width: '64px', height: '64px', marginBottom: '3px' }}>
-                {symbolComponent}
-              </div>
-              <div
-                className="wordmark"
-                style={{
-                  fontFamily: typeSystem.fontFamily,
-                  fontSize: '12px',
-                  fontWeight: typeSystem.fontWeight,
-                  letterSpacing: `${typeSystem.letterSpacing * 0.5}px`,
-                  lineHeight: 1.3,
-                  textAlign: 'center',
-                }}
-              >
-                {wordmark(7, 0.6, 'center')}
-              </div>
-            </div>
-            <div className="stacked-dark-compact">
-              <div className="symbol-wrapper" style={{ width: '64px', height: '64px', marginBottom: '3px' }}>
-                {symbolComponent}
-              </div>
-              <div
-                className="wordmark"
-                style={{
-                  fontFamily: typeSystem.fontFamily,
-                  fontSize: '12px',
-                  fontWeight: typeSystem.fontWeight,
-                  letterSpacing: `${typeSystem.letterSpacing * 0.5}px`,
-                  lineHeight: 1.3,
-                  textAlign: 'center',
-                }}
-              >
-                {wordmark(7, 0.6, 'center')}
-              </div>
-            </div>
+            <div className="stacked-light-compact">{stackedCompact()}</div>
+            <div className="stacked-dark-compact">{stackedCompact()}</div>
           </div>
         </div>
       </div>

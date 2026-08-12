@@ -180,6 +180,47 @@ html.dark .logo-display {
   text-align: left;
 }
 
+/* Width-fitted lockup: the symbol is cropped to its ink so the gap and the
+   wordmark width are measured against the visible mark, not its bounding box.
+   Sizes and tracking are set inline from the solved measurements. */
+.fitted-lockup {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.fitted-symbol {
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.fitted-symbol svg {
+  width: 100%;
+  height: 100%;
+}
+
+.fitted-wordmark {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.fitted-line {
+  display: block;
+  line-height: 1;
+}
+
+.fitted-line-primary {
+  color: var(--logo-wordmark-primary);
+}
+
+.fitted-line-secondary {
+  color: var(--logo-wordmark-secondary);
+}
+
 /* Always-mounted, invisible source for lockup SVG export — kept out of both
    layout and paint regardless of which mode is currently displayed. */
 .export-source-hidden {
@@ -465,6 +506,9 @@ html.dark .feedback-link:hover {
   --logo-light: var(--ail-light-teal);
   --logo-pale: var(--ail-pale-teal);
   --logo-muted: #57606a;
+  /* Classic two-tone. */
+  --logo-wordmark-primary: var(--ail-navy);
+  --logo-wordmark-secondary: var(--ail-teal);
 }
 
 .logo-background-dark,
@@ -477,6 +521,10 @@ html.dark .feedback-link:hover {
   --logo-light: var(--ail-blue);
   --logo-pale: var(--ail-navy);
   --logo-muted: #8b949e;
+  /* Same hierarchy as the light two-tone, roles remapped for contrast —
+     navy would be unreadable here. */
+  --logo-wordmark-primary: var(--ail-pale-teal);
+  --logo-wordmark-secondary: var(--ail-light-teal);
 }
 
 .logo-background-light {

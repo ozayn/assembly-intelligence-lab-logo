@@ -23,7 +23,7 @@ export function BrandWordmark({
 }: BrandWordmarkProps) {
   return (
     <span
-      className="brand-wordmark"
+      className={`brand-wordmark${typeSystem.twoTone ? ' brand-wordmark-two-tone' : ''}`}
       style={{
         fontFamily: typeSystem.fontFamily,
         fontWeight: typeSystem.fontWeight,
