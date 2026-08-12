@@ -13,9 +13,10 @@ import {
   SYMBOLS,
 } from './directions'
 
-// A contact sheet built for rasterising, laid out independently of the page:
-// wide and column-based so the whole study fits inside one canvas rather than
-// a strip too tall for the browser to render.
+// A contact sheet built for rasterising. It carries the same studies as the
+// page, in the same order, but laid out at one fixed desktop width with fixed
+// column tracks — the page's responsive grid would otherwise reflow to
+// whatever window the export was started from.
 
 const BALANCED = SPACING_BY_ID.balanced.gapRatio
 const REFERENCE = DIRECTION_BY_ID.A
@@ -54,7 +55,7 @@ function ShortlistRow({
   treatment: typeof TWO_TONE
 }) {
   return (
-    <div className="txe-row" style={{ gridTemplateColumns: 'repeat(4, 1fr)' }}>
+    <div className="txe-row txe-cols-4">
       {SHORTLIST.map(({ direction, symbol }) => (
         <div className="txe-col" key={`${direction.id}-${symbol.id}`}>
           <div className="txe-col-head">
@@ -67,7 +68,7 @@ function ShortlistRow({
             direction={direction}
             treatment={treatment}
             gapRatio={BALANCED}
-            symbolPx={200}
+            symbolPx={240}
             background={background}
             spec="compact"
             compact
@@ -80,9 +81,6 @@ function ShortlistRow({
 
 export const TypographyExportSheet = forwardRef<HTMLDivElement, TypographyExportSheetProps>(
   function TypographyExportSheet({ variant }, ref) {
-    const directions = DIRECTIONS
-    const lightTreatments = LIGHT_TREATMENTS
-    const darkTreatments = DARK_TREATMENTS
     const colourDirections = [REFERENCE, HUMANIST]
     const today = new Date().toISOString().slice(0, 10)
 
@@ -136,150 +134,144 @@ export const TypographyExportSheet = forwardRef<HTMLDivElement, TypographyExport
           )}
 
           {variant === 'all' && (
-          <>
-          <section className="txe-section">
-            <SectionTitle
-              index="1"
-              title="Typography directions"
-              note="Navy ASSEMBLY, teal INTELLIGENCE LAB, balanced symbol gap, wordmark set to the full ink width of the symbol."
-            />
-            <div className="txe-row" style={{ gridTemplateColumns: `repeat(${directions.length}, 1fr)` }}>
-              {directions.map(direction => (
-                <div className="txe-col" key={direction.id}>
-                  <div className="txe-col-head">
-                    <span className="txe-badge">{direction.id}</span>
-                    <strong>{direction.name}</strong>
-                    <em>{direction.fontLabel}</em>
+            <>
+              <section className="txe-section">
+                <SectionTitle
+                  index="1"
+                  title="Typography directions"
+                  note="Navy ASSEMBLY, teal INTELLIGENCE LAB, balanced symbol gap, wordmark set to the full ink width of the symbol. Each column carries the same direction under both marks."
+                />
+                <div className="txe-row txe-cols-5">
+                  {DIRECTIONS.map(direction => (
+                    <div className="txe-col" key={direction.id}>
+                      <div className="txe-col-head">
+                        <span className="txe-badge">{direction.id}</span>
+                        <strong>{direction.name}</strong>
+                        <em>{direction.fontLabel}</em>
+                      </div>
+                      {SYMBOLS.map(symbol => (
+                        <ExplorationLockup
+                          key={symbol.id}
+                          symbol={symbol}
+                          direction={direction}
+                          treatment={TWO_TONE}
+                          gapRatio={BALANCED}
+                          symbolPx={200}
+                          caption={symbol.label}
+                          spec="compact"
+                          compact
+                        />
+                      ))}
+                    </div>
+                  ))}
+                </div>
+              </section>
+
+              <section className="txe-section">
+                <SectionTitle
+                  index="2"
+                  title="Symbol-to-wordmark distance"
+                  note="Measured from the lowest ink of the mark to the cap line of ASSEMBLY. Set in Direction A so the gap is the only variable."
+                />
+                {SYMBOLS.map(symbol => (
+                  <div className="txe-subblock" key={symbol.id}>
+                    <p className="txe-sublabel">{symbol.label} · Direction A · navy + teal</p>
+                    <div className="txe-row txe-cols-3">
+                      {SPACING_STEPS.map(step => (
+                        <ExplorationLockup
+                          key={step.id}
+                          symbol={symbol}
+                          direction={REFERENCE}
+                          treatment={TWO_TONE}
+                          gapRatio={step.gapRatio}
+                          symbolPx={230}
+                          caption={`${step.name} — ${(step.gapRatio * 100).toFixed(0)}% of symbol`}
+                          spec="none"
+                          compact
+                        />
+                      ))}
+                    </div>
                   </div>
-                  {SYMBOLS.map(symbol => (
-                    <ExplorationLockup
-                      key={symbol.id}
-                      symbol={symbol}
-                      direction={direction}
-                      treatment={TWO_TONE}
-                      gapRatio={BALANCED}
-                      symbolPx={140}
-                      caption={symbol.label}
-                      spec="compact"
-                      compact
-                    />
-                  ))}
-                </div>
-              ))}
-            </div>
-          </section>
+                ))}
+              </section>
 
-          <section className="txe-section">
-            <SectionTitle
-              index="2"
-              title="Symbol-to-wordmark distance"
-              note="Measured from the lowest ink of the mark to the cap line of ASSEMBLY. Set in Direction A so the gap is the only variable."
-            />
-            {SYMBOLS.map(symbol => (
-              <div className="txe-subblock" key={symbol.id}>
-                <p className="txe-sublabel">{symbol.label} · Direction A · navy + teal</p>
-                <div className="txe-row" style={{ gridTemplateColumns: 'repeat(3, 1fr)' }}>
-                  {SPACING_STEPS.map(step => (
-                    <ExplorationLockup
-                      key={step.id}
-                      symbol={symbol}
-                      direction={REFERENCE}
-                      treatment={TWO_TONE}
-                      gapRatio={step.gapRatio}
-                      symbolPx={170}
-                      caption={`${step.name} — ${(step.gapRatio * 100).toFixed(0)}% of symbol`}
-                      spec="none"
-                      compact
-                    />
-                  ))}
-                </div>
-              </div>
-            ))}
-          </section>
-
-          <section className="txe-section">
-            <SectionTitle
-              index="3"
-              title="Colour treatments"
-              note="Flat treatments and the two gradient experiments, across both symbols. Only official palette values are used; the gradients interpolate between those stops."
-            />
-            {colourDirections.map(direction => (
-              <div className="txe-subblock" key={direction.id}>
-                <p className="txe-sublabel">
-                  Direction {direction.id} · {direction.name} · {direction.fontLabel}
-                </p>
-                <div
-                  className="txe-row"
-                  style={{ gridTemplateColumns: `repeat(${lightTreatments.length}, 1fr)` }}
-                >
-                  {lightTreatments.map(treatment => (
-                    <div className="txe-col" key={treatment.id}>
-                      <p className="txe-treatment">
-                        {treatment.name}
-                        <span>{treatment.label}</span>
-                      </p>
-                      {SYMBOLS.map(symbol => (
-                        <ExplorationLockup
-                          key={symbol.id}
-                          symbol={symbol}
-                          direction={direction}
-                          treatment={treatment}
-                          gapRatio={BALANCED}
-                          symbolPx={130}
-                          caption={symbol.label}
-                          spec="none"
-                          compact
-                        />
+              <section className="txe-section">
+                <SectionTitle
+                  index="3"
+                  title="Colour treatments"
+                  note="Flat treatments and the two gradient experiments, across both symbols. Only official palette values are used; the gradients interpolate between those stops."
+                />
+                {colourDirections.map(direction => (
+                  <div className="txe-subblock" key={direction.id}>
+                    <p className="txe-sublabel">
+                      Direction {direction.id} · {direction.name} · {direction.fontLabel}
+                    </p>
+                    <div className="txe-row txe-cols-5">
+                      {LIGHT_TREATMENTS.map(treatment => (
+                        <div className="txe-col" key={treatment.id}>
+                          <p className="txe-treatment">
+                            {treatment.name}
+                            <span>{treatment.label}</span>
+                          </p>
+                          {SYMBOLS.map(symbol => (
+                            <ExplorationLockup
+                              key={symbol.id}
+                              symbol={symbol}
+                              direction={direction}
+                              treatment={treatment}
+                              gapRatio={BALANCED}
+                              symbolPx={170}
+                              caption={symbol.label}
+                              spec="none"
+                              compact
+                            />
+                          ))}
+                        </div>
                       ))}
                     </div>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </section>
+                  </div>
+                ))}
+              </section>
 
-          <section className="txe-section">
-            <SectionTitle
-              index="4"
-              title="Dark background"
-              note="Symbol roles remapped exactly as the concept cards do on dark; wordmark colours remain approved palette values."
-            />
-            {colourDirections.map(direction => (
-              <div className="txe-subblock" key={direction.id}>
-                <p className="txe-sublabel">
-                  Direction {direction.id} · {direction.name} · {direction.fontLabel} on #151b34
-                </p>
-                <div
-                  className="txe-row"
-                  style={{ gridTemplateColumns: `repeat(${darkTreatments.length}, 1fr)` }}
-                >
-                  {darkTreatments.map(treatment => (
-                    <div className="txe-col" key={treatment.id}>
-                      <p className="txe-treatment">
-                        {treatment.name}
-                        <span>{treatment.label}</span>
-                      </p>
-                      {SYMBOLS.map(symbol => (
-                        <ExplorationLockup
-                          key={symbol.id}
-                          symbol={symbol}
-                          direction={direction}
-                          treatment={treatment}
-                          gapRatio={BALANCED}
-                          symbolPx={150}
-                          background="dark"
-                          caption={symbol.label}
-                          spec="none"
-                          compact
-                        />
+              <section className="txe-section">
+                <SectionTitle
+                  index="4"
+                  title="Dark background"
+                  note="Symbol roles remapped exactly as the concept cards do on dark; wordmark colours remain approved palette values."
+                />
+                {colourDirections.map(direction => (
+                  <div className="txe-subblock" key={direction.id}>
+                    <p className="txe-sublabel">
+                      Direction {direction.id} · {direction.name} · {direction.fontLabel} on #151b34
+                    </p>
+                    <div className="txe-row txe-cols-3">
+                      {DARK_TREATMENTS.map(treatment => (
+                        <div className="txe-col" key={treatment.id}>
+                          <p className="txe-treatment">
+                            {treatment.name}
+                            <span>{treatment.label}</span>
+                          </p>
+                          {SYMBOLS.map(symbol => (
+                            <ExplorationLockup
+                              key={symbol.id}
+                              symbol={symbol}
+                              direction={direction}
+                              treatment={treatment}
+                              gapRatio={BALANCED}
+                              symbolPx={200}
+                              background="dark"
+                              caption={symbol.label}
+                              spec="none"
+                              compact
+                            />
+                          ))}
+                        </div>
                       ))}
                     </div>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </section>
-          </>
+                  </div>
+                ))}
+              </section>
+            </>
           )}
 
           <footer className="txe-footer">

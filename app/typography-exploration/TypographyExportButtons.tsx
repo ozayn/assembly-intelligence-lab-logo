@@ -1,7 +1,8 @@
 'use client'
 
-import { useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import html2canvas from 'html2canvas'
+import { DIRECTIONS } from './directions'
 import { TypographyExportSheet, type SheetVariant } from './TypographyExportSheet'
 
 // Isolated from components/ExportButton.tsx on purpose: the main concept
@@ -31,6 +32,7 @@ async function rasteriseSymbols(root: HTMLElement): Promise<() => void> {
     sources.forEach((source, i) => {
       targets[i]?.setAttribute('fill', getComputedStyle(source).fill)
     })
+    clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg')
     clone.setAttribute('width', String(rect.width))
     clone.setAttribute('height', String(rect.height))
 
@@ -40,6 +42,8 @@ async function rasteriseSymbols(root: HTMLElement): Promise<() => void> {
     img.width = rect.width
     img.height = rect.height
     img.style.display = 'block'
+    img.style.width = `${rect.width}px`
+    img.style.height = `${rect.height}px`
     decoding.push(img.decode().catch(() => undefined))
 
     const originalDisplay = svg.style.display
@@ -130,35 +134,119 @@ function expandGradientText(root: HTMLElement): () => void {
   return () => restores.forEach(restore => restore())
 }
 
+function resolveFamily(cssFamily: string): string {
+  const root = getComputedStyle(document.documentElement)
+  return cssFamily
+    .split(',')
+    .map(part => {
+      const match = part.trim().match(/^var\((--[\w-]+)\)$/)
+      if (!match) return part.trim()
+      return root.getPropertyValue(match[1]).trim()
+    })
+    .filter(Boolean)
+    .join(', ')
+}
+
+// fonts.ready resolves once nothing is pending, which on a page that has not
+// yet painted a given family can be true before that family is fetched. Each
+// direction's font is requested explicitly, at the weights the wordmark uses.
+async function loadDirectionFonts(): Promise<string[]> {
+  const requests = DIRECTIONS.flatMap(direction => {
+    const family = resolveFamily(direction.cssFamily).split(',')[0]
+    return [direction.weightPrimary, direction.weightSecondary].map(weight =>
+      document.fonts
+        .load(`${weight} 40px ${family}`, 'ASSEMBLY INTELLIGENCE LAB')
+        .then(faces => ({ family, weight, ok: faces.length > 0 }))
+        .catch(() => ({ family, weight, ok: false }))
+    )
+  })
+  const results = await Promise.all(requests)
+  await document.fonts.ready
+  return results.filter(r => !r.ok).map(r => `${r.family} ${r.weight}`)
+}
+
+const frame = () => new Promise(resolve => requestAnimationFrame(resolve))
+
+// Every lockup solves its own tracking after measuring the loaded font, and
+// stays transparent until it has. Capturing before that would rasterise empty
+// wordmarks, so the sheet is not photographed until all of them are up.
+async function waitForFittedWordmarks(root: HTMLElement, timeoutMs = 8000): Promise<boolean> {
+  const deadline = Date.now() + timeoutMs
+  while (Date.now() < deadline) {
+    const wordmarks = Array.from(root.querySelectorAll<HTMLElement>('.tx-wordmark'))
+    const settled =
+      wordmarks.length > 0 &&
+      wordmarks.every(w => parseFloat(getComputedStyle(w).opacity || '0') > 0.99)
+    if (settled) return true
+    await frame()
+  }
+  return false
+}
+
+// Browsers cap canvas size, and Safari's cap is on total area rather than a
+// single dimension — over it, the context still accepts draw calls but keeps
+// nothing, which is how an export turns into a blank or shifted sheet. Probing
+// the far corner is the only reliable way to know the size will hold.
+function canAllocate(width: number, height: number): boolean {
+  const probe = document.createElement('canvas')
+  probe.width = width
+  probe.height = height
+  const ctx = probe.getContext('2d')
+  if (!ctx) return false
+  try {
+    ctx.fillStyle = '#ff0000'
+    ctx.fillRect(width - 1, height - 1, 1, 1)
+    const pixel = ctx.getImageData(width - 1, height - 1, 1, 1).data
+    return pixel[0] === 255 && pixel[3] === 255
+  } catch {
+    return false
+  } finally {
+    probe.width = 0
+    probe.height = 0
+  }
+}
+
+const SCALE_STEPS = [2, 1.75, 1.5, 1.25, 1]
+
+function chooseScale(width: number, height: number): number {
+  for (const scale of SCALE_STEPS) {
+    if (canAllocate(Math.round(width * scale), Math.round(height * scale))) return scale
+  }
+  return 1
+}
+
 export function TypographyExportButtons() {
-  const allRef = useRef<HTMLDivElement>(null)
-  const selectedRef = useRef<HTMLDivElement>(null)
+  const sheetRef = useRef<HTMLDivElement>(null)
+  const [pending, setPending] = useState<SheetVariant | null>(null)
   const [busy, setBusy] = useState<SheetVariant | null>(null)
   const [status, setStatus] = useState<string | null>(null)
 
-  const handleExport = async (variant: SheetVariant) => {
-    const node = variant === 'all' ? allRef.current : selectedRef.current
-    if (!node || busy) return
-
-    setBusy(variant)
-    setStatus('Rendering…')
+  const capture = useCallback(async (variant: SheetVariant, node: HTMLElement) => {
     let restoreSymbols: (() => void) | null = null
     let restoreText: (() => void) | null = null
 
     try {
-      await document.fonts?.ready
-      // Let the per-line measurement settle before anything is rasterised.
-      await new Promise(resolve => setTimeout(resolve, 400))
+      setStatus('Loading fonts…')
+      const missing = await loadDirectionFonts()
+      if (missing.length) console.warn('Typography export — fonts unavailable:', missing)
 
+      setStatus('Measuring wordmarks…')
+      const fitted = await waitForFittedWordmarks(node)
+      if (!fitted) console.warn('Typography export — some wordmarks had not solved in time')
+      // One more frame so the final measured widths are in the layout.
+      await frame()
+      await frame()
+
+      setStatus('Rendering…')
       restoreSymbols = await rasteriseSymbols(node)
       restoreText = expandGradientText(node)
 
-      const width = node.scrollWidth
-      const height = node.scrollHeight
-      // Stay inside the browser's maximum canvas dimension.
-      const scale = Math.max(1, Math.min(2, 16000 / Math.max(width, height)))
+      const sheet = node.firstElementChild as HTMLElement
+      const width = Math.ceil(sheet.scrollWidth)
+      const height = Math.ceil(sheet.scrollHeight)
+      const scale = chooseScale(width, height)
 
-      const canvas = await html2canvas(node, {
+      const canvas = await html2canvas(sheet, {
         backgroundColor: '#ffffff',
         scale,
         width,
@@ -178,9 +266,16 @@ export function TypographyExportButtons() {
         },
       })
 
-      const blob = await new Promise<Blob | null>(resolve =>
-        canvas.toBlob(resolve, 'image/png')
-      )
+      // If the browser handed back something smaller than asked for, the
+      // capture is not what it claims to be and should not be saved.
+      const expected = { w: Math.round(width * scale), h: Math.round(height * scale) }
+      if (canvas.width < expected.w - 2 || canvas.height < expected.h - 2) {
+        throw new Error(
+          `Canvas was clamped to ${canvas.width}×${canvas.height} (asked ${expected.w}×${expected.h})`
+        )
+      }
+
+      const blob = await new Promise<Blob | null>(resolve => canvas.toBlob(resolve, 'image/png'))
       if (!blob) throw new Error('Could not encode PNG')
 
       const filename = `${FILENAMES[variant]}-${new Date().toISOString().slice(0, 10)}.png`
@@ -193,30 +288,56 @@ export function TypographyExportButtons() {
       document.body.removeChild(link)
       URL.revokeObjectURL(url)
 
-      setStatus(`Saved ${filename} — ${canvas.width}×${canvas.height}px`)
+      setStatus(
+        `Saved ${filename} — ${canvas.width}×${canvas.height}px at ${scale}× (${width}×${height} CSS)`
+      )
     } catch (error) {
       console.error('Typography export failed:', error)
-      setStatus('Export failed — see console')
+      setStatus(`Export failed — ${error instanceof Error ? error.message : 'see console'}`)
     } finally {
       restoreText?.()
       restoreSymbols?.()
-      setBusy(null)
     }
+  }, [])
+
+  // The sheet is mounted only for the capture: keeping several thousand pixels
+  // of hidden lockups in the live page permanently is both wasteful and a way
+  // for the page to affect what gets exported.
+  useEffect(() => {
+    if (!pending) return
+    let cancelled = false
+    const run = async () => {
+      await frame()
+      const node = sheetRef.current
+      if (!node || cancelled) return
+      await capture(pending, node)
+      if (!cancelled) {
+        setPending(null)
+        setBusy(null)
+      }
+    }
+    void run()
+    return () => {
+      cancelled = true
+    }
+  }, [pending, capture])
+
+  const start = (variant: SheetVariant) => {
+    if (busy) return
+    setBusy(variant)
+    setStatus('Preparing sheet…')
+    setPending(variant)
   }
 
   return (
     <>
       <div className="tx-export-bar">
-        <button
-          className="tx-export-btn"
-          onClick={() => handleExport('all')}
-          disabled={busy !== null}
-        >
+        <button className="tx-export-btn" onClick={() => start('all')} disabled={busy !== null}>
           {busy === 'all' ? 'Exporting…' : 'Export All Typography Options'}
         </button>
         <button
           className="tx-export-btn secondary"
-          onClick={() => handleExport('selected')}
+          onClick={() => start('selected')}
           disabled={busy !== null}
         >
           {busy === 'selected' ? 'Exporting…' : 'Export Selected Comparison'}
@@ -224,8 +345,7 @@ export function TypographyExportButtons() {
         {status && <span className="tx-export-status">{status}</span>}
       </div>
 
-      <TypographyExportSheet ref={allRef} variant="all" />
-      <TypographyExportSheet ref={selectedRef} variant="selected" />
+      {pending && <TypographyExportSheet ref={sheetRef} variant={pending} />}
     </>
   )
 }
