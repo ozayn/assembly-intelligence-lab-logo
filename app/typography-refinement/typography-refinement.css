@@ -1,0 +1,493 @@
+.rf-page {
+  min-height: 100vh;
+  background: #ffffff;
+  color: #0f1117;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  padding: 3rem 2rem 5rem;
+}
+
+.rf-container {
+  max-width: 1560px;
+  margin: 0 auto;
+}
+
+.rf-header {
+  border-bottom: 2px solid #0f1117;
+  padding-bottom: 1.75rem;
+  margin-bottom: 2.5rem;
+}
+
+.rf-eyebrow {
+  font-size: 0.7rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #6b7280;
+  margin-bottom: 0.75rem;
+}
+
+.rf-header h1 {
+  font-size: 2.4rem;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  margin-bottom: 1rem;
+}
+
+.rf-lede {
+  max-width: 96ch;
+  font-size: 0.95rem;
+  line-height: 1.65;
+  color: #4b5563;
+}
+
+.rf-lede + .rf-lede {
+  margin-top: 0.6rem;
+}
+
+.rf-swatches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 1.25rem;
+  font-size: 0.75rem;
+  color: #4b5563;
+}
+
+.rf-swatches span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.rf-swatches i {
+  width: 0.9rem;
+  height: 0.9rem;
+  border-radius: 3px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.rf-section {
+  margin-bottom: 3.5rem;
+}
+
+.rf-section > h2 {
+  font-size: 1.3rem;
+  font-weight: 500;
+  margin-bottom: 0.6rem;
+}
+
+.rf-note {
+  max-width: 96ch;
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: #6b7280;
+  margin-bottom: 1.25rem;
+}
+
+.rf-reference-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.25rem;
+  max-width: 720px;
+  margin-bottom: 1.5rem;
+}
+
+.rf-reference {
+  border: 1px solid #e4e7eb;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.rf-reference img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.rf-reference figcaption {
+  padding: 0.5rem 0.75rem;
+  font-size: 0.75rem;
+  color: #6b7280;
+  border-top: 1px solid #eceff2;
+  background: #fafbfc;
+}
+
+.rf-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+  margin-bottom: 1.25rem;
+}
+
+.rf-table th,
+.rf-table td {
+  text-align: left;
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid #eceff2;
+  vertical-align: top;
+}
+
+.rf-table thead th {
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #6b7280;
+  border-bottom: 1px solid #d5d9de;
+}
+
+.rf-table tbody th {
+  font-weight: 500;
+  color: #111827;
+}
+
+.rf-table td {
+  color: #4b5563;
+  font-variant-numeric: tabular-nums;
+}
+
+.rf-target {
+  font-weight: 600;
+  color: #08255a;
+}
+
+.rf-table-note {
+  color: #9ca3af;
+  font-size: 0.78rem;
+  max-width: 42ch;
+}
+
+.rf-direction {
+  margin-bottom: 2.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid #e4e7eb;
+}
+
+.rf-direction-head {
+  display: grid;
+  grid-template-columns: auto auto 1fr;
+  align-items: center;
+  column-gap: 0.6rem;
+  margin-bottom: 1rem;
+}
+
+.rf-direction-head h3 {
+  font-size: 1.05rem;
+  font-weight: 500;
+}
+
+.rf-direction-head em {
+  font-style: normal;
+  font-size: 0.8rem;
+  color: #6b7280;
+}
+
+.rf-direction-head p {
+  grid-column: 1 / -1;
+  margin-top: 0.35rem;
+  font-size: 0.85rem;
+  color: #6b7280;
+  max-width: 96ch;
+}
+
+.rf-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.4rem;
+  height: 1.4rem;
+  border-radius: 5px;
+  background: #0f1117;
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.rf-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+@media (min-width: 1100px) {
+  .rf-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.rf-block {
+  border: 1px solid #e4e7eb;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.rf-block-head {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 0.85rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  border-bottom: 1px solid #eceff2;
+  background: #fafbfc;
+}
+
+.rf-block-head em {
+  margin-left: auto;
+  font-style: normal;
+  font-size: 0.78rem;
+  color: #6b7280;
+}
+
+.rf-pair {
+  display: grid;
+  grid-template-columns: 1fr;
+}
+
+/* The lockups are sized in pixels, so the two treatments only sit side by side
+   once the column is wide enough to hold them. */
+@media (min-width: 760px) {
+  .rf-pair {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.rfe-sheet .rf-pair {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.rf-pair-wide {
+  max-width: 900px;
+  gap: 1.25rem;
+}
+
+.rf-pair-wide .rf-lockup {
+  border: 1px solid #e4e7eb;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.rf-lockup + .rf-lockup {
+  border-top: 1px solid #eceff2;
+}
+
+@media (min-width: 760px) {
+  .rf-lockup + .rf-lockup {
+    border-top: none;
+    border-left: 1px solid #eceff2;
+  }
+}
+
+.rfe-sheet .rf-lockup + .rf-lockup {
+  border-top: none;
+  border-left: 1px solid #eceff2;
+}
+
+.rf-stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 1rem 2.5rem;
+  background: #ffffff;
+  /* Direct palette values, matching the light concept cards. */
+  --logo-primary: #08255a;
+  --logo-secondary: #0b4b70;
+  --logo-accent: #109596;
+  --logo-light: #58b7b1;
+  --logo-pale: #b7deda;
+}
+
+.rf-lockup-dark .rf-stage {
+  background: #151b34;
+  --logo-primary: #b7deda;
+  --logo-secondary: #58b7b1;
+  --logo-accent: #109596;
+  --logo-light: #0b4b70;
+  --logo-pale: #08255a;
+}
+
+.rf-symbol {
+  position: relative;
+  overflow: hidden;
+}
+
+.rf-symbol svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.rf-wordmark {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.rf-line {
+  display: block;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.rf-caption {
+  padding: 0.45rem 0.7rem;
+  font-size: 0.72rem;
+  color: #6b7280;
+  border-top: 1px solid #eceff2;
+  background: #fafbfc;
+  text-align: center;
+}
+
+.rf-spec {
+  border-top: 1px solid #eceff2;
+  padding: 0.7rem 0.85rem 0.85rem;
+  font-size: 0.74rem;
+  background: #fbfcfd;
+}
+
+.rf-spec-empty {
+  min-height: 11rem;
+}
+
+.rf-spec > div {
+  display: grid;
+  grid-template-columns: 12rem 1fr;
+  gap: 0.5rem;
+  padding: 0.12rem 0;
+}
+
+.rf-spec dt {
+  color: #9ca3af;
+}
+
+.rf-spec dd {
+  color: #374151;
+  font-variant-numeric: tabular-nums;
+}
+
+.rf-finalists {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+}
+
+@media (min-width: 1000px) {
+  .rf-finalists {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.rf-finalist {
+  border: 1px solid #e4e7eb;
+  border-left: 3px solid #08255a;
+  border-radius: 8px;
+  padding: 1rem 1.1rem 1.15rem;
+  background: #fbfcfd;
+}
+
+.rf-finalist h3 {
+  font-size: 0.95rem;
+  font-weight: 500;
+  margin-bottom: 0.35rem;
+}
+
+.rf-pick {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #08255a;
+  margin-bottom: 0.5rem;
+}
+
+.rf-finalist p {
+  font-size: 0.84rem;
+  line-height: 1.6;
+  color: #4b5563;
+}
+
+.rf-finalist .rf-runner-up {
+  margin-top: 0.6rem;
+  padding-top: 0.6rem;
+  border-top: 1px solid #e4e7eb;
+  color: #6b7280;
+  font-size: 0.8rem;
+}
+
+.rf-back {
+  display: inline-block;
+  margin-top: 1rem;
+  font-size: 0.85rem;
+  color: #0b4b70;
+}
+
+.rf-export-bar {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-top: 1.5rem;
+}
+
+.rf-export-btn {
+  padding: 0.6rem 1.1rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #ffffff;
+  background: #08255a;
+  border: 1px solid #08255a;
+  border-radius: 6px;
+}
+
+.rf-export-btn:disabled {
+  opacity: 0.55;
+  cursor: progress;
+}
+
+.rf-export-status {
+  font-size: 0.8rem;
+  color: #6b7280;
+}
+
+/* Export sheet, rendered off-screen and rasterised on demand. */
+.rfe-frame {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.rfe-sheet {
+  width: 1800px;
+  padding: 56px;
+  background: #ffffff;
+  color: #0f1117;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.rfe-sheet .rf-header {
+  margin-bottom: 32px;
+}
+
+.rfe-sheet .rf-section {
+  margin-bottom: 36px;
+}
+
+.rfe-sheet .rf-reference-row {
+  max-width: 560px;
+}
+
+.rfe-sheet .rf-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.rfe-sheet .rf-finalists {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.rfe-footer {
+  border-top: 1px solid #e4e7eb;
+  padding-top: 14px;
+  font-size: 12px;
+  color: #9ca3af;
+}
