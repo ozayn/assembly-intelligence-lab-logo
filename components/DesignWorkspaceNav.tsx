@@ -6,6 +6,10 @@ import { REVIEW_CONCEPTS, ARCHIVED_CONCEPTS, EXPERIMENTAL_CONCEPTS } from './log
 import { EXPERIMENT_CONCEPTS } from './experimentsData'
 import './DesignWorkspaceNav.css'
 
+function label(item: { label: string; count?: number }) {
+  return item.count === undefined ? item.label : `${item.label} (${item.count})`
+}
+
 export function DesignWorkspaceNav() {
   const pathname = usePathname() ?? ''
 
@@ -20,10 +24,12 @@ export function DesignWorkspaceNav() {
 
   const experimentsCount = EXPERIMENT_CONCEPTS.length + EXPERIMENTAL_CONCEPTS.length
 
-  const items = [
+  const items: { label: string; href: string; count?: number; current: boolean }[] = [
     { label: 'Review', href: '/', count: REVIEW_CONCEPTS.length, current: pathname === '/' || pathname.startsWith('/page/') || isReviewConcept },
     { label: 'Experiments', href: '/experiments', count: experimentsCount, current: pathname.startsWith('/experiments') || isExperimentalConcept },
     { label: 'Archive', href: '/archive', count: ARCHIVED_CONCEPTS.length, current: pathname.startsWith('/archive') || isArchivedConcept },
+    // A study rather than a set of concepts, so it carries no count.
+    { label: 'Typography', href: '/typography-exploration', current: pathname.startsWith('/typography-exploration') },
   ]
 
   return (
@@ -34,9 +40,9 @@ export function DesignWorkspaceNav() {
           <span key={item.href} className="dwn-item">
             {i > 0 && <span className="dwn-sep" aria-hidden="true">·</span>}
             {item.current ? (
-              <span className="dwn-current" aria-current="page">{item.label} ({item.count})</span>
+              <span className="dwn-current" aria-current="page">{label(item)}</span>
             ) : (
-              <Link href={item.href}>{item.label} ({item.count})</Link>
+              <Link href={item.href}>{label(item)}</Link>
             )}
           </span>
         ))}
