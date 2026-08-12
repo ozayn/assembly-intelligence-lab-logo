@@ -28,6 +28,8 @@ import {
   Concept30Static,
   Concept31Static,
   Concept32Static,
+  Concept33Static,
+  Concept34Static,
   REVIEW_CONCEPTS,
 } from './logos'
 
@@ -58,6 +60,8 @@ const LOGO_COMPONENTS: Record<number, React.ComponentType> = {
   30: Concept30Static,
   31: Concept31Static,
   32: Concept32Static,
+  33: Concept33Static,
+  34: Concept34Static,
 }
 
 interface ExportSheetProps {

@@ -10,6 +10,7 @@ import {
   WORDMARK_LINE_2,
   WORDMARK_SECONDARY_SCALE,
   WORDMARK_SECONDARY_TRACKING_SCALE,
+  LOCKUP_SYMBOL_SCALE,
   type TypographyDirection,
   type ApplicationTier,
 } from './typographySystems'
@@ -258,7 +259,9 @@ export function LogoCard({
       svgWidth = Math.max(tier.symbolPx, wordmarkWidth) + padding * 2
       svgHeight = tier.symbolPx + tier.gap + wordmarkHeight + padding * 2
       const symbolX = (svgWidth - tier.symbolPx) / 2
-      symbolTransform = `translate(${symbolX}, ${padding}) scale(${symbolScale})`
+      symbolTransform =
+        `translate(${symbolX + tier.symbolPx / 2}, ${padding + tier.symbolPx / 2}) ` +
+        `scale(${symbolScale * LOCKUP_SYMBOL_SCALE}) translate(-100, -100)`
       textX = svgWidth / 2
       textAnchor = 'middle'
       wordmarkTop = padding + tier.symbolPx + tier.gap
@@ -266,7 +269,9 @@ export function LogoCard({
       svgWidth = tier.symbolPx + tier.gap + wordmarkWidth + padding * 2
       svgHeight = Math.max(tier.symbolPx, wordmarkHeight) + padding * 2
       const symbolY = (svgHeight - tier.symbolPx) / 2
-      symbolTransform = `translate(${padding}, ${symbolY}) scale(${symbolScale})`
+      symbolTransform =
+        `translate(${padding + tier.symbolPx / 2}, ${symbolY + tier.symbolPx / 2}) ` +
+        `scale(${symbolScale * LOCKUP_SYMBOL_SCALE}) translate(-100, -100)`
       textX = padding + tier.symbolPx + tier.gap
       textAnchor = 'start'
       wordmarkTop = (svgHeight - wordmarkHeight) / 2

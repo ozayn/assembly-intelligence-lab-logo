@@ -28,9 +28,9 @@ export const TYPOGRAPHY_SYSTEMS: Record<TypographyDirection, TypographySystem> =
     fontFamily: 'var(--font-ibm-plex-sans), "IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
     exportFontFamily: '"IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
     fontWeight: 400,
-    fontSize: 11,
-    letterSpacing: 1.8,
-    lineHeight: 1.05,
+    fontSize: 17,
+    letterSpacing: 3.5,
+    lineHeight: 1,
     description: 'Clean, rational, contemporary. High clarity.',
   },
   editorial: {
@@ -38,9 +38,9 @@ export const TYPOGRAPHY_SYSTEMS: Record<TypographyDirection, TypographySystem> =
     fontFamily: 'var(--font-newsreader), "Newsreader", "Lora", Georgia, serif',
     exportFontFamily: '"Newsreader", "Lora", Georgia, serif',
     fontWeight: 400,
-    fontSize: 11,
-    letterSpacing: 1.6,
-    lineHeight: 1.08,
+    fontSize: 17,
+    letterSpacing: 3,
+    lineHeight: 1.02,
     description: 'Distinctive, intellectual. Contemporary editorial quality.',
   },
   technical: {
@@ -48,18 +48,19 @@ export const TYPOGRAPHY_SYSTEMS: Record<TypographyDirection, TypographySystem> =
     fontFamily: 'var(--font-space-mono), "Space Mono", "IBM Plex Mono", monospace',
     exportFontFamily: '"Space Mono", "IBM Plex Mono", monospace',
     fontWeight: 400,
-    fontSize: 10,
-    letterSpacing: 1.6,
-    lineHeight: 1.05,
+    fontSize: 17,
+    letterSpacing: 3.5,
+    lineHeight: 1,
     description: 'Geometric, engineered. Deliberate clarity.',
   },
 }
 
 export const COMPANY_NAME = 'Assembly Intelligence Lab'
-export const WORDMARK_LINE_1 = 'ASSEMBLY INTELLIGENCE'
-export const WORDMARK_LINE_2 = 'LAB'
-export const WORDMARK_SECONDARY_SCALE = 0.62
-export const WORDMARK_SECONDARY_TRACKING_SCALE = 1.8
+export const WORDMARK_LINE_1 = 'ASSEMBLY'
+export const WORDMARK_LINE_2 = 'INTELLIGENCE LAB'
+export const WORDMARK_SECONDARY_SCALE = 0.48
+export const WORDMARK_SECONDARY_TRACKING_SCALE = 0.66
+export const LOCKUP_SYMBOL_SCALE = 1.1
 
 // Application tiers for the "With Company Name" lockup. Full/Compact use the
 // stacked treatment (primary brand presentation); Header uses horizontal,

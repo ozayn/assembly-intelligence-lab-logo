@@ -35,6 +35,8 @@ export { Concept29Static, Concept29Animated } from './Concept29Wavefront'
 export { Concept30Static, Concept30Animated } from './Concept30Assembly'
 export { Concept31Static, Concept31Animated } from './Concept31Interlock'
 export { Concept32Static, Concept32Animated } from './Concept32EnclosedChain'
+export { Concept33Static, Concept33Animated } from './Concept33FacetedA'
+export { Concept34Static, Concept34Animated } from './Concept34HexagonalA'
 
 export const LOGO_CONCEPTS = [
   {

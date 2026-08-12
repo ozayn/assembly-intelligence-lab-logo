@@ -214,6 +214,20 @@ export const ALL_LOGO_CONCEPTS = [
     active: false,
     reviewCandidate: true,
   },
+  {
+    id: 33,
+    name: 'Faceted A',
+    description: 'A folded capital-A silhouette resolves into four asymmetric planes around a corrected triangular aperture.',
+    active: false,
+    reviewCandidate: true,
+  },
+  {
+    id: 34,
+    name: 'Hexagonal A',
+    description: 'Eight staggered hexagonal modules assemble into an open capital-A structure with deliberate inter-module channels.',
+    active: false,
+    reviewCandidate: true,
+  },
 ]
 
 export const CONCEPTS_PER_PAGE = 6

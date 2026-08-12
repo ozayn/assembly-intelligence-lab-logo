@@ -41,6 +41,8 @@ import {
   Concept30Static, Concept30Animated,
   Concept31Static, Concept31Animated,
   Concept32Static, Concept32Animated,
+  Concept33Static, Concept33Animated,
+  Concept34Static, Concept34Animated,
   ALL_LOGO_CONCEPTS,
   REVIEW_CONCEPTS,
   getPageNumber,
@@ -80,6 +82,8 @@ const ALL_COMPONENTS = [
   { Static: Concept30Static, Animated: Concept30Animated },
   { Static: Concept31Static, Animated: Concept31Animated },
   { Static: Concept32Static, Animated: Concept32Animated },
+  { Static: Concept33Static, Animated: Concept33Animated },
+  { Static: Concept34Static, Animated: Concept34Animated },
 ]
 
 type DisplayMode = 'static' | 'animated'

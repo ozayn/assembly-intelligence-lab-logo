@@ -138,6 +138,11 @@
   justify-content: center;
 }
 
+.symbol-wrapper svg {
+  transform: scale(1.1);
+  transform-origin: center;
+}
+
 .wordmark {
   flex: 1;
   min-width: 0;
