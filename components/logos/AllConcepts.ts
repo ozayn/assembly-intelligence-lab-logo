@@ -228,6 +228,16 @@ export const ALL_LOGO_CONCEPTS = [
     active: false,
     reviewCandidate: true,
   },
+  // Concept 35 — the faceted and molecular languages in one mark. Three
+  // structural variations are compared on /experiments; this entry carries the
+  // strongest of them, so the concept has a page like any other.
+  {
+    id: 35,
+    name: 'Faceted + Molecular A',
+    description: 'A folded A whose counter is cut as a hexagonal module, its lower faces forming the crossbar and a single unit docked at its centre.',
+    active: false,
+    experimental: true,
+  },
 ]
 
 export const CONCEPTS_PER_PAGE = 6

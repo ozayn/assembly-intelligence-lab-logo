@@ -43,6 +43,7 @@ import {
   Concept32Static, Concept32Animated,
   Concept33Static, Concept33Animated,
   Concept34Static, Concept34Animated,
+  Concept35CStatic, Concept35CAnimated,
   ALL_LOGO_CONCEPTS,
   REVIEW_CONCEPTS,
   getPageNumber,
@@ -84,6 +85,9 @@ const ALL_COMPONENTS = [
   { Static: Concept32Static, Animated: Concept32Animated },
   { Static: Concept33Static, Animated: Concept33Animated },
   { Static: Concept34Static, Animated: Concept34Animated },
+  // Concept 35's own page shows 35C, the strongest of the three variations;
+  // all three stay side by side on /experiments.
+  { Static: Concept35CStatic, Animated: Concept35CAnimated },
 ]
 
 type DisplayMode = 'static' | 'animated'
