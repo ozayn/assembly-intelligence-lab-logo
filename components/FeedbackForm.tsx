@@ -130,8 +130,10 @@ export function FeedbackForm({ conceptId, conceptName, onSubmit, isExpanded = fa
         />
       </div>
 
+      {/* Stages this concept's feedback. Nothing is sent until Submit Feedback
+          in the bar at the foot of the page. */}
       <button className="submit-feedback-btn" onClick={handleSubmit}>
-        Submit Feedback
+        Add Feedback
       </button>
     </div>
   )

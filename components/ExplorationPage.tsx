@@ -103,8 +103,6 @@ interface ExplorationPageProps {
    * the symbol alone. The card's own controls are unaffected.
    */
   initialLockup?: TypographyDirection
-  /** Sits at the top of the submission bar, above the confirm button. */
-  voteHint?: string
 }
 
 export function ExplorationPage({
@@ -113,7 +111,6 @@ export function ExplorationPage({
   tagline = 'Logo Exploration',
   showExport = true,
   initialLockup,
-  voteHint,
 }: ExplorationPageProps) {
   const { reviewerName } = useReviewer()
   const [displayMode, setDisplayMode] = useState<DisplayMode>('animated')
@@ -276,7 +273,6 @@ export function ExplorationPage({
 
       {reviewerName && (collectedFeedback.length > 0 || justSubmittedCount !== null) && (
         <section className="feedback-submission-bar">
-          {voteHint && <p className="submission-hint">{voteHint}</p>}
           <div className="submission-content">
             <div className="submission-info">
               {feedbackError ? (

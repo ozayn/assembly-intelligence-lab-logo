@@ -16,7 +16,6 @@ export default function FinalNomineesPage() {
       tagline="Final Nominees"
       showExport={false}
       initialLockup="contemporary"
-      voteHint="Voting takes two clicks: first to review your selection, then to confirm your vote."
     />
   )
 }
