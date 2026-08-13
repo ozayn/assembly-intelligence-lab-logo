@@ -17,13 +17,13 @@ export const ALL_LOGO_CONCEPTS = [
     id: 3,
     name: 'Spiral Core',
     description: 'Particles follow a curved inward trajectory, organizing along a spiral path toward a central core.',
-    active: true,
+    active: false,
   },
   {
     id: 4,
     name: 'Concentric Rings',
     description: 'Modular particles assemble layer by layer, building a structure from center outward in distinct rings.',
-    active: true,
+    active: false,
   },
   {
     id: 5,
