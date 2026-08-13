@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { REVIEW_CONCEPTS, ARCHIVED_CONCEPTS, EXPERIMENTAL_CONCEPTS } from './logos'
+import { REVIEW_CONCEPTS, ARCHIVED_CONCEPTS, EXPERIMENTAL_CONCEPTS, FINAL_NOMINEES } from './logos'
 import { EXPERIMENT_CONCEPTS } from './experimentsData'
 import './DesignWorkspaceNav.css'
 
@@ -25,6 +25,7 @@ export function DesignWorkspaceNav() {
   const experimentsCount = EXPERIMENT_CONCEPTS.length + EXPERIMENTAL_CONCEPTS.length
 
   const items: { label: string; href: string; count?: number; current: boolean }[] = [
+    { label: 'Final Nominees', href: '/final-nominees', count: FINAL_NOMINEES.length, current: pathname.startsWith('/final-nominees') },
     { label: 'Review', href: '/', count: REVIEW_CONCEPTS.length, current: pathname === '/' || pathname.startsWith('/page/') || isReviewConcept },
     { label: 'Experiments', href: '/experiments', count: experimentsCount, current: pathname.startsWith('/experiments') || isExperimentalConcept },
     { label: 'Archive', href: '/archive', count: ARCHIVED_CONCEPTS.length, current: pathname.startsWith('/archive') || isArchivedConcept },

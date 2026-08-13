@@ -87,10 +87,24 @@ type DisplayMode = 'static' | 'animated'
 type SizeMode = 'full' | '64px' | '32px' | '16px'
 
 interface ExplorationPageProps {
-  currentPage: number
+  currentPage?: number
+  /**
+   * Shows this set instead of the paginated review slice. Everything else —
+   * controls, cards, feedback — is untouched, so a filtered view is the same
+   * presentation with fewer concepts in it.
+   */
+  concepts?: typeof ALL_LOGO_CONCEPTS
+  tagline?: string
+  /** The export sheet covers the whole collection, so a subset view hides it. */
+  showExport?: boolean
 }
 
-export function ExplorationPage({ currentPage }: ExplorationPageProps) {
+export function ExplorationPage({
+  currentPage = 1,
+  concepts: conceptsOverride,
+  tagline = 'Logo Exploration',
+  showExport = true,
+}: ExplorationPageProps) {
   const { reviewerName } = useReviewer()
   const [displayMode, setDisplayMode] = useState<DisplayMode>('animated')
   const [logoBackground, setLogoBackground] = useState<'light' | 'dark'>('light')
@@ -105,7 +119,8 @@ export function ExplorationPage({ currentPage }: ExplorationPageProps) {
     submitAllFeedback,
   } = useFeedbackSubmission(reviewerName)
 
-  const concepts = getConceptsForPage(currentPage)
+  const concepts = conceptsOverride ?? getConceptsForPage(currentPage)
+  const paginated = conceptsOverride === undefined
 
   const togglePlayAll = () => {
     setPlayAll(!playAll)
@@ -127,7 +142,7 @@ export function ExplorationPage({ currentPage }: ExplorationPageProps) {
         <div className="header-container">
           <div className="logo-area">
             <h1>Assembly Intelligence Lab</h1>
-            <p className="tagline">Logo Exploration</p>
+            <p className="tagline">{tagline}</p>
           </div>
 
           <div className="controls">
@@ -203,9 +218,11 @@ export function ExplorationPage({ currentPage }: ExplorationPageProps) {
               </button>
             </div>
 
-            <div className="control-group">
-              <ExportButton />
-            </div>
+            {showExport && (
+              <div className="control-group">
+                <ExportButton />
+              </div>
+            )}
           </div>
           <ReviewerBadge />
         </div>
@@ -213,7 +230,9 @@ export function ExplorationPage({ currentPage }: ExplorationPageProps) {
 
       <main className="page-main">
         <section className="concepts-section">
-          <div className="concepts-grid">
+          <div
+            className={`concepts-grid${!paginated && concepts.length === 2 ? ' concepts-grid-pair' : ''}`}
+          >
             {concepts.map((concept) => {
               const { Static, Animated } = REVIEW_COMPONENTS[concept.id]
               return (
@@ -237,23 +256,25 @@ export function ExplorationPage({ currentPage }: ExplorationPageProps) {
         </section>
       </main>
 
-      <section className="pagination-section">
-        <div style={{ marginBottom: '1rem', color: 'var(--text-muted)', fontSize: '0.9rem' }}>
-          {currentPage} / {TOTAL_PAGES}
-        </div>
-        <div className="pagination-nav" style={{ display: 'flex', justifyContent: 'center', gap: '1rem', flexWrap: 'wrap' }}>
-          {currentPage > 1 && (
-            <Link href={currentPage === 2 ? '/' : `/page/${currentPage - 1}`}>
-              <button>← Previous</button>
-            </Link>
-          )}
-          {currentPage < TOTAL_PAGES && (
-            <Link href={`/page/${currentPage + 1}`}>
-              <button>Next →</button>
-            </Link>
-          )}
-        </div>
-      </section>
+      {paginated && (
+        <section className="pagination-section">
+          <div style={{ marginBottom: '1rem', color: 'var(--text-muted)', fontSize: '0.9rem' }}>
+            {currentPage} / {TOTAL_PAGES}
+          </div>
+          <div className="pagination-nav" style={{ display: 'flex', justifyContent: 'center', gap: '1rem', flexWrap: 'wrap' }}>
+            {currentPage > 1 && (
+              <Link href={currentPage === 2 ? '/' : `/page/${currentPage - 1}`}>
+                <button>← Previous</button>
+              </Link>
+            )}
+            {currentPage < TOTAL_PAGES && (
+              <Link href={`/page/${currentPage + 1}`}>
+                <button>Next →</button>
+              </Link>
+            )}
+          </div>
+        </section>
+      )}
 
       {reviewerName && (collectedFeedback.length > 0 || justSubmittedCount !== null) && (
         <section className="feedback-submission-bar">
