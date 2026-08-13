@@ -115,24 +115,9 @@ function Round3Content() {
           </div>
 
           <div className="controls">
-            <div className="control-group">
-              <label>Display</label>
-              <div className="button-group">
-                <button
-                  className={displayMode === 'static' ? 'active' : ''}
-                  onClick={() => setDisplayMode('static')}
-                >
-                  Static
-                </button>
-                <button
-                  className={displayMode === 'animated' ? 'active' : ''}
-                  onClick={() => setDisplayMode('animated')}
-                >
-                  Animated
-                </button>
-              </div>
-            </div>
-
+            {/* Hidden along with the other Display switches. This page never
+                passed displayMode down to the cards, so nothing here is
+                affected either way. */}
             <div className="control-group">
               <label>Theme</label>
               <div className="button-group">

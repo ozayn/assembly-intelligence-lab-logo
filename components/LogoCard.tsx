@@ -39,6 +39,10 @@ interface LogoCardProps {
   microMark32?: React.ReactNode
   microMark16?: React.ReactNode
   reviewCandidate?: boolean
+  // Opening state only. Both remain fully switchable by the reviewer, and the
+  // defaults are what every existing page already shows.
+  initialLogoVersion?: LogoVersion
+  initialTypography?: TypographyDirection
 }
 
 export function LogoCard({
@@ -55,14 +59,17 @@ export function LogoCard({
   microMark32,
   microMark16,
   reviewCandidate = false,
+  initialLogoVersion = 'symbol',
+  initialTypography = 'scientific',
 }: LogoCardProps) {
   const [isAnimating, setIsAnimating] = useState(onPlayAll)
   const [showAnimated, setShowAnimated] = useState(false)
   const [showFeedback, setShowFeedback] = useState(false)
   const [copyLinkFeedback, setCopyLinkFeedback] = useState(false)
   const [selectedExportSize, setSelectedExportSize] = useState<ExportSize>('64')
-  const [logoVersion, setLogoVersion] = useState<LogoVersion>('symbol')
-  const [typographyDirection, setTypographyDirection] = useState<TypographyDirection>('scientific')
+  const [logoVersion, setLogoVersion] = useState<LogoVersion>(initialLogoVersion)
+  const [typographyDirection, setTypographyDirection] =
+    useState<TypographyDirection>(initialTypography)
   const [applicationTier, setApplicationTier] = useState<ApplicationTier>('full')
   const logoContainerRef = useRef<HTMLDivElement>(null)
   const sizeContainerRefs = useRef<Record<ExportSize, HTMLDivElement | null>>({

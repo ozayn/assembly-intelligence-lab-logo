@@ -391,6 +391,16 @@ html.dark .feedback-submission-bar {
   gap: 2rem;
 }
 
+/* Sets expectations for the two-stage submit without drawing attention away
+   from the concepts themselves. */
+.submission-hint {
+  max-width: 1400px;
+  margin: 0 auto 0.75rem;
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
 .submission-info {
   flex: 1;
 }

@@ -7,6 +7,7 @@ import { LogoCard } from './LogoCard'
 import { ExportButton } from './ExportButton'
 import { DesignWorkspaceNav } from './DesignWorkspaceNav'
 import { useFeedbackSubmission } from './useFeedbackSubmission'
+import type { TypographyDirection } from './typographySystems'
 import Link from 'next/link'
 import {
   Concept01Static, Concept01Animated,
@@ -97,6 +98,13 @@ interface ExplorationPageProps {
   tagline?: string
   /** The export sheet covers the whole collection, so a subset view hides it. */
   showExport?: boolean
+  /**
+   * Opens every card on the company-name lockup in this typography instead of
+   * the symbol alone. The card's own controls are unaffected.
+   */
+  initialLockup?: TypographyDirection
+  /** Sits at the top of the submission bar, above the confirm button. */
+  voteHint?: string
 }
 
 export function ExplorationPage({
@@ -104,6 +112,8 @@ export function ExplorationPage({
   concepts: conceptsOverride,
   tagline = 'Logo Exploration',
   showExport = true,
+  initialLockup,
+  voteHint,
 }: ExplorationPageProps) {
   const { reviewerName } = useReviewer()
   const [displayMode, setDisplayMode] = useState<DisplayMode>('animated')
@@ -146,24 +156,10 @@ export function ExplorationPage({
           </div>
 
           <div className="controls">
-            <div className="control-group">
-              <label>Display</label>
-              <div className="button-group">
-                <button
-                  className={displayMode === 'static' ? 'active' : ''}
-                  onClick={() => setDisplayMode('static')}
-                >
-                  Static
-                </button>
-                <button
-                  className={displayMode === 'animated' ? 'active' : ''}
-                  onClick={() => setDisplayMode('animated')}
-                >
-                  Animated
-                </button>
-              </div>
-            </div>
-
+            {/* The Display (Static/Animated) switch is deliberately not rendered:
+                reviewers found it confusing, and each card already has its own
+                Play Assembly and Replay. displayMode below keeps its value, so
+                the marks behave exactly as they did with it set to Animated. */}
             <div className="control-group">
               <label>Website Preview</label>
               <div className="button-group">
@@ -249,6 +245,8 @@ export function ExplorationPage({
                   logoBackground={logoBackground}
                   sizeMode={sizeMode}
                   reviewCandidate={concept.reviewCandidate === true}
+                  initialLogoVersion={initialLockup ? 'lockup' : undefined}
+                  initialTypography={initialLockup}
                 />
               )
             })}
@@ -278,6 +276,7 @@ export function ExplorationPage({
 
       {reviewerName && (collectedFeedback.length > 0 || justSubmittedCount !== null) && (
         <section className="feedback-submission-bar">
+          {voteHint && <p className="submission-hint">{voteHint}</p>}
           <div className="submission-content">
             <div className="submission-info">
               {feedbackError ? (

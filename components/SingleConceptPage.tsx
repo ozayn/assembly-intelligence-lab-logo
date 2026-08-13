@@ -187,24 +187,9 @@ export function SingleConceptPage({ conceptId }: SingleConceptPageProps) {
           </div>
 
           <div className="controls">
-            <div className="control-group">
-              <label>Display</label>
-              <div className="button-group">
-                <button
-                  className={displayMode === 'static' ? 'active' : ''}
-                  onClick={() => setDisplayMode('static')}
-                >
-                  Static
-                </button>
-                <button
-                  className={displayMode === 'animated' ? 'active' : ''}
-                  onClick={() => setDisplayMode('animated')}
-                >
-                  Animated
-                </button>
-              </div>
-            </div>
-
+            {/* Hidden for the same reason as on the collection pages: the card's
+                own Play Assembly and Replay cover it. displayMode keeps its
+                Animated value, so nothing about the motion changes. */}
             <div className="control-group">
               <label>Website Preview</label>
               <div className="button-group">
