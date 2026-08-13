@@ -228,15 +228,29 @@ export const ALL_LOGO_CONCEPTS = [
     active: false,
     reviewCandidate: true,
   },
-  // Concept 35 — the faceted and molecular languages in one mark. Three
-  // structural variations are compared on /experiments; this entry carries the
-  // strongest of them, so the concept has a page like any other.
+  // 35-37 — the faceted and molecular languages in one mark, three structural
+  // readings of the same idea. They differ only in where the folded plane ends
+  // and the modules begin, so they are reviewed side by side.
   {
     id: 35,
-    name: 'Faceted + Molecular A',
-    description: 'A folded A whose counter is cut as a hexagonal module, its lower faces forming the crossbar and a single unit docked at its centre.',
+    name: 'Faceted + Molecular A — Integrated Leg',
+    description: "Concept 34 with one leg folded. Apex, right-hand run and crossbar unit keep Concept 34's exact positions; the three modules that made up its left leg become a single folded plane occupying the footprint they swept. The crossbar unit is the one piece touching both systems.",
     active: false,
-    experimental: true,
+    reviewCandidate: true,
+  },
+  {
+    id: 36,
+    name: 'Faceted + Molecular A — Assembly Transition',
+    description: 'Concept 33 with the lower right leg still resolving. The plane breaks on a line parallel to the face of the module below it, and two units continue on the leg\u2019s own centre line — one structure caught crystallising into the other.',
+    active: false,
+    reviewCandidate: true,
+  },
+  {
+    id: 37,
+    name: 'Faceted + Molecular A — Molecular Interior',
+    description: 'The outer silhouette stays a solid folded A. The counter is cut as a module rather than a triangle, its lower faces form the crossbar, and one unit is docked at its centre. Nothing hangs off the outside of the letter.',
+    active: false,
+    reviewCandidate: true,
   },
 ]
 

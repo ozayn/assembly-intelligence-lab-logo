@@ -38,6 +38,9 @@ import {
   Concept32Static, Concept32Animated,
   Concept33Static, Concept33Animated,
   Concept34Static, Concept34Animated,
+  Concept35AStatic, Concept35AAnimated,
+  Concept35BStatic, Concept35BAnimated,
+  Concept35CStatic, Concept35CAnimated,
   ALL_LOGO_CONCEPTS,
   getConceptsForPage,
   TOTAL_PAGES,
@@ -82,6 +85,9 @@ const REVIEW_COMPONENTS: Record<number, { Static: React.ComponentType; Animated:
   32: { Static: Concept32Static, Animated: Concept32Animated },
   33: { Static: Concept33Static, Animated: Concept33Animated },
   34: { Static: Concept34Static, Animated: Concept34Animated },
+  35: { Static: Concept35AStatic, Animated: Concept35AAnimated },
+  36: { Static: Concept35BStatic, Animated: Concept35BAnimated },
+  37: { Static: Concept35CStatic, Animated: Concept35CAnimated },
 }
 
 type DisplayMode = 'static' | 'animated'

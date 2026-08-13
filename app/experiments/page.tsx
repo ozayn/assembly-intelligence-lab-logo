@@ -15,9 +15,6 @@ import {
   Concept22Static, Concept22Animated,
   Concept23Static, Concept23Animated,
   Concept24Static, Concept24Animated,
-  Concept35AStatic, Concept35AAnimated,
-  Concept35BStatic, Concept35BAnimated,
-  Concept35CStatic, Concept35CAnimated,
 } from '@/components/logos'
 import '@/app/page.css'
 import './experiments.css'
@@ -31,40 +28,9 @@ const NEW_ROUND_COMPONENTS: Record<number, { Static: React.ComponentType; Animat
   24: { Static: Concept24Static, Animated: Concept24Animated },
 }
 
-// Three structural readings of the same idea, kept deliberately close to each
-// other: the question on the table is where the folded plane should end and
-// the modules should begin, not which of three logos to pick.
-const HYBRID_VARIATIONS = [
-  {
-    key: '35A',
-    name: 'A — Integrated Leg',
-    description:
-      "Concept 34 with one leg folded. Apex, right-hand run and crossbar unit keep Concept 34's exact positions; the three modules that made up its left leg become a single folded plane occupying the footprint they swept. The crossbar unit is the one piece touching both systems.",
-    Static: Concept35AStatic,
-    Animated: Concept35AAnimated,
-  },
-  {
-    key: '35B',
-    name: 'B — Assembly Transition',
-    description:
-      'Concept 33 with the lower right leg still resolving. The plane breaks on a line parallel to the face of the module below it, and two units continue on the leg\u2019s own centre line — one structure caught crystallising into the other.',
-    Static: Concept35BStatic,
-    Animated: Concept35BAnimated,
-  },
-  {
-    key: '35C',
-    name: 'C — Molecular Interior',
-    description:
-      'The outer silhouette stays a solid folded A. The counter is cut as a module rather than a triangle, its lower faces form the crossbar, and one unit is docked at its centre. Nothing hangs off the outside of the letter.',
-    Static: Concept35CStatic,
-    Animated: Concept35CAnimated,
-  },
-]
-
 export default function ExperimentsPage() {
   const { reviewerName } = useReviewer()
   const [newRoundBackground, setNewRoundBackground] = useState<'light' | 'dark'>('light')
-  const [hybridBackground, setHybridBackground] = useState<'light' | 'dark'>('light')
   const {
     collectedFeedback,
     submittingFeedback,
@@ -102,56 +68,6 @@ export default function ExperimentsPage() {
 
       <section style={{ padding: '0 2rem', marginBottom: '1rem' }}>
         <h2 style={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', marginBottom: '0.35rem' }}>
-          Concept 35 — Faceted + Molecular A — 35A–35C
-        </h2>
-        <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '1rem', maxWidth: '62ch' }}>
-          One A holding both languages: the folded planes of Concept 33 and the hexagonal
-          modules of Concept 34. In all three, the modules keep Concept 34&rsquo;s geometry, each
-          module is cut to the width of the leg it belongs to, and every plane edge facing a
-          module runs parallel to that module&rsquo;s face across Concept 34&rsquo;s own channel — so a
-          plane and a module read as one material in two states. Three structural variations
-          of the same idea.
-        </p>
-        <div className="control-group" style={{ marginBottom: '1.5rem' }}>
-          <label style={{ fontSize: '0.75rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--text-muted)', marginRight: '0.75rem' }}>
-            Website Preview
-          </label>
-          <div className="button-group" style={{ display: 'inline-flex' }}>
-            <button
-              className={hybridBackground === 'light' ? 'active' : ''}
-              onClick={() => setHybridBackground('light')}
-            >
-              Light
-            </button>
-            <button
-              className={hybridBackground === 'dark' ? 'active' : ''}
-              onClick={() => setHybridBackground('dark')}
-            >
-              Dark
-            </button>
-          </div>
-        </div>
-        <div className="concepts-grid">
-          {HYBRID_VARIATIONS.map((variation) => (
-            <LogoCard
-              key={variation.key}
-              id={35}
-              name={variation.name}
-              description={variation.description}
-              staticLogo={<variation.Static />}
-              animatedLogo={<variation.Animated />}
-              onPlayAll={false}
-              onFeedbackSubmit={handleFeedbackSubmit}
-              displayMode="animated"
-              logoBackground={hybridBackground}
-              sizeMode="full"
-            />
-          ))}
-        </div>
-      </section>
-
-      <section style={{ padding: '0 2rem', marginTop: '3rem', marginBottom: '1rem' }}>
-        <h2 style={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', marginBottom: '0.35rem', borderTop: '1px solid #e0e0e0', paddingTop: '2rem' }}>
           New Creative Round — 19–24
         </h2>
         <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '1rem' }}>
