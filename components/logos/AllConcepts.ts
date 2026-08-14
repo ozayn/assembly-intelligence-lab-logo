@@ -254,7 +254,7 @@ export const ALL_LOGO_CONCEPTS = [
   {
     id: 38,
     name: 'Faceted A — Hexagonal Counter',
-    description: "Concept 40's letter with the module moved to the centre and closed on all six sides: the counter is a true regular hexagon, flat side up, on the letter's own axis. Its ceiling closes the head, its widest corners set the waist of the legs and the line each leg folds on, and its floor is the bar the legs hang from — below which the counter opens again to the feet, so the mark stays an A carrying a cell rather than a badge with a hole in it.",
+    description: "Concept 40's letter with a module for a counter: a regular hexagon, closed on all six sides, centred on the letter's axis. The legs hang from a bar beneath it and fold on the lines struck from its widest corners.",
     active: false,
     reviewCandidate: true,
   },
