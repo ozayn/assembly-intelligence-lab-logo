@@ -265,6 +265,13 @@ export const ALL_LOGO_CONCEPTS = [
     active: false,
     reviewCandidate: true,
   },
+  {
+    id: 40,
+    name: 'Faceted A — Crossbar',
+    description: 'A pointed A whose outer edges break at the shoulders, so a broad wedge stands on two steeper legs, and whose counter is closed by a flat ceiling rather than running up to a point. Five planes and three tones: the head folds once, the right leg stays a single plane, and the left leg creases above the foot on the angle the family\u2019s modules are built from.',
+    active: false,
+    reviewCandidate: true,
+  },
 ]
 
 export const CONCEPTS_PER_PAGE = 9
