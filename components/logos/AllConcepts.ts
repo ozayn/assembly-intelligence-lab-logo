@@ -270,7 +270,7 @@ export const ALL_LOGO_CONCEPTS = [
   },
 ]
 
-export const CONCEPTS_PER_PAGE = 6
+export const CONCEPTS_PER_PAGE = 8
 
 export const ACTIVE_CONCEPTS = ALL_LOGO_CONCEPTS.filter(c => c.active)
 export const REVIEW_CANDIDATES = ALL_LOGO_CONCEPTS.filter(c => c.reviewCandidate === true)
