@@ -9,7 +9,7 @@ import { motion } from 'framer-motion'
 const UPPER_FACET = '78,25 100,88 46,103'
 const MIDDLE_FACET = '46,103 100,88 70,148'
 const LOWER_FACET = '15,169 46,103 70,148'
-const RIGHT_PLANE = '78,25 122,25 185,169 130,148 100,88'
+export const RIGHT_PLANE = '78,25 122,25 185,169 130,148 100,88'
 
 type Facet = {
   points: string

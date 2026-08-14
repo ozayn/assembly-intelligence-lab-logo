@@ -97,13 +97,13 @@ export const ALL_LOGO_CONCEPTS = [
     id: 16,
     name: 'Fold/Transformation',
     description: 'Vertical elements transform into nested arcs. Reorganization reveals the final structure.',
-    active: true,
+    active: false,
   },
   {
     id: 17,
     name: 'Negative-Space Assembly',
     description: 'Four segments assemble around a meaningful void. The empty space is the identity.',
-    active: true,
+    active: false,
   },
   {
     id: 18,
@@ -191,7 +191,6 @@ export const ALL_LOGO_CONCEPTS = [
     name: 'Wavefront',
     description: 'Nine particles travel a rhythmic wave, bonding where they crowd and dispersing as the amplitude falls away.',
     active: false,
-    reviewCandidate: true,
   },
   {
     id: 30,
@@ -256,7 +255,7 @@ export const ALL_LOGO_CONCEPTS = [
   {
     id: 38,
     name: 'Faceted A — One Module',
-    description: "Concept 33 untouched, with a single Concept 34 module cut into the dark right plane. It sits on the bisector of the leg, one Concept 34 channel clear of both edges, and carries the tone of the facet facing it across the counter.",
+    description: "Concept 33 untouched, with a single Concept 34 module taken out of the dark right plane as a void. One of its faces lies on the edge that closes the counter, running from the apex down, so the cell opens into the white and the letter's aperture begins as a module rather than containing one.",
     active: false,
     reviewCandidate: true,
   },
@@ -269,7 +268,7 @@ export const ALL_LOGO_CONCEPTS = [
   },
 ]
 
-export const CONCEPTS_PER_PAGE = 8
+export const CONCEPTS_PER_PAGE = 9
 
 export const ACTIVE_CONCEPTS = ALL_LOGO_CONCEPTS.filter(c => c.active)
 export const REVIEW_CANDIDATES = ALL_LOGO_CONCEPTS.filter(c => c.reviewCandidate === true)

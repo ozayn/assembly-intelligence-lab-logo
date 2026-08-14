@@ -26,6 +26,7 @@ import {
   Round3Concept04Static, Round3Concept04Animated,
   Round3Concept05Static, Round3Concept05Animated,
   Round3Concept06Static, Round3Concept06Animated,
+  Concept29Static, Concept29Animated,
   Concept31Static, Concept31Animated,
   Concept35AStatic, Concept35AAnimated,
   ARCHIVED_CONCEPTS,
@@ -53,6 +54,7 @@ const ARCHIVE_COMPONENTS: Record<number, { Static: ComponentType; Animated: Comp
   16: { Static: Round3Concept04Static, Animated: Round3Concept04Animated },
   17: { Static: Round3Concept05Static, Animated: Round3Concept05Animated },
   18: { Static: Round3Concept06Static, Animated: Round3Concept06Animated },
+  29: { Static: Concept29Static, Animated: Concept29Animated },
   31: { Static: Concept31Static, Animated: Concept31Animated },
   35: { Static: Concept35AStatic, Animated: Concept35AAnimated },
 }
