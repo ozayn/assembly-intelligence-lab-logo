@@ -205,7 +205,6 @@ export const ALL_LOGO_CONCEPTS = [
     name: 'Interlock',
     description: 'Two open hexagonal structures overlap through facing apertures, creating one restrained interlocking composition.',
     active: false,
-    reviewCandidate: true,
   },
   {
     id: 32,
