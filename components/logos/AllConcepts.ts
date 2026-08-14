@@ -103,7 +103,7 @@ export const ALL_LOGO_CONCEPTS = [
     id: 17,
     name: 'Negative-Space Assembly',
     description: 'Four segments assemble around a meaningful void. The empty space is the identity.',
-    active: false,
+    active: true,
   },
   {
     id: 18,
