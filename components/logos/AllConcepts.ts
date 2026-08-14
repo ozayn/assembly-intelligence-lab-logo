@@ -251,9 +251,9 @@ export const ALL_LOGO_CONCEPTS = [
     active: false,
     reviewCandidate: true,
   },
-  // 38-39 — the other way of combining 33 and 34. Rather than replacing part of
-  // the letter with modules, Concept 33 is left intact and a module is cut into
-  // the filled mass, so the silhouette and the white counter stay 33's own.
+  // 38-39 — the other way of combining 33 and 34: rather than replacing part of
+  // the letter with modules, the module is made structural. 38 keeps Concept 33
+  // exactly and cuts a module into its mass; 39 rebuilds the letter around one.
   {
     id: 38,
     name: 'Faceted A — One Module',
@@ -263,8 +263,8 @@ export const ALL_LOGO_CONCEPTS = [
   },
   {
     id: 39,
-    name: 'Faceted A — Two Modules',
-    description: 'The same construction with a second module in the upper-left facet, at the one point holding an equal channel to all three of its edges. The two modules sit either side of the counter, each in the other half\u2019s tone.',
+    name: 'Faceted A — Keystone Cell',
+    description: "A cell at full structural size sits where the two planes of the A meet, its three upper faces forming the crown of the letter and its lower faces the seams inside it. The planes are cut to the cell's own face angle, so every fold in the mark follows the molecule's geometry while the footprint, stance and triangular counter stay Concept 33's.",
     active: false,
     reviewCandidate: true,
   },

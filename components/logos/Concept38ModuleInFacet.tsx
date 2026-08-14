@@ -4,14 +4,14 @@ import { motion } from 'framer-motion'
 import { FACETS, DURATION, EASE } from './Concept33FacetedA'
 import { hex } from './Concept35HybridA'
 
-// Concepts 38 and 39 — Concept 33 carrying Concept 34's module.
+// Concept 38 — Concept 33 carrying Concept 34's module.
 //
 // Concept 36 put its modules where the leg ended, so the letter lost weight on
 // one side. Here the silhouette is not touched at all: Concept 33's four facets
 // are imported as they are, so the proportions, the fold lines and the white
 // counter are literally its own. Everything added sits inside the filled mass.
 //
-// Two rules place a module. It is a point-up module of Concept 34's geometry,
+// Two rules place the module. It is a point-up module of Concept 34's geometry,
 // cut to the plane that holds it so that it stands five units clear of every
 // edge of that plane — the channel Concept 34 leaves between its own modules,
 // which is why the surrounding facet never thins to a seam. And it takes the
@@ -25,22 +25,12 @@ type Piece = (typeof FACETS)[number]
 // module can hold the same channel to both of the leg's edges.
 const RIGHT_LEG_MODULE = hex(140, 120, 16.5)
 
-// In the upper-left facet, at its incentre: the one point where a module can
-// hold the same channel to all three of the facet's edges.
-const UPPER_FACET_MODULE = hex(76.5, 76, 13)
-
-// The modules dock once the letter is already standing, so the mark still
+// The module docks once the letter is already standing, so the mark still
 // assembles as Concept 33 does and the molecular language arrives into a
 // finished structure rather than competing with it.
 const CONCEPT_38: Piece[] = [
   ...FACETS,
   { points: RIGHT_LEG_MODULE, fill: 'var(--logo-accent)', from: { x: 7, y: 12 }, seat: 1.28 },
-]
-
-const CONCEPT_39: Piece[] = [
-  ...FACETS,
-  { points: UPPER_FACET_MODULE, fill: 'var(--logo-secondary)', from: { x: -8, y: -11 }, seat: 1.28 },
-  { points: RIGHT_LEG_MODULE, fill: 'var(--logo-accent)', from: { x: 7, y: 12 }, seat: 1.46 },
 ]
 
 function Mark({ pieces, animated }: { pieces: Piece[]; animated: boolean }) {
@@ -70,12 +60,4 @@ export function Concept38Static() {
 
 export function Concept38Animated() {
   return <Mark pieces={CONCEPT_38} animated />
-}
-
-export function Concept39Static() {
-  return <Mark pieces={CONCEPT_39} animated={false} />
-}
-
-export function Concept39Animated() {
-  return <Mark pieces={CONCEPT_39} animated />
 }
