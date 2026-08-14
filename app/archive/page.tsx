@@ -29,6 +29,7 @@ import {
   Concept29Static, Concept29Animated,
   Concept31Static, Concept31Animated,
   Concept35AStatic, Concept35AAnimated,
+  Concept35CStatic, Concept35CAnimated,
   ARCHIVED_CONCEPTS,
 } from '@/components/logos'
 import '@/app/page.css'
@@ -57,6 +58,7 @@ const ARCHIVE_COMPONENTS: Record<number, { Static: ComponentType; Animated: Comp
   29: { Static: Concept29Static, Animated: Concept29Animated },
   31: { Static: Concept31Static, Animated: Concept31Animated },
   35: { Static: Concept35AStatic, Animated: Concept35AAnimated },
+  37: { Static: Concept35CStatic, Animated: Concept35CAnimated },
 }
 
 export default function ArchivePage() {

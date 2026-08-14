@@ -247,7 +247,6 @@ export const ALL_LOGO_CONCEPTS = [
     name: 'Faceted + Molecular A — Molecular Interior',
     description: 'The outer silhouette stays a solid folded A. The counter is cut as a module rather than a triangle, its lower faces form the crossbar, and one unit is docked at its centre. Nothing hangs off the outside of the letter.',
     active: false,
-    reviewCandidate: true,
   },
   // 38-39 — the other way of combining 33 and 34: rather than replacing part of
   // the letter with modules, the module is made structural. 38 keeps Concept 33
@@ -262,7 +261,7 @@ export const ALL_LOGO_CONCEPTS = [
   {
     id: 39,
     name: 'Faceted A — Keystone Cell',
-    description: "A cell at full structural size sits where the two planes of the A meet, its three upper faces forming the crown of the letter and its lower faces the seams inside it. The planes are cut to the cell's own face angle, so every fold in the mark follows the molecule's geometry while the footprint, stance and triangular counter stay Concept 33's.",
+    description: "A cell at full structural size forms the crown of the letter, and both sides of the A hang from the two faces underneath it — the left plane from two faces, creased on the cell's own angle, the right leg from one, as wide at the joint as the face it leaves. Nothing else connects them: the counter opens from the cell's lowest point, so the molecule is the joint the letter is assembled at.",
     active: false,
     reviewCandidate: true,
   },
