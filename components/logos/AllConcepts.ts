@@ -266,9 +266,9 @@ export const EXPERIMENTAL_CONCEPTS = ALL_LOGO_CONCEPTS.filter(c => c.experimenta
 export const NEW_ROUND_CONCEPTS = EXPERIMENTAL_CONCEPTS.filter(c => c.id >= 19 && c.id <= 24)
 export const REFERENCE_REFINEMENT_CONCEPTS = REVIEW_CANDIDATES
 
-// The two marks the team is choosing between. This is a view of them, not a
-// change of status: both stay in the review set and keep their own pages.
-const FINAL_NOMINEE_IDS = [33, 34]
+// The marks the team is choosing between. This is a view of them, not a change
+// of status: they stay in the review set and keep their own pages.
+const FINAL_NOMINEE_IDS = [25, 33, 34, 36]
 export const FINAL_NOMINEES = ALL_LOGO_CONCEPTS.filter(c => FINAL_NOMINEE_IDS.includes(c.id))
 
 export function getPageNumber(conceptId: number): number {

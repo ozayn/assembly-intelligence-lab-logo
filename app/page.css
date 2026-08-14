@@ -161,7 +161,7 @@
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
-  /* Two concepts in a three-track grid would sit off to one side. */
+  /* Two or four concepts in a three-track grid would leave an orphan row. */
   .concepts-grid-pair {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }

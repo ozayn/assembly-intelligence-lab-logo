@@ -230,7 +230,7 @@ export function ExplorationPage({
       <main className="page-main">
         <section className="concepts-section">
           <div
-            className={`concepts-grid${!paginated && concepts.length === 2 ? ' concepts-grid-pair' : ''}`}
+            className={`concepts-grid${!paginated && concepts.length % 2 === 0 && concepts.length <= 4 ? ' concepts-grid-pair' : ''}`}
           >
             {concepts.map((concept) => {
               const { Static, Animated } = REVIEW_COMPONENTS[concept.id]
