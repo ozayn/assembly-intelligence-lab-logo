@@ -229,14 +229,13 @@ export const ALL_LOGO_CONCEPTS = [
     reviewCandidate: true,
   },
   // 35-37 — the faceted and molecular languages in one mark, three structural
-  // readings of the same idea. They differ only in where the folded plane ends
-  // and the modules begin, so they are reviewed side by side.
+  // readings of the same idea, differing in where the folded plane ends and the
+  // modules begin. 35 is archived; 36 and 37 stay in review.
   {
     id: 35,
     name: 'Faceted + Molecular A — Integrated Leg',
     description: "Concept 34 with one leg folded. Apex, right-hand run and crossbar unit keep Concept 34's exact positions; the three modules that made up its left leg become a single folded plane occupying the footprint they swept. The crossbar unit is the one piece touching both systems.",
     active: false,
-    reviewCandidate: true,
   },
   {
     id: 36,
@@ -249,6 +248,23 @@ export const ALL_LOGO_CONCEPTS = [
     id: 37,
     name: 'Faceted + Molecular A — Molecular Interior',
     description: 'The outer silhouette stays a solid folded A. The counter is cut as a module rather than a triangle, its lower faces form the crossbar, and one unit is docked at its centre. Nothing hangs off the outside of the letter.',
+    active: false,
+    reviewCandidate: true,
+  },
+  // 38-39 — the other way of combining 33 and 34. Rather than replacing part of
+  // the letter with modules, Concept 33 is left intact and a module is cut into
+  // the filled mass, so the silhouette and the white counter stay 33's own.
+  {
+    id: 38,
+    name: 'Faceted A — One Module',
+    description: "Concept 33 untouched, with a single Concept 34 module cut into the dark right plane. It sits on the bisector of the leg, one Concept 34 channel clear of both edges, and carries the tone of the facet facing it across the counter.",
+    active: false,
+    reviewCandidate: true,
+  },
+  {
+    id: 39,
+    name: 'Faceted A — Two Modules',
+    description: 'The same construction with a second module in the upper-left facet, at the one point holding an equal channel to all three of its edges. The two modules sit either side of the counter, each in the other half\u2019s tone.',
     active: false,
     reviewCandidate: true,
   },

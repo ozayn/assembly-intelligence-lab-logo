@@ -23,15 +23,15 @@ type Facet = {
 // Paint order is part of the approved static frame and is preserved exactly.
 // The wide right plane seats last, so the negative-space aperture only reads
 // once the surrounding facets are already in position.
-const FACETS: Facet[] = [
+export const FACETS: Facet[] = [
   { points: LOWER_FACET, fill: 'var(--logo-primary)', from: { x: -15, y: 11 }, seat: 0.08 },
   { points: UPPER_FACET, fill: 'var(--logo-accent)', from: { x: -9, y: -13 }, seat: 0.68 },
   { points: MIDDLE_FACET, fill: 'var(--logo-light)', from: { x: -14, y: 5 }, seat: 0.38 },
   { points: RIGHT_PLANE, fill: 'var(--logo-secondary)', from: { x: 18, y: -4 }, seat: 1 },
 ]
 
-const DURATION = 0.62
-const EASE = [0.16, 1, 0.3, 1] as const
+export const DURATION = 0.62
+export const EASE = [0.16, 1, 0.3, 1] as const
 
 export function Concept33Static() {
   return (

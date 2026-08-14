@@ -22,7 +22,7 @@ type Piece = {
 }
 
 // Point-up hexagon, matching Concept 34's module.
-function hex(cx: number, cy: number, r: number) {
+export function hex(cx: number, cy: number, r: number) {
   const h = (r * Math.sqrt(3)) / 2
   return [
     `${cx},${cy - r}`,

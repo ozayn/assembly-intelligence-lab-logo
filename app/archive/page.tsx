@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, type ComponentType } from 'react'
 import Link from 'next/link'
 import { useReviewer } from '@/components/ReviewerContext'
 import { ReviewerModal, ReviewerBadge } from '@/components/ReviewerModal'
@@ -26,30 +26,34 @@ import {
   Round3Concept04Static, Round3Concept04Animated,
   Round3Concept05Static, Round3Concept05Animated,
   Round3Concept06Static, Round3Concept06Animated,
+  Concept35AStatic, Concept35AAnimated,
   ARCHIVED_CONCEPTS,
 } from '@/components/logos'
 import '@/app/page.css'
 
-const ALL_COMPONENTS = [
-  { Static: Concept01Static, Animated: Concept01Animated },
-  { Static: Concept02Static, Animated: Concept02Animated },
-  { Static: Concept03Static, Animated: Concept03Animated },
-  { Static: Concept04Static, Animated: Concept04Animated },
-  { Static: Concept05Static, Animated: Concept05Animated },
-  { Static: Concept06Static, Animated: Concept06Animated },
-  { Static: Concept07Static, Animated: Concept07Animated },
-  { Static: Concept08Static, Animated: Concept08Animated },
-  { Static: Concept09Static, Animated: Concept09Animated },
-  { Static: Concept10Static, Animated: Concept10Animated },
-  { Static: Concept11Static, Animated: Concept11Animated },
-  { Static: Concept12Static, Animated: Concept12Animated },
-  { Static: Round3Concept01Static, Animated: Round3Concept01Animated },
-  { Static: Round3Concept02Static, Animated: Round3Concept02Animated },
-  { Static: Round3Concept03Static, Animated: Round3Concept03Animated },
-  { Static: Round3Concept04Static, Animated: Round3Concept04Animated },
-  { Static: Round3Concept05Static, Animated: Round3Concept05Animated },
-  { Static: Round3Concept06Static, Animated: Round3Concept06Animated },
-]
+// Keyed by concept id rather than position: a concept can be archived from any
+// round, so the archive cannot assume its ids run 1-n.
+const ARCHIVE_COMPONENTS: Record<number, { Static: ComponentType; Animated: ComponentType }> = {
+  1: { Static: Concept01Static, Animated: Concept01Animated },
+  2: { Static: Concept02Static, Animated: Concept02Animated },
+  3: { Static: Concept03Static, Animated: Concept03Animated },
+  4: { Static: Concept04Static, Animated: Concept04Animated },
+  5: { Static: Concept05Static, Animated: Concept05Animated },
+  6: { Static: Concept06Static, Animated: Concept06Animated },
+  7: { Static: Concept07Static, Animated: Concept07Animated },
+  8: { Static: Concept08Static, Animated: Concept08Animated },
+  9: { Static: Concept09Static, Animated: Concept09Animated },
+  10: { Static: Concept10Static, Animated: Concept10Animated },
+  11: { Static: Concept11Static, Animated: Concept11Animated },
+  12: { Static: Concept12Static, Animated: Concept12Animated },
+  13: { Static: Round3Concept01Static, Animated: Round3Concept01Animated },
+  14: { Static: Round3Concept02Static, Animated: Round3Concept02Animated },
+  15: { Static: Round3Concept03Static, Animated: Round3Concept03Animated },
+  16: { Static: Round3Concept04Static, Animated: Round3Concept04Animated },
+  17: { Static: Round3Concept05Static, Animated: Round3Concept05Animated },
+  18: { Static: Round3Concept06Static, Animated: Round3Concept06Animated },
+  35: { Static: Concept35AStatic, Animated: Concept35AAnimated },
+}
 
 export default function ArchivePage() {
   const { reviewerName } = useReviewer()
@@ -107,8 +111,9 @@ export default function ArchivePage() {
         <section className="concepts-section">
           <div className="concepts-grid">
             {ARCHIVED_CONCEPTS.map((concept) => {
-              const componentIdx = concept.id - 1
-              const { Static, Animated } = ALL_COMPONENTS[componentIdx]
+              const entry = ARCHIVE_COMPONENTS[concept.id]
+              if (!entry) return null
+              const { Static, Animated } = entry
               return (
                 <div key={concept.id} style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                   <LogoCard
