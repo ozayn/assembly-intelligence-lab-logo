@@ -2,29 +2,25 @@
 
 import { motion } from 'framer-motion'
 
-// Concept 39 — the A that a cell closes.
+// Concept 39 — the A that a cell joins.
 //
-// The other hybrids treat the molecule as something added: a module parked in a
-// facet, or a leg dissolving into units. This one asks where a cell would have
-// to sit if it were holding the letter together. An A is two planes leaning on
-// each other and everything it carries passes through the point where they
-// meet, so the cell is put exactly there, at structural size, and the planes
-// are cut to it: the left plane docks on its left face, the right plane on its
-// right, and the two only reach each other underneath it, down the short seam
-// to the counter. Take the cell out and the letter comes apart, which is the
-// whole idea — not an A with a molecule on it, an A that a molecule closes.
+// The cell at the top is the point of this mark, so the rest is built as
+// something the cell holds. It sits at structural size with its three upper
+// faces forming the crown, and the two sides of the letter hang off the two
+// faces underneath it: the left plane docks on the lower-left face, the right
+// leg on the lower-right. Nothing else connects them — the counter opens
+// straight from the cell's bottom vertex, so take the cell away and the letter
+// falls into two pieces. That is what keeps the hexagon from reading as an
+// ornament on top of an A: it is the joint the A is assembled at.
 //
-// Its three upper faces are the silhouette, which is what keeps the reference
-// discoverable: the crown reads first as a folded peak and only afterwards as
-// the top half of a hexagon whose lower half is drawn by the seams inside the
-// letter. Nothing else is decorative either. The cell's right face carries on
-// down past it to cut the small facet above the counter, and its 30° face angle
-// sets the fold that crosses the left plane, so every crease in the mark is the
-// cell's own geometry propagating through the planes. The footprint, the stance
-// and the triangular counter stay Concept 33's, and the tones keep its
-// weighting: one plane dark and dominant, one lighter, a pale facet at the
-// counter, and a single accent — here spent on the cell, so the eye reaches it
-// last, after the letter.
+// The two sides are deliberately unequal. The left plane grips two faces of the
+// cell, its left and its lower-left, so it starts high and carries the weight of
+// the mark, and it is creased on the cell's own face angle into a dark base and
+// a lighter shoulder. The right leg grips one face only. It is exactly as wide
+// at the joint as the face it hangs from, leaves on that face's right angle, and
+// opens to Concept 33's foot — one plane, enough weight to finish the letter,
+// and still the lighter of the two. Feet, inner corners and stance are Concept
+// 33's, so the letter stands the way the family does.
 
 type Point = [number, number]
 
@@ -41,28 +37,32 @@ const CELL_BOTTOM: Point = [100, CELL_Y + CELL_R]
 const CELL_LL: Point = [100 - CELL_HALF, CELL_Y + CELL_R / 2]
 const CELL_UL: Point = [100 - CELL_HALF, CELL_Y - CELL_R / 2]
 
-// Concept 33's footprint: same feet, same inner corners, same counter apex, so
-// the stance and the negative space carry over unchanged.
-const COUNTER: Point = [100, 88]
+// Concept 33's footprint: same feet and same inner corners, so the stance and
+// the width of the counter at the baseline carry over unchanged.
+const LEFT_FOOT: Point = [15, 169]
 const LEFT_INNER: Point = [70, 148]
 const RIGHT_INNER: Point = [130, 148]
-const LEFT_FOOT: Point = [15, 169]
 const RIGHT_FOOT: Point = [185, 169]
 
-// The fold across the left plane: cast from the counter apex on the cell's own
-// face angle, out to the left edge.
-function foldToLeftEdge(from: Point): Point {
-  const edge: Point = [LEFT_FOOT[0] - CELL_UL[0], LEFT_FOOT[1] - CELL_UL[1]]
-  const dir: Point = [-Math.cos(FACE_ANGLE), Math.sin(FACE_ANGLE)]
-  const det = dir[1] * edge[0] - dir[0] * edge[1]
-  const t = ((CELL_UL[1] - from[1]) * edge[0] - (CELL_UL[0] - from[0]) * edge[1]) / det
-  return [from[0] + t * dir[0], from[1] + t * dir[1]]
+const direction = (from: Point, to: Point): Point => {
+  const [dx, dy] = [to[0] - from[0], to[1] - from[1]]
+  const length = Math.hypot(dx, dy)
+  return [dx / length, dy / length]
 }
 
-const COUNTER_FOLD = foldToLeftEdge(COUNTER)
-// The cell's right face, continued down until the same fold angle closes it off
-// against the counter apex.
-const SPINE: Point = [CELL_LR[0], COUNTER[1] - (CELL_LR[0] - COUNTER[0]) * Math.tan(FACE_ANGLE)]
+const intersect = (a: Point, da: Point, b: Point, db: Point): Point => {
+  const det = da[0] * db[1] - da[1] * db[0]
+  const t = ((b[0] - a[0]) * db[1] - (b[1] - a[1]) * db[0]) / det
+  return [a[0] + t * da[0], a[1] + t * da[1]]
+}
+
+// The crease across the left plane, cast on the cell's face angle. It is struck
+// from the letter's axis below the joint, so the plane folds without disturbing
+// the point where the two sides meet the cell.
+const CREASE_ORIGIN: Point = [100, 88]
+const CREASE: Point = [-Math.cos(FACE_ANGLE), Math.sin(FACE_ANGLE)]
+const CREASE_INNER = intersect(CELL_BOTTOM, direction(CELL_BOTTOM, LEFT_INNER), CREASE_ORIGIN, CREASE)
+const CREASE_OUTER = intersect(CELL_UL, direction(CELL_UL, LEFT_FOOT), CREASE_ORIGIN, CREASE)
 
 const poly = (...points: Point[]) =>
   points.map(([x, y]) => `${+x.toFixed(2)},${+y.toFixed(2)}`).join(' ')
@@ -75,42 +75,34 @@ type Piece = {
   seat: number
 }
 
-// Assembly order: the letter builds from the ground up on the left, the right
-// plane swings in, and the cell drops into the crown last — the mark is only
-// closed, and only reads as an A, once the cell is seated.
+// Assembly order: the left plane builds from the ground up, the right leg swings
+// in, and the cell drops into the crown last. Until it lands the two sides are
+// two separate pieces leaning at each other, so the letter is closed by the
+// joint rather than merely decorated by it.
 const PIECES: Piece[] = [
   {
-    points: poly(COUNTER_FOLD, COUNTER, LEFT_INNER, LEFT_FOOT),
+    points: poly(CREASE_OUTER, CREASE_INNER, LEFT_INNER, LEFT_FOOT),
     fill: 'var(--logo-primary)',
     from: { x: -15, y: 11 },
     seat: 0.06,
   },
   {
-    points: poly(CELL_UL, CELL_LL, CELL_BOTTOM, COUNTER, COUNTER_FOLD),
+    points: poly(CELL_UL, CELL_LL, CELL_BOTTOM, CREASE_INNER, CREASE_OUTER),
     fill: 'var(--logo-secondary)',
     from: { x: -13, y: 2 },
     seat: 0.3,
   },
   {
-    points: poly(CELL_UR, RIGHT_FOOT, RIGHT_INNER, COUNTER, SPINE, CELL_LR),
-    fill: 'var(--logo-primary)',
+    points: poly(CELL_LR, RIGHT_FOOT, RIGHT_INNER, CELL_BOTTOM),
+    fill: 'var(--logo-secondary)',
     from: { x: 18, y: -4 },
     seat: 0.56,
-  },
-  // The facet the cell's right face cuts out above the counter: the one piece
-  // that touches no edge of the letter, so it can carry the pale tone in both
-  // themes.
-  {
-    points: poly(CELL_LR, SPINE, COUNTER, CELL_BOTTOM),
-    fill: 'var(--logo-light)',
-    from: { x: 8, y: 6 },
-    seat: 0.84,
   },
   {
     points: poly(CROWN, CELL_UR, CELL_LR, CELL_BOTTOM, CELL_LL, CELL_UL),
     fill: 'var(--logo-accent)',
     from: { x: 0, y: -18 },
-    seat: 1.08,
+    seat: 0.88,
   },
 ]
 
