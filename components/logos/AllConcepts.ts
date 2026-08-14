@@ -253,8 +253,8 @@ export const ALL_LOGO_CONCEPTS = [
   // exactly and cuts a module into its mass; 39 rebuilds the letter around one.
   {
     id: 38,
-    name: 'Faceted A — One Module',
-    description: "Concept 33 untouched, with a single Concept 34 module taken out of the dark right plane as a void. One of its faces lies on the edge that closes the counter, running from the apex down, so the cell opens into the white and the letter's aperture begins as a module rather than containing one.",
+    name: 'Faceted A — Hexagonal Counter',
+    description: "Concept 40's letter with the module moved to the centre and closed on all six sides: the counter is a true regular hexagon, flat side up, on the letter's own axis. Its ceiling closes the head, its widest corners set the waist of the legs and the line each leg folds on, and its floor is the bar the legs hang from — below which the counter opens again to the feet, so the mark stays an A carrying a cell rather than a badge with a hole in it.",
     active: false,
     reviewCandidate: true,
   },
