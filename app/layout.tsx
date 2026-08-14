@@ -17,7 +17,9 @@ import './password-gate.css'
 // Loaded for the wordmark typography exploration (components/typographySystems.ts).
 // No font is being chosen here — all three remain equally available options.
 const ibmPlexSans = IBM_Plex_Sans({ subsets: ['latin'], weight: ['400', '500'], variable: '--font-ibm-plex-sans' })
-const newsreader = Newsreader({ subsets: ['latin'], weight: ['400', '500'], variable: '--font-newsreader' })
+// adjustFontFallback is off because next/font has no metric override data for
+// Newsreader and warns on every build; the font itself is unchanged.
+const newsreader = Newsreader({ subsets: ['latin'], weight: ['400', '500'], variable: '--font-newsreader', adjustFontFallback: false })
 const spaceMono = Space_Mono({ subsets: ['latin'], weight: ['400'], variable: '--font-space-mono' })
 
 // Candidates for the wordmark typography exploration at /typography-exploration.
