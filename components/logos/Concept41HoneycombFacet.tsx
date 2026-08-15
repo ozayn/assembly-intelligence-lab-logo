@@ -3,21 +3,38 @@
 import { motion } from 'framer-motion'
 import { FACETS, RIGHT_PLANE, DURATION, EASE } from './Concept33FacetedA'
 
-// Concept 41 — Concept 33 with one region turned to honeycomb.
+// Concept 41 — Concept 33 carrying the honeycomb from Shiva's reference.
 //
-// Everything here is Concept 33: the same silhouette, the same four planes, the
-// same aperture, the same tones, the same seating order. The single change is
-// in the lower right of the wide plane, over the triangle that mirrors the dark
-// facet on the lower left, where the plane is carved into whole hexagonal cells
-// on one grid. The channels between them are cut out of the plane rather than
-// drawn over it, so they are the background — white on white, dark on dark —
-// and the mark still flattens to one colour.
+// Everything but one region is Concept 33: the same silhouette, the same four
+// planes, the same aperture, the same tones, the same seating order. In the
+// lower right the wide plane is carved into hexagonal cells, and the channels
+// between them are cut out of the plane rather than drawn over it, so they are
+// the background — white on white, dark on dark — and the mark still flattens
+// to one colour.
 //
-// Cells are all one size and one orientation, flat side up, on a single grid,
-// and clipped where that grid meets the triangle, so the honeycomb reads as the
-// material the leg is made of rather than as a pattern laid on top of it. The
-// plane carries it in as one piece on Concept 33's own timing, which leaves the
-// assembly exactly as approved.
+// The cluster is Shiva's, traced off her image rather than invented here. Her
+// mark was measured cell by cell, her leg mapped onto Concept 33's, and what
+// came back is what stands below: cells a little over a tenth of the mark
+// across, ten of them in four columns of two and three, the top one reaching
+// about two thirds of the way up the leg, the bottom ones running off the
+// underside, the outer ones just catching the outer edge, and the foot left
+// solid beyond them. Her lattice wanders, as a generated one does; this one is
+// laid out true and set down a ninth of a cell up and over from where the trace
+// put it, which is the one adjustment that keeps every crop at the letter's
+// edges a piece worth having rather than a splinter.
+//
+// What is here is drawn as one lattice. The cells are taken as a block, the
+// block's outline is walked, pushed out by half a channel and cut from the
+// plane as a single hole, and every cell is then dropped back into that hole at
+// half a channel under full size. Because each cell gives up the same half
+// channel on every side, and the block the same half channel around its edge,
+// every line — between two cells or around the outside of the whole cluster —
+// is exactly one channel wide, and the three-way junctions come out of the
+// geometry rather than being drawn. The block is clipped once, to the plane
+// itself, so the only thing that ever cuts a cell is an edge of the letter.
+//
+// The plane carries the honeycomb in as one piece on Concept 33's own timing,
+// which leaves the assembly exactly as approved.
 
 type Point = [number, number]
 
@@ -26,34 +43,46 @@ const parse = (points: string): Point[] =>
 
 const PLANE = parse(RIGHT_PLANE)
 
-const atHeight = (from: Point, to: Point, y: number): Point => [
-  from[0] + ((to[0] - from[0]) * (y - from[1])) / (to[1] - from[1]),
-  y,
-]
-
-// Concept 33's lower-left facet mirrored across the mark's axis. Its upper
-// corner is carried the last two units out to the leg's own edge, so the
-// honeycomb is cut by the silhouette rather than stopping just short of it.
-const MIRRORED: Point[] = parse('46,103 15,169 70,148').map(([x, y]) => [200 - x, y])
-const REGION: Point[] = [
-  atHeight(PLANE[1], PLANE[2], MIRRORED[0][1]),
-  MIRRORED[1],
-  MIRRORED[2],
-]
-
-// Cell size and channel follow Shiva's reference: a whole cell is a ninth of
-// the mark wide, held apart by the channel the modules in Concept 34 are
-// already held apart by, as a proportion of their own size.
-const CELL_R = 10.5
-const CHANNEL = 2.5
-const CELL_INNER = CELL_R - CHANNEL / Math.sqrt(3)
+// Both measured off the reference: her cells came back a little over a tenth of
+// the mark across, held apart by a hairline about an eighth of a cell wide.
+const CELL_R = 9
+const CHANNEL = 1.2
 const COLUMN = 1.5 * CELL_R
 const ROW = Math.sqrt(3) * CELL_R
 
-const hexagon = (cx: number, cy: number, r: number): Point[] =>
+// Half a channel measured square to a cell wall, written as a change of radius,
+// which is how both the inset cells and the pushed-out block come off the one
+// grid.
+const HALF = CHANNEL / Math.sqrt(3)
+
+// The cell her cluster hangs from, sitting on the aperture's edge, and the rest
+// of her cells as columns and rows off it.
+const ORIGIN: Point = [124.13, 129.48]
+const STANDING: [column: number, row: number][] = [
+  [0, 0],
+  [0, 1],
+  [1, -1],
+  [1, 0],
+  [1, 1],
+  [2, 0],
+  [2, 1],
+  [2, 2],
+  [3, 0],
+  [3, 1],
+]
+
+const CENTRES: Point[] = STANDING.map(([column, row]) => [
+  ORIGIN[0] + column * COLUMN,
+  ORIGIN[1] + (row + (column % 2 === 0 ? 0 : 0.5)) * ROW,
+])
+
+const snap = (value: number) => Math.round(value * 1000) / 1000
+const corner = (point: Point) => `${snap(point[0])},${snap(point[1])}`
+
+const hexagon = ([cx, cy]: Point, r: number): Point[] =>
   [0, 1, 2, 3, 4, 5].map((i) => {
     const angle = (Math.PI / 3) * i
-    return [cx + r * Math.cos(angle), cy + r * Math.sin(angle)]
+    return [snap(cx + r * Math.cos(angle)), snap(cy + r * Math.sin(angle))]
   })
 
 const signedArea = (polygon: Point[]) =>
@@ -62,65 +91,128 @@ const signedArea = (polygon: Point[]) =>
     return sum + x * ny - nx * y
   }, 0) / 2
 
-// Sutherland–Hodgman. The boundary is walked so that its inside is the negative
-// side of every edge.
-const BOUNDARY = signedArea(REGION) > 0 ? [...REGION].reverse() : REGION
+// Distance from a point to an edge of the plane, positive on the inside.
+const depth = (from: Point, to: Point, point: Point) =>
+  ((to[0] - from[0]) * (point[1] - from[1]) - (to[1] - from[1]) * (point[0] - from[0])) /
+  Math.hypot(to[0] - from[0], to[1] - from[1])
+
+// Sutherland–Hodgman against the plane, which is convex. Walked so that its
+// inside is the positive side of every edge.
+const BOUNDARY = signedArea(PLANE) < 0 ? [...PLANE].reverse() : PLANE
 
 const clip = (polygon: Point[]): Point[] =>
-  BOUNDARY.reduce((subject, edgeStart, i) => {
+  BOUNDARY.reduce((subject, from, i) => {
     if (subject.length === 0) return subject
-    const edgeEnd = BOUNDARY[(i + 1) % BOUNDARY.length]
-    const side = ([x, y]: Point) =>
-      (edgeEnd[0] - edgeStart[0]) * (y - edgeStart[1]) -
-      (edgeEnd[1] - edgeStart[1]) * (x - edgeStart[0])
+    const to = BOUNDARY[(i + 1) % BOUNDARY.length]
     const meet = (a: Point, b: Point): Point => {
-      const t = side(a) / (side(a) - side(b))
+      const t = depth(from, to, a) / (depth(from, to, a) - depth(from, to, b))
       return [a[0] + t * (b[0] - a[0]), a[1] + t * (b[1] - a[1])]
     }
     const kept: Point[] = []
     subject.forEach((current, index) => {
       const previous = subject[(index + subject.length - 1) % subject.length]
-      if (side(current) <= 0) {
-        if (side(previous) > 0) kept.push(meet(previous, current))
+      if (depth(from, to, current) >= 0) {
+        if (depth(from, to, previous) < 0) kept.push(meet(previous, current))
         kept.push(current)
-      } else if (side(previous) <= 0) {
+      } else if (depth(from, to, previous) >= 0) {
         kept.push(meet(previous, current))
       }
     })
     return kept
   }, polygon)
 
-// One grid, seeded on the centre of the region so the clipped cells fall evenly
-// either side of it.
-const CENTRE: Point = [
-  REGION.reduce((sum, [x]) => sum + x, 0) / REGION.length,
-  REGION.reduce((sum, [, y]) => sum + y, 0) / REGION.length,
-]
+// The outline of the block: every wall not shared with a neighbour, linked head
+// to tail into closed loops. Walls keep the direction the cells are wound in,
+// so the plane the cells stand on is always to the same side of a wall and the
+// way out of the block is the same turn from every one of them.
+function outline(centres: Point[]): Point[][] {
+  const walls = new Map<string, [Point, Point]>()
+  centres.forEach((centre) => {
+    const corners = hexagon(centre, CELL_R)
+    corners.forEach((from, i) => {
+      const to = corners[(i + 1) % corners.length]
+      const shared = `${corner(to)}|${corner(from)}`
+      if (walls.has(shared)) walls.delete(shared)
+      else walls.set(`${corner(from)}|${corner(to)}`, [from, to])
+    })
+  })
 
-// A cell is kept only if a third of it survives the clip. Less than that and
-// what is left reads as a stray channel lying along the region's edge rather
-// than as a cell the edge has cut.
-const KEEP = 0.35 * 2.598 * CELL_INNER ** 2
-const CELLS: Point[][] = []
-for (let column = -3; column <= 3; column += 1) {
-  for (let row = -3; row <= 3; row += 1) {
-    const cx = CENTRE[0] + column * COLUMN
-    const cy = CENTRE[1] + row * ROW + (Math.abs(column) % 2 === 1 ? ROW / 2 : 0)
-    const cell = clip(hexagon(cx, cy, CELL_INNER))
-    if (cell.length >= 3 && Math.abs(signedArea(cell)) > KEEP) {
-      CELLS.push(clip(hexagon(cx, cy, CELL_R)), cell)
-    }
+  const leaving = new Map<string, [Point, Point][]>()
+  walls.forEach((wall) => {
+    const at = leaving.get(corner(wall[0]))
+    if (at) at.push(wall)
+    else leaving.set(corner(wall[0]), [wall])
+  })
+
+  const take = (at: string) => {
+    const remaining = leaving.get(at)
+    if (!remaining || remaining.length === 0) return undefined
+    const wall = remaining.pop() as [Point, Point]
+    if (remaining.length === 0) leaving.delete(at)
+    return wall
   }
+
+  const loops: Point[][] = []
+  walls.forEach((start) => {
+    let wall = take(corner(start[0]))
+    const loop: Point[] = []
+    while (wall) {
+      loop.push(wall[0])
+      wall = take(corner(wall[1]))
+    }
+    if (loop.length >= 3) loops.push(loop)
+  })
+  return loops
 }
+
+const OUTWARD = signedArea(hexagon([0, 0], 1)) > 0 ? 1 : -1
+
+// Miter offset: every wall is pushed out by the same distance and the new
+// corners are where consecutive pushed walls now cross. On a lattice outline
+// consecutive walls always turn, so those crossings always exist.
+function push(loop: Point[], distance: number): Point[] {
+  const lines = loop.map((from, i) => {
+    const to = loop[(i + 1) % loop.length]
+    const length = Math.hypot(to[0] - from[0], to[1] - from[1])
+    const away: Point = [
+      (OUTWARD * (to[1] - from[1])) / length,
+      (-OUTWARD * (to[0] - from[0])) / length,
+    ]
+    return {
+      on: [from[0] + away[0] * distance, from[1] + away[1] * distance] as Point,
+      along: [(to[0] - from[0]) / length, (to[1] - from[1]) / length] as Point,
+    }
+  })
+
+  return lines.map((line, i) => {
+    const previous = lines[(i + lines.length - 1) % lines.length]
+    const turn = previous.along[0] * line.along[1] - previous.along[1] * line.along[0]
+    const t =
+      ((line.on[0] - previous.on[0]) * line.along[1] -
+        (line.on[1] - previous.on[1]) * line.along[0]) /
+      turn
+    return [
+      previous.on[0] + previous.along[0] * t,
+      previous.on[1] + previous.along[1] * t,
+    ] as Point
+  })
+}
+
+const BLOCK = outline(CENTRES)
+  .map((loop) => clip(push(loop, HALF)))
+  .filter((loop) => loop.length >= 3)
+
+const CELLS = CENTRES.map((centre) => clip(hexagon(centre, CELL_R - HALF))).filter(
+  (cell) => cell.length >= 3
+)
 
 const subpath = (polygon: Point[]) =>
   `M${polygon.map(([x, y]) => `${+x.toFixed(2)},${+y.toFixed(2)}`).join('L')}Z`
 
 // Concept 33's wide plane, re-walked with the honeycomb taken out of it: the
-// outline, then every cell twice — once at full size and once inset — so that
-// under the even-odd rule the cells stay plane and the channels around them
-// become holes.
-const HONEYCOMB = [PLANE, ...CELLS].map(subpath).join('')
+// plane's outline, then the block as a hole, then the cells filling that hole
+// back in. What is left unfilled is the channel.
+const HONEYCOMB = [PLANE, ...BLOCK, ...CELLS].map(subpath).join('')
 
 function Mark({ animated }: { animated: boolean }) {
   return (
