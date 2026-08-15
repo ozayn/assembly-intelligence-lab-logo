@@ -272,6 +272,13 @@ export const ALL_LOGO_CONCEPTS = [
     active: false,
     reviewCandidate: true,
   },
+  {
+    id: 41,
+    name: 'Faceted A — Honeycomb Facet',
+    description: 'Concept 33 unchanged but for one region: over the triangle that mirrors the dark facet on the lower left, the wide plane is carved into whole hexagonal cells on a single grid. The channels between them are cut out of the plane rather than drawn on it, so the honeycomb is the same negative space as the aperture.',
+    active: false,
+    reviewCandidate: true,
+  },
 ]
 
 export const CONCEPTS_PER_PAGE = 9

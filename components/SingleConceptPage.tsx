@@ -49,6 +49,7 @@ import {
   Concept38Static, Concept38Animated,
   Concept39Static, Concept39Animated,
   Concept40Static, Concept40Animated,
+  Concept41Static, Concept41Animated,
   ALL_LOGO_CONCEPTS,
   REVIEW_CONCEPTS,
   getPageNumber,
@@ -96,6 +97,7 @@ const ALL_COMPONENTS = [
   { Static: Concept38Static, Animated: Concept38Animated },
   { Static: Concept39Static, Animated: Concept39Animated },
   { Static: Concept40Static, Animated: Concept40Animated },
+  { Static: Concept41Static, Animated: Concept41Animated },
 ]
 
 type DisplayMode = 'static' | 'animated'

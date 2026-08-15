@@ -44,6 +44,7 @@ import {
   Concept38Static, Concept38Animated,
   Concept39Static, Concept39Animated,
   Concept40Static, Concept40Animated,
+  Concept41Static, Concept41Animated,
   ALL_LOGO_CONCEPTS,
   getConceptsForPage,
   TOTAL_PAGES,
@@ -94,6 +95,7 @@ const REVIEW_COMPONENTS: Record<number, { Static: React.ComponentType; Animated:
   38: { Static: Concept38Static, Animated: Concept38Animated },
   39: { Static: Concept39Static, Animated: Concept39Animated },
   40: { Static: Concept40Static, Animated: Concept40Animated },
+  41: { Static: Concept41Static, Animated: Concept41Animated },
 }
 
 type DisplayMode = 'static' | 'animated'

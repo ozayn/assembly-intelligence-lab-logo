@@ -45,6 +45,7 @@ export {
 export { Concept38Static, Concept38Animated } from './Concept38HexagonalCounter'
 export { Concept39Static, Concept39Animated } from './Concept39CellCrown'
 export { Concept40Static, Concept40Animated } from './Concept40Crossbar'
+export { Concept41Static, Concept41Animated } from './Concept41HoneycombFacet'
 
 export const LOGO_CONCEPTS = [
   {
