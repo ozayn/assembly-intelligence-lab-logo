@@ -17,7 +17,9 @@ const save = (blob: Blob, filename: string) => {
   document.body.appendChild(link)
   link.click()
   document.body.removeChild(link)
-  URL.revokeObjectURL(url)
+  // Some browsers read the blob after the click returns, and revoking it in
+  // the same tick leaves them writing an empty file. A tick later is safe.
+  setTimeout(() => URL.revokeObjectURL(url), 1000)
 }
 
 // The size the caller asked the file to be — 16, 32 or 64 for a symbol, the
