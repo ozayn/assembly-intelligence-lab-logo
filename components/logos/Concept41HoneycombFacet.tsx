@@ -17,11 +17,13 @@ import { FACETS, RIGHT_PLANE, DURATION, EASE } from './Concept33FacetedA'
 // came back is what stands below: cells a little over a tenth of the mark
 // across, ten of them in four columns of two and three, the top one reaching
 // about two thirds of the way up the leg, the bottom ones running off the
-// underside, the outer ones just catching the outer edge, and the foot left
-// solid beyond them. Her lattice wanders, as a generated one does; this one is
-// laid out true and set down a ninth of a cell up and over from where the trace
-// put it, which is the one adjustment that keeps every crop at the letter's
-// edges a piece worth having rather than a splinter.
+// underside, the outer ones catching the outer edge. Two more carry the same
+// lattice on into the foot, which she left solid, so the honeycomb runs to the
+// corner and it is the letter that ends it rather than the pattern stopping
+// short. Her lattice wanders, as a generated one does; this one is laid out
+// true and set down a ninth of a cell up and over from where the trace put it,
+// which is the one adjustment that keeps every crop at the letter's edges a
+// piece worth having rather than a splinter.
 //
 // What is here is drawn as one lattice. The cells are taken as a block, the
 // block's outline is walked, pushed out by half a channel and cut from the
@@ -69,6 +71,8 @@ const STANDING: [column: number, row: number][] = [
   [2, 2],
   [3, 0],
   [3, 1],
+  [4, 1],
+  [4, 2],
 ]
 
 const CENTRES: Point[] = STANDING.map(([column, row]) => [

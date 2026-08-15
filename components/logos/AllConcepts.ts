@@ -275,7 +275,7 @@ export const ALL_LOGO_CONCEPTS = [
   {
     id: 41,
     name: 'Faceted A — Honeycomb Facet',
-    description: "Concept 33 unchanged but for one region: the honeycomb from Shiva's reference, traced off her mark cell for cell and laid down on one true lattice — ten cells across the lower right of the leg, whole in the middle, running off the aperture, the underside and the outer edge, the foot left solid beyond them. The channels between them are cut out of the plane rather than drawn on it, so the honeycomb is the same negative space as the aperture.",
+    description: "Concept 33 unchanged but for one region: the honeycomb from Shiva's reference, traced off her mark cell for cell and laid down on one true lattice — twelve cells across the lower right of the leg, whole in the middle and carried on into the foot, running off the aperture, the underside and the outer edge wherever the letter cuts them. The channels between them are cut out of the plane rather than drawn on it, so the honeycomb is the same negative space as the aperture.",
     active: false,
     reviewCandidate: true,
   },
