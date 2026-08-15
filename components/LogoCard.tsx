@@ -64,7 +64,7 @@ export function LogoCard({
   reviewCandidate = false,
   initialLogoVersion = 'symbol',
   initialTypography = 'scientific',
-  exportFormat = 'svg',
+  exportFormat = 'png',
 }: LogoCardProps) {
   const [isAnimating, setIsAnimating] = useState(onPlayAll)
   const [showAnimated, setShowAnimated] = useState(false)

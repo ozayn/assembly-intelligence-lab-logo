@@ -131,7 +131,7 @@ export function ExplorationPage({
   const [displayMode, setDisplayMode] = useState<DisplayMode>('animated')
   const [logoBackground, setLogoBackground] = useState<'light' | 'dark'>('light')
   const [sizeMode, setSizeMode] = useState<SizeMode>('full')
-  const [exportFormat, setExportFormat] = useState<ExportFormat>('svg')
+  const [exportFormat, setExportFormat] = useState<ExportFormat>('png')
   const [playAll, setPlayAll] = useState(false)
   const {
     collectedFeedback,
