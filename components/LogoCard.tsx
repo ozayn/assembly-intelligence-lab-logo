@@ -210,15 +210,16 @@ export function LogoCard({
   // The animation as a file that plays by itself. It is built from the
   // concept's own geometry rather than taken off the page, so the reviewer's
   // React has no part in what is written; the ground selected here decides the
-  // colours, which go into the file as literal values.
+  // colours, which go into the file as literal values, and the selected size
+  // the side it is written at — as with the still exports, and named to match.
   const handleDownloadAnimated = () => {
     const sourceContainer = exportSourceRef.current || logoContainerRef.current
     if (!sourceContainer || !animatedMark) return
     const colours = resolveLogoColours(sourceContainer)
     const backgroundVariant = logoBackground || 'light'
     downloadMarkup(
-      animatedMark((token) => colours[token]),
-      `AIL-concept-${id.toString().padStart(2, '0')}-${backgroundVariant}-animated`
+      animatedMark((token) => colours[token], Number(selectedExportSize)),
+      `AIL-concept-${id.toString().padStart(2, '0')}-${selectedExportSize}px-${backgroundVariant}-animated`
     )
   }
 

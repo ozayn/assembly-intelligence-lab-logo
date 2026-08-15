@@ -380,7 +380,10 @@ export function Concept41Static() {
 // steps from the masked plane to the static drawing at the moment the last wall
 // lands, for the reason given in the component, so the frame it rests on is the
 // approved one rather than a masked likeness of it.
-export function buildConcept41Animated(colour: (token: string) => string): string {
+export function buildConcept41Animated(
+  colour: (token: string) => string,
+  size: number
+): string {
   const paint = (fill: string) =>
     fill.replace(/var\((--logo-[a-z]+)\)/, (whole, token: string) => colour(token) || whole)
 
@@ -405,7 +408,7 @@ export function buildConcept41Animated(colour: (token: string) => string): strin
   // Selectors are held inside the mark's own id so that pasting the file into a
   // page cannot reach anything else on it.
   return (
-    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200" id="${scope}">` +
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="${size}" height="${size}" id="${scope}">` +
     `<style>` +
     `#${scope} .wall{animation-name:${scope}-grow;` +
     `animation-timing-function:cubic-bezier(${GROW.join(',')});animation-fill-mode:both}` +
