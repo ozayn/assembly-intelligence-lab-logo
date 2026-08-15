@@ -449,6 +449,7 @@ https://assembly-intelligence-lab-logo.vercel.app
 | **SVG Download** | `LogoCard.tsx` → "↓ SVG" button | ✅ Downloads `AIL-concept-0X.svg` |
 | **PNG Download** | Header → Format: SVG / PNG, then the same button | ✅ Same artwork drawn to a transparent PNG at the selected size (`logoExport.ts`) |
 | **Animated SVG Download** | `LogoCard.tsx` → "↓ Animated SVG" | ✅ The concept's animation as a file that plays itself, for concepts registered in `logos/animatedMarks.ts` (Concepts 33 and 41) |
+| **Copy Animation Code** | `LogoCard.tsx` → "Copy Animation Code" | ✅ The same markup on the clipboard, bare, for pasting into a site's custom-code block |
 | **Reviewer Name System** | `ReviewerModal.tsx` + `ReviewerContext.tsx` | ✅ Modal on first visit, badge in header |
 | **Change Reviewer** | `ReviewerBadge` component | ✅ Click "Change" to switch name mid-session |
 | **Password Gate** | `PasswordGate.tsx` + `/api/verify-password` | ✅ Blocks unauthenticated access |

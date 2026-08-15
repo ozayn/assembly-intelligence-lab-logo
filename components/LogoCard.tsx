@@ -57,6 +57,27 @@ const resolveLogoColours = (container: HTMLElement): Record<string, string> => {
   )
 }
 
+// The clipboard API refuses a document that does not hold focus, and Safari
+// refuses it outside a gesture it recognises, so the older selection-based copy
+// stands behind it rather than the reviewer being told it cannot be done.
+const copyText = async (text: string): Promise<boolean> => {
+  try {
+    await navigator.clipboard.writeText(text)
+    return true
+  } catch {
+    // fall through
+  }
+  const holder = document.createElement('textarea')
+  holder.value = text
+  holder.setAttribute('readonly', '')
+  holder.style.cssText = 'position:fixed;top:0;left:0;opacity:0;pointer-events:none'
+  document.body.appendChild(holder)
+  holder.select()
+  const copied = document.execCommand('copy')
+  holder.remove()
+  return copied
+}
+
 interface LogoCardProps {
   id: number
   name: string
@@ -104,6 +125,9 @@ export function LogoCard({
   const [showAnimated, setShowAnimated] = useState(false)
   const [showFeedback, setShowFeedback] = useState(false)
   const [copyLinkFeedback, setCopyLinkFeedback] = useState(false)
+  const [animationCodeState, setAnimationCodeState] = useState<'idle' | 'copied' | 'failed'>(
+    'idle'
+  )
   const [selectedExportSize, setSelectedExportSize] = useState<ExportSize>('64')
   const [logoVersion, setLogoVersion] = useState<LogoVersion>(initialLogoVersion)
   const [typographyDirection, setTypographyDirection] =
@@ -207,20 +231,36 @@ export function LogoCard({
     )
   }
 
-  // The animation as a file that plays by itself. It is built from the
+  // The animation as markup that plays by itself. It is built from the
   // concept's own geometry rather than taken off the page, so the reviewer's
   // React has no part in what is written; the ground selected here decides the
-  // colours, which go into the file as literal values, and the selected size
-  // the side it is written at — as with the still exports, and named to match.
-  const handleDownloadAnimated = () => {
+  // colours, which go into it as literal values, and the selected size the side
+  // it is written at — as with the still exports. Saving it and copying it both
+  // come through here, so a downloaded file and a pasted one cannot differ.
+  const composeAnimated = (): string | null => {
     const sourceContainer = exportSourceRef.current || logoContainerRef.current
-    if (!sourceContainer || !animatedMark) return
+    if (!sourceContainer || !animatedMark) return null
     const colours = resolveLogoColours(sourceContainer)
+    return animatedMark((token) => colours[token], Number(selectedExportSize))
+  }
+
+  const handleDownloadAnimated = () => {
+    const markup = composeAnimated()
+    if (!markup) return
     const backgroundVariant = logoBackground || 'light'
     downloadMarkup(
-      animatedMark((token) => colours[token], Number(selectedExportSize)),
+      markup,
       `AIL-concept-${id.toString().padStart(2, '0')}-${selectedExportSize}px-${backgroundVariant}-animated`
     )
+  }
+
+  // The same markup on the clipboard, bare, for pasting into a page's own
+  // custom-code block.
+  const handleCopyAnimated = async () => {
+    const markup = composeAnimated()
+    const copied = markup ? await copyText(markup) : false
+    setAnimationCodeState(copied ? 'copied' : 'failed')
+    setTimeout(() => setAnimationCodeState('idle'), 2400)
   }
 
   // Measures real rendered text dimensions for the chosen typography so the
@@ -604,6 +644,19 @@ export function LogoCard({
             title={`Download the symbol's animation as a self-contained SVG (${logoBackground || 'light'})`}
           >
             ↓ Animated SVG
+          </button>
+        )}
+        {animatedMark && (
+          <button
+            className={`btn-download${animationCodeState === 'failed' ? ' failed' : ''}`}
+            onClick={handleCopyAnimated}
+            title={`Copy the same markup to the clipboard (${selectedExportSize}px, ${logoBackground || 'light'})`}
+          >
+            {animationCodeState === 'copied'
+              ? 'Copied'
+              : animationCodeState === 'failed'
+                ? 'Copy failed'
+                : 'Copy Animation Code'}
           </button>
         )}
         <button

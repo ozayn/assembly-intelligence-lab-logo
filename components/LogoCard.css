@@ -423,6 +423,19 @@ html.dark .btn-download {
   border-color: var(--accent-teal);
 }
 
+/* Said quietly, in the button that was pressed, rather than as an alert. */
+.btn-download.failed,
+html.dark .btn-download.failed {
+  border-color: #b42318;
+  color: #b42318;
+}
+
+.btn-download.failed:hover {
+  background-color: #b42318;
+  border-color: #b42318;
+  color: white;
+}
+
 .logo-sizes {
   display: flex;
   gap: 1.5rem;
