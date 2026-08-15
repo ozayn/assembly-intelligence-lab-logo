@@ -448,6 +448,7 @@ https://assembly-intelligence-lab-logo.vercel.app
 | **Export Size** | `LogoCard.tsx` → Export Size chips | ✅ 16 · 32 · 64 · 128 · 256 · 512 · 1024; the number is the symbol's side, or the lockup's longest edge |
 | **SVG Download** | `LogoCard.tsx` → "↓ SVG" button | ✅ Downloads `AIL-concept-0X.svg` |
 | **PNG Download** | Header → Format: SVG / PNG, then the same button | ✅ Same artwork drawn to a transparent PNG at the selected size (`logoExport.ts`) |
+| **Animated SVG Download** | `LogoCard.tsx` → "↓ Animated SVG" | ✅ The concept's animation as a file that plays itself, for concepts registered in `logos/animatedMarks.ts` (Concept 41) |
 | **Reviewer Name System** | `ReviewerModal.tsx` + `ReviewerContext.tsx` | ✅ Modal on first visit, badge in header |
 | **Change Reviewer** | `ReviewerBadge` component | ✅ Click "Change" to switch name mid-session |
 | **Password Gate** | `PasswordGate.tsx` + `/api/verify-password` | ✅ Blocks unauthenticated access |

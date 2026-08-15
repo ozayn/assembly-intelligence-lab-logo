@@ -17,7 +17,8 @@ import {
 import { BrandWordmark } from './BrandWordmark'
 import { FittedLockup } from './FittedLockup'
 import { buildFittedLockupSvg, measureSymbolInk, FULL_INK } from './lockupFitting'
-import { downloadMark, type ExportFormat } from './logoExport'
+import { downloadMark, downloadMarkup, type ExportFormat } from './logoExport'
+import { ANIMATED_MARKS } from './logos/animatedMarks'
 import './LogoCard.css'
 
 type ExportSize = '16' | '32' | '64' | '128' | '256' | '512' | '1024'
@@ -31,6 +32,30 @@ type LogoVersion = 'symbol' | 'lockup'
 // over a hundredth of the mark across and need the room besides.
 const EXPORT_SIZES: ExportSize[] = ['16', '32', '64', '128', '256', '512', '1024']
 const PREVIEW_SIZES: ExportSize[] = ['64', '32', '16']
+
+// What a token falls back to if the scope it is read from has not been styled.
+const LOGO_COLOURS: Record<string, string> = {
+  '--logo-primary': '#08255A',
+  '--logo-secondary': '#0B4B70',
+  '--logo-accent': '#109596',
+  '--logo-light': '#58B7B1',
+  '--logo-pale': '#B7DEDA',
+  '--logo-muted': '#57606a',
+}
+
+// Resolve the logo tokens against the container the mark is exported from,
+// which carries the target website background's scope (see
+// .logo-background-light/.logo-background-dark in LogoCard.css) — not the
+// reviewer's own site theme.
+const resolveLogoColours = (container: HTMLElement): Record<string, string> => {
+  const computed = getComputedStyle(container)
+  return Object.fromEntries(
+    Object.entries(LOGO_COLOURS).map(([token, fallback]) => [
+      token,
+      computed.getPropertyValue(token).trim() || fallback,
+    ])
+  )
+}
 
 interface LogoCardProps {
   id: number
@@ -84,6 +109,10 @@ export function LogoCard({
   const [typographyDirection, setTypographyDirection] =
     useState<TypographyDirection>(initialTypography)
   const [applicationTier, setApplicationTier] = useState<ApplicationTier>('full')
+  const [descriptionOpen, setDescriptionOpen] = useState(false)
+  const [descriptionRunsOn, setDescriptionRunsOn] = useState(false)
+  const descriptionRef = useRef<HTMLParagraphElement>(null)
+  const animatedMark = ANIMATED_MARKS[id]
   const logoContainerRef = useRef<HTMLDivElement>(null)
   const sizeContainerRefs = useRef<Partial<Record<ExportSize, HTMLDivElement | null>>>({})
   // Always-mounted, visually hidden source for the symbol's real SVG markup,
@@ -113,6 +142,22 @@ export function LogoCard({
     setShowAnimated(true)
   }
 
+  // The description is clamped to three lines, and only a description that
+  // actually runs past them is given something to click. Whether it does
+  // depends on how wide the card is, so it is measured rather than guessed at.
+  useEffect(() => {
+    const paragraph = descriptionRef.current
+    if (!paragraph) return
+    const measure = () => {
+      if (descriptionOpen) return // an open one always overflows its clamp
+      setDescriptionRunsOn(paragraph.scrollHeight - paragraph.clientHeight > 1)
+    }
+    measure()
+    const watch = new ResizeObserver(measure)
+    watch.observe(paragraph)
+    return () => watch.disconnect()
+  }, [description, descriptionOpen])
+
   const handleDownloadSymbol = () => {
     // Pull geometry from the container matching the selected export size, so
     // that a future size-specific micro-mark is exported instead of the
@@ -139,25 +184,7 @@ export function LogoCard({
     svgClone.setAttribute('width', dimension.toString())
     svgClone.setAttribute('height', dimension.toString())
 
-    // Resolve CSS variables to actual colors from the source container, which
-    // carries the target website background's logo color scope (see
-    // .logo-background-light/.logo-background-dark in LogoCard.css) — not the
-    // reviewer's own site theme.
-    const computedStyle = getComputedStyle(sourceContainer)
-    const primaryColor = computedStyle.getPropertyValue('--logo-primary').trim() || '#08255A'
-    const secondaryColor = computedStyle.getPropertyValue('--logo-secondary').trim() || '#0B4B70'
-    const accentColor = computedStyle.getPropertyValue('--logo-accent').trim() || '#109596'
-    const lightColor = computedStyle.getPropertyValue('--logo-light').trim() || '#58B7B1'
-    const paleColor = computedStyle.getPropertyValue('--logo-pale').trim() || '#B7DEDA'
-    const mutedColor = computedStyle.getPropertyValue('--logo-muted').trim() || '#57606a'
-    const colorForVar: Record<string, string> = {
-      '--logo-primary': primaryColor,
-      '--logo-secondary': secondaryColor,
-      '--logo-accent': accentColor,
-      '--logo-light': lightColor,
-      '--logo-pale': paleColor,
-      '--logo-muted': mutedColor,
-    }
+    const colorForVar = resolveLogoColours(sourceContainer)
 
     // Replace CSS variables with computed colors on fill, stroke, and
     // gradient stop-color (some concepts, e.g. Threshold, fill via a
@@ -177,6 +204,21 @@ export function LogoCard({
       svgClone,
       `AIL-concept-${id.toString().padStart(2, '0')}-${selectedExportSize}px-${backgroundVariant}-symbol`,
       exportFormat
+    )
+  }
+
+  // The animation as a file that plays by itself. It is built from the
+  // concept's own geometry rather than taken off the page, so the reviewer's
+  // React has no part in what is written; the ground selected here decides the
+  // colours, which go into the file as literal values.
+  const handleDownloadAnimated = () => {
+    const sourceContainer = exportSourceRef.current || logoContainerRef.current
+    if (!sourceContainer || !animatedMark) return
+    const colours = resolveLogoColours(sourceContainer)
+    const backgroundVariant = logoBackground || 'light'
+    downloadMarkup(
+      animatedMark((token) => colours[token]),
+      `AIL-concept-${id.toString().padStart(2, '0')}-${backgroundVariant}-animated`
     )
   }
 
@@ -497,7 +539,23 @@ export function LogoCard({
         </div>
       </div>
 
-      <p className="logo-description">{description}</p>
+      <div className="logo-description-block">
+        <p
+          ref={descriptionRef}
+          className={`logo-description${descriptionOpen ? ' open' : ''}`}
+        >
+          {description}
+        </p>
+        {descriptionRunsOn && (
+          <button
+            className="description-toggle"
+            onClick={() => setDescriptionOpen(!descriptionOpen)}
+            aria-expanded={descriptionOpen}
+          >
+            {descriptionOpen ? 'Less' : 'More…'}
+          </button>
+        )}
+      </div>
 
       <div className="logo-controls">
         <button
@@ -533,6 +591,18 @@ export function LogoCard({
             title={`Download ${formatLabel} (${tier.label} at ${selectedExportSize}px, ${logoBackground || 'light'}, ${typeSystem.name})`}
           >
             ↓ {formatLabel} ({tier.label})
+          </button>
+        )}
+        {/* The animation belongs to the symbol, so it is offered in either
+            mode rather than only alongside the symbol download — Final
+            Nominees opens its cards on the lockup. */}
+        {animatedMark && (
+          <button
+            className="btn-download"
+            onClick={handleDownloadAnimated}
+            title={`Download the symbol's animation as a self-contained SVG (${logoBackground || 'light'})`}
+          >
+            ↓ Animated SVG
           </button>
         )}
         <button

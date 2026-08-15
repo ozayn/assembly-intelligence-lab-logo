@@ -374,6 +374,60 @@ export function Concept41Static() {
   )
 }
 
+// The same growth as the component below, written out as a file that stands on
+// its own: the transitions become CSS keyframes inside the SVG, the tokens
+// become the colours they resolve to, and nothing outside the file is read. It
+// steps from the masked plane to the static drawing at the moment the last wall
+// lands, for the reason given in the component, so the frame it rests on is the
+// approved one rather than a masked likeness of it.
+export function buildConcept41Animated(colour: (token: string) => string): string {
+  const paint = (fill: string) =>
+    fill.replace(/var\((--logo-[a-z]+)\)/, (whole, token: string) => colour(token) || whole)
+
+  const scope = 'ail-concept-41-animated'
+  const settles = snap(LEAD + SPREAD)
+
+  const walls = GROWTH.map(({ from, to, start, draw }) => {
+    const length = snap(Math.hypot(to[0] - from[0], to[1] - from[1]))
+    return (
+      `<path class="wall" d="M${corner(from)}L${corner(to)}"` +
+      ` stroke-dasharray="${length}" stroke-dashoffset="${length}"` +
+      ` style="animation-delay:${snap(LEAD + start * SPREAD)}s;` +
+      `animation-duration:${snap(draw * SPREAD)}s"/>`
+    )
+  }).join('')
+
+  const plane = FACETS.find((facet) => facet.points === RIGHT_PLANE) as (typeof FACETS)[number]
+  const standing = FACETS.filter((facet) => facet.points !== RIGHT_PLANE)
+    .map((facet) => `<polygon points="${facet.points}" fill="${paint(facet.fill)}"/>`)
+    .join('')
+
+  // Selectors are held inside the mark's own id so that pasting the file into a
+  // page cannot reach anything else on it.
+  return (
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200" id="${scope}">` +
+    `<style>` +
+    `#${scope} .wall{animation-name:${scope}-grow;` +
+    `animation-timing-function:cubic-bezier(${GROW.join(',')});animation-fill-mode:both}` +
+    // step-start rather than a crossfade: both layers change on the same
+    // frame, so the lattice is never seen through the drawing that replaces it.
+    `#${scope} .growing{animation:${scope}-clear 1ms step-start ${settles}s both}` +
+    `#${scope} .settled{opacity:0;animation:${scope}-settle 1ms step-start ${settles}s both}` +
+    `@keyframes ${scope}-grow{to{stroke-dashoffset:0}}` +
+    `@keyframes ${scope}-clear{to{opacity:0}}` +
+    `@keyframes ${scope}-settle{to{opacity:1}}` +
+    `</style>` +
+    `<defs><mask id="${scope}-growth" maskUnits="userSpaceOnUse" x="0" y="0" width="200" height="200">` +
+    `<rect x="0" y="0" width="200" height="200" fill="#fff"/>` +
+    `<g fill="none" stroke="#000" stroke-width="${CHANNEL}" stroke-linecap="butt">${walls}</g>` +
+    `</mask></defs>` +
+    standing +
+    `<polygon class="growing" points="${RIGHT_PLANE}" fill="${paint(plane.fill)}" mask="url(#${scope}-growth)"/>` +
+    `<path class="settled" d="${HONEYCOMB}" fill-rule="evenodd" fill="${paint(plane.fill)}"/>` +
+    `</svg>`
+  )
+}
+
 export function Concept41Animated() {
   // Once the network is complete the mark hands over to the static drawing. A
   // masked edge is not antialiased quite like a cut in the path itself, and the

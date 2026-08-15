@@ -149,6 +149,12 @@ async function rasterise(svg: SVGSVGElement): Promise<Blob | null> {
   return new Promise((resolve) => canvas.toBlob(resolve, 'image/png'))
 }
 
+// Writes markup that is already a finished file — an animated mark, say, which
+// is built as text rather than taken off the page. `name` has no extension.
+export function downloadMarkup(markup: string, name: string) {
+  save(new Blob([markup], { type: 'image/svg+xml' }), `${name}.svg`)
+}
+
 // `name` is the filename without its extension.
 export async function downloadMark(svg: SVGSVGElement, name: string, format: ExportFormat) {
   if (format === 'png') {
@@ -156,6 +162,5 @@ export async function downloadMark(svg: SVGSVGElement, name: string, format: Exp
     if (png) save(png, `${name}.png`)
     return
   }
-  const markup = new XMLSerializer().serializeToString(svg)
-  save(new Blob([markup], { type: 'image/svg+xml' }), `${name}.svg`)
+  downloadMarkup(new XMLSerializer().serializeToString(svg), name)
 }

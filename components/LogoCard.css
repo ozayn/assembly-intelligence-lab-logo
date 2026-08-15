@@ -242,20 +242,64 @@ html.dark .logo-display {
   pointer-events: none;
 }
 
+.logo-description-block {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.15rem;
+}
+
+/* Three lines by default, however long the writing is. The card keeps the
+   height of those three lines whether or not they are filled, so a row of
+   cards still lines up. */
 .logo-description {
   font-size: 0.9rem;
   color: var(--text-light-secondary);
   line-height: 1.5;
   min-height: 4.05em;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+}
+
+.logo-description.open {
+  display: block;
+  overflow: visible;
 }
 
 html.dark .logo-description {
   color: var(--text-dark-secondary);
 }
 
+.description-toggle {
+  padding: 0;
+  border: none;
+  background: none;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--text-light-secondary);
+  opacity: 0.8;
+  cursor: pointer;
+  transition: color 0.2s, opacity 0.2s;
+}
+
+html.dark .description-toggle {
+  color: var(--text-dark-secondary);
+}
+
+.description-toggle:hover {
+  color: var(--accent-teal);
+  opacity: 1;
+  text-decoration: underline;
+}
+
+/* Every control sits on its content and the row wraps when the card is too
+   narrow for them, so a long label like "Animated SVG" is never squeezed into
+   a column that cannot hold it. */
 .logo-controls {
-  display: grid;
-  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.8fr) auto 40px;
+  display: flex;
+  flex-wrap: wrap;
   gap: 0.5rem;
   width: 100%;
   min-width: 0;
@@ -263,13 +307,24 @@ html.dark .logo-description {
 
 .btn-play,
 .btn-replay {
-  min-width: 0;
-  padding: 0.75rem 0.5rem;
+  flex: 0 1 auto;
+  padding: 0.75rem 0.8rem;
   border-radius: 0.375rem;
   font-size: 0.85rem;
   font-weight: 500;
+  white-space: nowrap;
   transition: all 0.2s;
   border: 1px solid transparent;
+}
+
+/* The primary action takes whatever the row has left over. */
+.btn-play {
+  flex-grow: 1;
+  min-width: 8.5rem;
+}
+
+.btn-replay {
+  min-width: 4.75rem;
 }
 
 .btn-play {
@@ -310,8 +365,9 @@ html.dark .btn-replay:hover:not(:disabled) {
 }
 
 .btn-download {
+  flex: 0 1 auto;
   min-width: 0;
-  padding: 0.75rem 0.55rem;
+  padding: 0.75rem 0.8rem;
   background-color: var(--bg-light-secondary);
   color: var(--text-light);
   border: 1px solid var(--border-light);
@@ -327,6 +383,7 @@ html.dark .btn-replay:hover:not(:disabled) {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  flex: 0 0 40px;
   width: 40px;
   min-width: 40px;
   min-height: 40px;
@@ -568,12 +625,9 @@ html.dark .feedback-link:hover {
     min-height: 0;
   }
 
-  .logo-controls {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .btn-copy-link {
-    width: auto;
-    min-width: 0;
+  /* The row already wraps on its own; the primary action just takes the
+     first line to itself when there is this little to go round. */
+  .btn-play {
+    flex-basis: 100%;
   }
 }
