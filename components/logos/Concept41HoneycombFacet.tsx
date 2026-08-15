@@ -1,7 +1,8 @@
 'use client'
 
+import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
-import { FACETS, RIGHT_PLANE, DURATION, EASE } from './Concept33FacetedA'
+import { FACETS, RIGHT_PLANE } from './Concept33FacetedA'
 
 // Concept 41 — Concept 33 carrying the honeycomb from Shiva's reference.
 //
@@ -35,8 +36,9 @@ import { FACETS, RIGHT_PLANE, DURATION, EASE } from './Concept33FacetedA'
 // geometry rather than being drawn. The block is clipped once, to the plane
 // itself, so the only thing that ever cuts a cell is an edge of the letter.
 //
-// The plane carries the honeycomb in as one piece on Concept 33's own timing,
-// which leaves the assembly exactly as approved.
+// The animation departs from the other concepts on purpose: the letter does not
+// assemble, the lattice does, and it opens on Concept 33's own solid leg. What
+// plays is set out where the growth is worked out below.
 
 type Point = [number, number]
 
@@ -206,9 +208,11 @@ const BLOCK = outline(CENTRES)
   .map((loop) => clip(push(loop, HALF)))
   .filter((loop) => loop.length >= 3)
 
-const CELLS = CENTRES.map((centre) => clip(hexagon(centre, CELL_R - HALF))).filter(
-  (cell) => cell.length >= 3
-)
+const CELLS = STANDING.map(([column, row], i) => ({
+  name: `${column},${row}`,
+  at: CENTRES[i],
+  shape: clip(hexagon(CENTRES[i], CELL_R - HALF)),
+})).filter((cell) => cell.shape.length >= 3)
 
 const subpath = (polygon: Point[]) =>
   `M${polygon.map(([x, y]) => `${+x.toFixed(2)},${+y.toFixed(2)}`).join('L')}Z`
@@ -216,44 +220,209 @@ const subpath = (polygon: Point[]) =>
 // Concept 33's wide plane, re-walked with the honeycomb taken out of it: the
 // plane's outline, then the block as a hole, then the cells filling that hole
 // back in. What is left unfilled is the channel.
-const HONEYCOMB = [PLANE, ...BLOCK, ...CELLS].map(subpath).join('')
+const HONEYCOMB = [PLANE, ...BLOCK, ...CELLS.map((cell) => cell.shape)].map(subpath).join('')
 
-function Mark({ animated }: { animated: boolean }) {
+// A cell wall is the channel's centre line: the cells are set half a channel
+// back from the lattice and the block half a channel out from it, so a stroke a
+// channel wide laid along the lattice covers exactly what the static drawing
+// cuts away. Three walls meeting at a lattice corner cover the corner between
+// them exactly too, which is why the strokes are cut square and not rounded.
+const WALLS = new Map<string, [Point, Point]>()
+CENTRES.forEach((centre) => {
+  const corners = hexagon(centre, CELL_R)
+  corners.forEach((from, i) => {
+    const to = corners[(i + 1) % corners.length]
+    const wall = [corner(from), corner(to)].sort().join('|')
+    if (!WALLS.has(wall)) WALLS.set(wall, [from, to])
+  })
+})
+
+const LEAVING = new Map<string, string[]>()
+WALLS.forEach(([from, to], wall) => {
+  ;[from, to].forEach((end) => {
+    const here = LEAVING.get(corner(end))
+    if (here) here.push(wall)
+    else LEAVING.set(corner(end), [wall])
+  })
+})
+
+// Whether any part of a wall falls on the plane. Walls beyond the letter's
+// edges still carry the growth, but nothing of them is ever seen, so they are
+// left out of the reckoning of how long the whole thing takes.
+const shows = (from: Point, to: Point) => {
+  let entering = 0
+  let leaving = 1
+  for (let i = 0; i < BOUNDARY.length; i += 1) {
+    const edge = BOUNDARY[i]
+    const next = BOUNDARY[(i + 1) % BOUNDARY.length]
+    const here = depth(edge, next, from)
+    const there = depth(edge, next, to)
+    if (here < 0 && there < 0) return false
+    if (here < 0) entering = Math.max(entering, here / (here - there))
+    else if (there < 0) leaving = Math.min(leaving, here / (here - there))
+  }
+  return leaving > entering
+}
+
+// Growth. One wall between the two cells at the middle of the cluster is drawn
+// first; a wall's ends are live once it is nearly complete, and every wall
+// leaving a live end then sets off, so nothing is ever drawn that is not
+// already joined to what is there. Vertices are taken in the order they come
+// alive, which is what makes a cell close as its sixth wall lands and the front
+// carry on outward from it.
+const SEED_CELLS = ['1,0', '2,1']
+const DRAW = 1
+const GAP = 0.16
+const JOINED = 0.86
+// Each wall is laid a shade faster than the one before it, so the network
+// quickens as it spreads.
+const QUICKEN = 0.985
+
+const wobble = (wall: string) => {
+  let hash = 0
+  for (let i = 0; i < wall.length; i += 1) hash = (hash * 31 + wall.charCodeAt(i)) % 997
+  return hash / 997
+}
+
+const ring = (centre: Point) =>
+  hexagon(centre, CELL_R).map((from, i, corners) =>
+    [corner(from), corner(corners[(i + 1) % corners.length])].sort().join('|')
+  )
+
+const GROWTH = (() => {
+  const seeded = SEED_CELLS.map((name) => CELLS.find((cell) => cell.name === name)?.at as Point)
+  const between = new Set(ring(seeded[0]))
+  const seed = ring(seeded[1]).find((wall) => between.has(wall)) as string
+  // The cell that first wall belongs to is closed before the front is let go,
+  // so a whole cell is legible early and the rest reads as spreading from it.
+  const first = new Set(ring(seeded[1]))
+
+  const laid = new Map<string, { from: Point; to: Point; start: number; draw: number }>()
+  const live = new Map<string, number>()
+  const waiting: [string, number][] = []
+
+  const lay = (wall: string, end: string, start: number) => {
+    const [head, tail] = WALLS.get(wall) as [Point, Point]
+    const from = corner(head) === end ? head : tail
+    const to = corner(head) === end ? tail : head
+    const draw = DRAW * QUICKEN ** laid.size
+    laid.set(wall, { from, to, start, draw })
+    const reached = start + draw * JOINED
+    ;[corner(to), corner(from)].forEach((vertex) => {
+      if (live.has(vertex) && (live.get(vertex) as number) <= reached) return
+      live.set(vertex, reached)
+      waiting.push([vertex, reached])
+    })
+  }
+
+  lay(seed, corner((WALLS.get(seed) as [Point, Point])[0]), 0)
+
+  while (waiting.length > 0) {
+    let soonest = 0
+    waiting.forEach(([, when], i) => {
+      if (when < (waiting[soonest][1] as number)) soonest = i
+    })
+    const [vertex, when] = waiting.splice(soonest, 1)[0]
+    if ((live.get(vertex) as number) < when) continue
+    ;(LEAVING.get(vertex) ?? [])
+      .filter((wall) => !laid.has(wall))
+      .sort((one, other) => Number(first.has(other)) - Number(first.has(one)))
+      .forEach((wall, branch) => {
+        if (laid.has(wall)) return
+        const pause =
+          GAP *
+          QUICKEN ** laid.size *
+          (first.has(wall) ? 0.35 : 0.7 + 0.6 * wobble(wall)) *
+          (branch + 1)
+        lay(wall, vertex, when + pause)
+      })
+  }
+
+  const last = [...laid.values()]
+    .filter((wall) => shows(wall.from, wall.to))
+    .reduce((latest, wall) => Math.max(latest, wall.start + wall.draw), 0)
+
+  return [...laid.entries()].map(([wall, { from, to, start, draw }]) => ({
+    wall,
+    from,
+    to,
+    start: start / last,
+    draw: draw / last,
+  }))
+})()
+
+// A beat on the solid leg, the spread, then the finished lattice held before
+// the static drawing takes over.
+const LEAD = 0.18
+const SPREAD = 1.7
+const HOLD = 0.3
+const TOTAL = LEAD + SPREAD + HOLD
+const GROW = [0.3, 0.7, 0.35, 1] as const
+const MASK = 'concept41-growth'
+
+export function Concept41Static() {
   return (
     <svg viewBox="0 0 200 200" width="200" height="200" xmlns="http://www.w3.org/2000/svg">
-      {FACETS.map((facet) => {
-        const enter = {
-          initial: { x: facet.from.x, y: facet.from.y, opacity: 0 },
-          animate: { x: 0, y: 0, opacity: 1 },
-          transition: { duration: DURATION, delay: facet.seat, ease: EASE },
-        }
-        if (facet.points === RIGHT_PLANE) {
-          return animated ? (
-            <motion.path
-              key={facet.points}
-              d={HONEYCOMB}
-              fillRule="evenodd"
-              fill={facet.fill}
-              {...enter}
-            />
-          ) : (
-            <path key={facet.points} d={HONEYCOMB} fillRule="evenodd" fill={facet.fill} />
-          )
-        }
-        return animated ? (
-          <motion.polygon key={facet.points} points={facet.points} fill={facet.fill} {...enter} />
+      {FACETS.map((facet) =>
+        facet.points === RIGHT_PLANE ? (
+          <path key={facet.points} d={HONEYCOMB} fillRule="evenodd" fill={facet.fill} />
         ) : (
           <polygon key={facet.points} points={facet.points} fill={facet.fill} />
         )
-      })}
+      )}
     </svg>
   )
 }
 
-export function Concept41Static() {
-  return <Mark animated={false} />
-}
-
 export function Concept41Animated() {
-  return <Mark animated />
+  // Once the network is complete the mark hands over to the static drawing. A
+  // masked edge is not antialiased quite like a cut in the path itself, and the
+  // strokes stop a hair short of the block's mitred corners, so this is what
+  // makes the frame it comes to rest on the approved one.
+  const [grown, setGrown] = useState(false)
+  useEffect(() => {
+    const done = setTimeout(() => setGrown(true), TOTAL * 1000)
+    return () => clearTimeout(done)
+  }, [])
+
+  if (grown) return <Concept41Static />
+
+  return (
+    <svg viewBox="0 0 200 200" width="200" height="200" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        {/* The channel is cut out of the plane rather than painted over it, so
+            it is the background itself and stays right on either ground. */}
+        <mask id={MASK} maskUnits="userSpaceOnUse" x="0" y="0" width="200" height="200">
+          <rect x="0" y="0" width="200" height="200" fill="#fff" />
+          <g fill="none" stroke="#000" strokeWidth={CHANNEL} strokeLinecap="butt">
+            {GROWTH.map((wall) => (
+              <motion.path
+                key={wall.wall}
+                d={`M${corner(wall.from)}L${corner(wall.to)}`}
+                initial={{ pathLength: 0 }}
+                animate={{ pathLength: 1 }}
+                transition={{
+                  duration: wall.draw * SPREAD,
+                  delay: LEAD + wall.start * SPREAD,
+                  ease: GROW,
+                }}
+              />
+            ))}
+          </g>
+        </mask>
+      </defs>
+      {FACETS.map((facet) =>
+        facet.points === RIGHT_PLANE ? (
+          <polygon
+            key={facet.points}
+            points={facet.points}
+            fill={facet.fill}
+            mask={`url(#${MASK})`}
+          />
+        ) : (
+          <polygon key={facet.points} points={facet.points} fill={facet.fill} />
+        )
+      )}
+    </svg>
+  )
 }
