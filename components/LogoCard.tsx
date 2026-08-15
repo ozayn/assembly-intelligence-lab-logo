@@ -20,14 +20,16 @@ import { buildFittedLockupSvg, measureSymbolInk, FULL_INK } from './lockupFittin
 import { downloadMark, type ExportFormat } from './logoExport'
 import './LogoCard.css'
 
-type ExportSize = '16' | '32' | '64' | '102' | '512' | '1024'
+type ExportSize = '16' | '32' | '64' | '128' | '256' | '512' | '1024'
 type LogoVersion = 'symbol' | 'lockup'
 
 // What a symbol can be written at. The first three are the legibility sizes
-// the strip at the foot of the card shows at true size; the larger two are
-// there because a raster asset needs them — Concept 41's channels are a little
-// over a hundredth of the mark across and cannot survive a 64px PNG.
-const EXPORT_SIZES: ExportSize[] = ['16', '32', '64', '102', '512', '1024']
+// the strip at the foot of the card shows at true size; the rest are for
+// raster assets, where a mark has to be drawn well above the size it is shown
+// at — the Squarespace header stands it at about 102 CSS pixels, which a 64px
+// PNG cannot serve on a retina screen, and Concept 41's channels are a little
+// over a hundredth of the mark across and need the room besides.
+const EXPORT_SIZES: ExportSize[] = ['16', '32', '64', '128', '256', '512', '1024']
 const PREVIEW_SIZES: ExportSize[] = ['64', '32', '16']
 
 interface LogoCardProps {
@@ -201,10 +203,20 @@ export function LogoCard({
   }
 
   const downloadLockup = (svg: SVGSVGElement) => {
+    // A lockup is laid out at its tier's own measurements, which are far too
+    // small for a raster asset. The export size sets its longest edge and the
+    // viewBox is left alone, so the other side follows the artwork's own
+    // proportions and nothing is stretched.
+    const laidOutWidth = Number(svg.getAttribute('width'))
+    const laidOutHeight = Number(svg.getAttribute('height'))
+    const scale = Number(selectedExportSize) / Math.max(laidOutWidth, laidOutHeight)
+    svg.setAttribute('width', String(Math.round(laidOutWidth * scale)))
+    svg.setAttribute('height', String(Math.round(laidOutHeight * scale)))
+
     const backgroundVariant = logoBackground || 'light'
     downloadMark(
       svg,
-      `AIL-concept-${id.toString().padStart(2, '0')}-${applicationTier}-${backgroundVariant}-${typographyDirection}-lockup`,
+      `AIL-concept-${id.toString().padStart(2, '0')}-${applicationTier}-${selectedExportSize}px-${backgroundVariant}-${typographyDirection}-lockup`,
       exportFormat
     )
   }
@@ -518,7 +530,7 @@ export function LogoCard({
           <button
             className="btn-download"
             onClick={handleDownloadLockup}
-            title={`Download ${formatLabel} (${tier.label}, ${logoBackground || 'light'}, ${typeSystem.name})`}
+            title={`Download ${formatLabel} (${tier.label} at ${selectedExportSize}px, ${logoBackground || 'light'}, ${typeSystem.name})`}
           >
             ↓ {formatLabel} ({tier.label})
           </button>
@@ -568,25 +580,27 @@ export function LogoCard({
         </div>
       )}
 
-      {logoVersion === 'symbol' && (
-        <div className="symbol-controls-row">
-          <div className="symbol-control-group">
-            <span className="control-mini-label">Export Size</span>
-            <div className="button-group-mini">
-              {EXPORT_SIZES.map((size) => (
-                <button
-                  key={size}
-                  className={selectedExportSize === size ? 'active' : ''}
-                  onClick={() => setSelectedExportSize(size)}
-                  title={`Export the symbol at ${size}px`}
-                >
-                  {size}px
-                </button>
-              ))}
-            </div>
+      <div className="symbol-controls-row">
+        <div className="symbol-control-group">
+          <span className="control-mini-label">Export Size</span>
+          <div className="button-group-mini">
+            {EXPORT_SIZES.map((size) => (
+              <button
+                key={size}
+                className={selectedExportSize === size ? 'active' : ''}
+                onClick={() => setSelectedExportSize(size)}
+                title={
+                  logoVersion === 'symbol'
+                    ? `Export the symbol at ${size}px`
+                    : `Export the lockup at ${size}px on its longest side`
+                }
+              >
+                {size}px
+              </button>
+            ))}
           </div>
         </div>
-      )}
+      </div>
 
       {logoVersion === 'symbol' && (
       <div className="logo-sizes">
