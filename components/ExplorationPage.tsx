@@ -7,6 +7,7 @@ import { LogoCard } from './LogoCard'
 import { ExportButton } from './ExportButton'
 import { DesignWorkspaceNav } from './DesignWorkspaceNav'
 import { useFeedbackSubmission } from './useFeedbackSubmission'
+import { PNG_LONGEST_EDGE, type ExportFormat } from './logoExport'
 import type { TypographyDirection } from './typographySystems'
 import Link from 'next/link'
 import {
@@ -130,6 +131,7 @@ export function ExplorationPage({
   const [displayMode, setDisplayMode] = useState<DisplayMode>('animated')
   const [logoBackground, setLogoBackground] = useState<'light' | 'dark'>('light')
   const [sizeMode, setSizeMode] = useState<SizeMode>('full')
+  const [exportFormat, setExportFormat] = useState<ExportFormat>('svg')
   const [playAll, setPlayAll] = useState(false)
   const {
     collectedFeedback,
@@ -220,6 +222,26 @@ export function ExplorationPage({
             </div>
 
             <div className="control-group">
+              <label>Format</label>
+              <div className="button-group">
+                <button
+                  className={exportFormat === 'svg' ? 'active' : ''}
+                  onClick={() => setExportFormat('svg')}
+                  title="Download marks as vector SVG"
+                >
+                  SVG
+                </button>
+                <button
+                  className={exportFormat === 'png' ? 'active' : ''}
+                  onClick={() => setExportFormat('png')}
+                  title={`Download marks as transparent PNG (${PNG_LONGEST_EDGE}px)`}
+                >
+                  PNG
+                </button>
+              </div>
+            </div>
+
+            <div className="control-group">
               <button className="btn-play-all" onClick={togglePlayAll}>
                 {playAll ? 'Stop All' : 'Play All'}
               </button>
@@ -258,6 +280,7 @@ export function ExplorationPage({
                   reviewCandidate={concept.reviewCandidate === true}
                   initialLogoVersion={initialLockup ? 'lockup' : undefined}
                   initialTypography={initialLockup}
+                  exportFormat={exportFormat}
                 />
               )
             })}

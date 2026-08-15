@@ -446,6 +446,7 @@ https://assembly-intelligence-lab-logo.vercel.app
 | **Dark Mode** | `app/globals.css` + ThemeProvider | ✅ Light text + teal accents |
 | **Size Testing** | `LogoCard.tsx` → Size previews | ✅ 64px, 32px, 16px previews |
 | **SVG Download** | `LogoCard.tsx` → "↓ SVG" button | ✅ Downloads `AIL-concept-0X.svg` |
+| **PNG Download** | Header → Format: SVG / PNG, then the same button | ✅ Same artwork drawn to a transparent 2048px PNG (`logoExport.ts`) |
 | **Reviewer Name System** | `ReviewerModal.tsx` + `ReviewerContext.tsx` | ✅ Modal on first visit, badge in header |
 | **Change Reviewer** | `ReviewerBadge` component | ✅ Click "Change" to switch name mid-session |
 | **Password Gate** | `PasswordGate.tsx` + `/api/verify-password` | ✅ Blocks unauthenticated access |
@@ -482,7 +483,9 @@ After receiving feedback, the following assets will be created for selected fina
 - **File location (future):** To be generated in `exports/mp4/`
 
 ### Additional Production Variants (Future)
-- Transparent PNG exports
+- ~~Transparent PNG exports~~ — done: the Format control writes any mark or
+  lockup as a transparent PNG, rendered from the same SVG the vector export
+  writes
 - Favicon / micro-mark (favicon-sized version)
 - Horizontal / header lockup (if different from square)
 - Monochrome version (for accessibility)

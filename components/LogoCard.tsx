@@ -17,6 +17,7 @@ import {
 import { BrandWordmark } from './BrandWordmark'
 import { FittedLockup } from './FittedLockup'
 import { buildFittedLockupSvg, measureSymbolInk, FULL_INK } from './lockupFitting'
+import { downloadMark, PNG_LONGEST_EDGE, type ExportFormat } from './logoExport'
 import './LogoCard.css'
 
 type ExportSize = '64' | '32' | '16'
@@ -43,6 +44,8 @@ interface LogoCardProps {
   // defaults are what every existing page already shows.
   initialLogoVersion?: LogoVersion
   initialTypography?: TypographyDirection
+  // Set once for the page, so every download on it writes the same format.
+  exportFormat?: ExportFormat
 }
 
 export function LogoCard({
@@ -61,6 +64,7 @@ export function LogoCard({
   reviewCandidate = false,
   initialLogoVersion = 'symbol',
   initialTypography = 'scientific',
+  exportFormat = 'svg',
 }: LogoCardProps) {
   const [isAnimating, setIsAnimating] = useState(onPlayAll)
   const [showAnimated, setShowAnimated] = useState(false)
@@ -104,7 +108,7 @@ export function LogoCard({
     setShowAnimated(true)
   }
 
-  const handleDownloadSVG = () => {
+  const handleDownloadSymbol = () => {
     // Pull geometry from the container matching the selected export size, so
     // that a future size-specific micro-mark is exported instead of the
     // full mark scaled down.
@@ -114,11 +118,13 @@ export function LogoCard({
     const svgElement = sourceContainer.querySelector('svg')
     if (!svgElement) return
 
-    const svgClone = svgElement.cloneNode(true) as SVGElement
+    const svgClone = svgElement.cloneNode(true) as SVGSVGElement
     svgClone.setAttribute('xmlns', 'http://www.w3.org/2000/svg')
 
     // SVG is vector — set explicit target dimensions rather than rasterizing.
     // viewBox is preserved from the source so geometry stays scalable/editable.
+    // A PNG of the same mark is written from its viewBox instead, so the size
+    // chosen here selects which mark is exported, not how coarse it is.
     const dimension = Number(selectedExportSize)
     svgClone.setAttribute('width', dimension.toString())
     svgClone.setAttribute('height', dimension.toString())
@@ -156,18 +162,12 @@ export function LogoCard({
       })
     })
 
-    const svgString = new XMLSerializer().serializeToString(svgClone)
-    const blob = new Blob([svgString], { type: 'image/svg+xml' })
-    const url = URL.createObjectURL(blob)
-
     const backgroundVariant = logoBackground || 'light'
-    const link = document.createElement('a')
-    link.href = url
-    link.download = `AIL-concept-${id.toString().padStart(2, '0')}-${selectedExportSize}px-${backgroundVariant}-symbol.svg`
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-    URL.revokeObjectURL(url)
+    downloadMark(
+      svgClone,
+      `AIL-concept-${id.toString().padStart(2, '0')}-${selectedExportSize}px-${backgroundVariant}-symbol`,
+      exportFormat
+    )
   }
 
   // Measures real rendered text dimensions for the chosen typography so the
@@ -192,21 +192,16 @@ export function LogoCard({
     return { width: bbox.width, height: bbox.height }
   }
 
-  const downloadSvg = (svg: SVGSVGElement) => {
-    const svgString = new XMLSerializer().serializeToString(svg)
-    const blob = new Blob([svgString], { type: 'image/svg+xml' })
-    const url = URL.createObjectURL(blob)
+  const downloadLockup = (svg: SVGSVGElement) => {
     const backgroundVariant = logoBackground || 'light'
-    const link = document.createElement('a')
-    link.href = url
-    link.download = `AIL-concept-${id.toString().padStart(2, '0')}-${applicationTier}-${backgroundVariant}-${typographyDirection}-lockup.svg`
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-    URL.revokeObjectURL(url)
+    downloadMark(
+      svg,
+      `AIL-concept-${id.toString().padStart(2, '0')}-${applicationTier}-${backgroundVariant}-${typographyDirection}-lockup`,
+      exportFormat
+    )
   }
 
-  const handleDownloadLockupSVG = () => {
+  const handleDownloadLockup = () => {
     const sourceContainer = exportSourceRef.current
     if (!sourceContainer) return
     const svgElement = sourceContainer.querySelector('svg')
@@ -266,7 +261,7 @@ export function LogoCard({
         secondaryColor: lineSecondaryColor,
       })
       if (fittedSvg) {
-        downloadSvg(fittedSvg)
+        downloadLockup(fittedSvg)
         return
       }
     }
@@ -378,7 +373,7 @@ export function LogoCard({
       lineSecondaryColor
     )
 
-    downloadSvg(outSvg)
+    downloadLockup(outSvg)
   }
 
   const handleFeedbackSubmit = (feedback: LogoFeedback) => {
@@ -415,6 +410,7 @@ export function LogoCard({
   const typeSystem = TYPOGRAPHY_SYSTEMS[typographyDirection]
   const lockupFontSize = tier.fontSizeOverride ?? typeSystem.fontSize
   const lockupLetterSpacing = typeSystem.letterSpacing * tier.letterSpacingScale
+  const formatLabel = exportFormat.toUpperCase()
 
   return (
     <div className="logo-card">
@@ -505,18 +501,18 @@ export function LogoCard({
         {logoVersion === 'symbol' ? (
           <button
             className="btn-download"
-            onClick={handleDownloadSVG}
-            title={`Download SVG (${selectedExportSize}px, ${logoBackground || 'light'})`}
+            onClick={handleDownloadSymbol}
+            title={`Download ${formatLabel} (${exportFormat === 'png' ? `${selectedExportSize}px mark at ${PNG_LONGEST_EDGE}px` : `${selectedExportSize}px`}, ${logoBackground || 'light'})`}
           >
-            ↓ SVG ({selectedExportSize}px)
+            ↓ {formatLabel} ({selectedExportSize}px)
           </button>
         ) : (
           <button
             className="btn-download"
-            onClick={handleDownloadLockupSVG}
-            title={`Download SVG (${tier.label}, ${logoBackground || 'light'}, ${typeSystem.name})`}
+            onClick={handleDownloadLockup}
+            title={`Download ${formatLabel} (${tier.label}, ${logoBackground || 'light'}, ${typeSystem.name})`}
           >
-            ↓ SVG ({tier.label})
+            ↓ {formatLabel} ({tier.label})
           </button>
         )}
         <button

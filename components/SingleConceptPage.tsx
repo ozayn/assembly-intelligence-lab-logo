@@ -7,6 +7,7 @@ import { LogoCard } from './LogoCard'
 import { TypographyLockup } from './TypographyLockup'
 import { DesignWorkspaceNav } from './DesignWorkspaceNav'
 import { useFeedbackSubmission } from './useFeedbackSubmission'
+import { PNG_LONGEST_EDGE, type ExportFormat } from './logoExport'
 import Link from 'next/link'
 import {
   Concept01Static, Concept01Animated,
@@ -112,6 +113,7 @@ export function SingleConceptPage({ conceptId }: SingleConceptPageProps) {
   const [displayMode, setDisplayMode] = useState<DisplayMode>('animated')
   const [logoBackground, setLogoBackground] = useState<'light' | 'dark'>('light')
   const [sizeMode, setSizeMode] = useState<SizeMode>('full')
+  const [exportFormat, setExportFormat] = useState<ExportFormat>('svg')
   const {
     collectedFeedback,
     submittingFeedback,
@@ -251,6 +253,26 @@ export function SingleConceptPage({ conceptId }: SingleConceptPageProps) {
                 </button>
               </div>
             </div>
+
+            <div className="control-group">
+              <label>Format</label>
+              <div className="button-group">
+                <button
+                  className={exportFormat === 'svg' ? 'active' : ''}
+                  onClick={() => setExportFormat('svg')}
+                  title="Download marks as vector SVG"
+                >
+                  SVG
+                </button>
+                <button
+                  className={exportFormat === 'png' ? 'active' : ''}
+                  onClick={() => setExportFormat('png')}
+                  title={`Download marks as transparent PNG (${PNG_LONGEST_EDGE}px)`}
+                >
+                  PNG
+                </button>
+              </div>
+            </div>
           </div>
           <ReviewerBadge />
         </div>
@@ -271,6 +293,7 @@ export function SingleConceptPage({ conceptId }: SingleConceptPageProps) {
               logoBackground={logoBackground}
               sizeMode={sizeMode}
               reviewCandidate={concept.reviewCandidate === true}
+              exportFormat={exportFormat}
             />
 
             {/* Typography Lockup Exploration */}
