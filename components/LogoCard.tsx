@@ -17,7 +17,7 @@ import {
 import { BrandWordmark } from './BrandWordmark'
 import { FittedLockup } from './FittedLockup'
 import { buildFittedLockupSvg, measureSymbolInk, FULL_INK } from './lockupFitting'
-import { downloadMark, PNG_LONGEST_EDGE, type ExportFormat } from './logoExport'
+import { downloadMark, type ExportFormat } from './logoExport'
 import './LogoCard.css'
 
 type ExportSize = '64' | '32' | '16'
@@ -502,7 +502,7 @@ export function LogoCard({
           <button
             className="btn-download"
             onClick={handleDownloadSymbol}
-            title={`Download ${formatLabel} (${exportFormat === 'png' ? `${selectedExportSize}px mark at ${PNG_LONGEST_EDGE}px` : `${selectedExportSize}px`}, ${logoBackground || 'light'})`}
+            title={`Download ${formatLabel} (${selectedExportSize}px, ${logoBackground || 'light'})`}
           >
             ↓ {formatLabel} ({selectedExportSize}px)
           </button>

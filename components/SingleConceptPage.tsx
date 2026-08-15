@@ -7,7 +7,7 @@ import { LogoCard } from './LogoCard'
 import { TypographyLockup } from './TypographyLockup'
 import { DesignWorkspaceNav } from './DesignWorkspaceNav'
 import { useFeedbackSubmission } from './useFeedbackSubmission'
-import { PNG_LONGEST_EDGE, type ExportFormat } from './logoExport'
+import { type ExportFormat } from './logoExport'
 import Link from 'next/link'
 import {
   Concept01Static, Concept01Animated,
@@ -267,7 +267,7 @@ export function SingleConceptPage({ conceptId }: SingleConceptPageProps) {
                 <button
                   className={exportFormat === 'png' ? 'active' : ''}
                   onClick={() => setExportFormat('png')}
-                  title={`Download marks as transparent PNG (${PNG_LONGEST_EDGE}px)`}
+                  title="Download marks as transparent PNG at the selected size"
                 >
                   PNG
                 </button>

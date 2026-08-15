@@ -7,7 +7,7 @@ import { LogoCard } from './LogoCard'
 import { ExportButton } from './ExportButton'
 import { DesignWorkspaceNav } from './DesignWorkspaceNav'
 import { useFeedbackSubmission } from './useFeedbackSubmission'
-import { PNG_LONGEST_EDGE, type ExportFormat } from './logoExport'
+import { type ExportFormat } from './logoExport'
 import type { TypographyDirection } from './typographySystems'
 import Link from 'next/link'
 import {
@@ -234,7 +234,7 @@ export function ExplorationPage({
                 <button
                   className={exportFormat === 'png' ? 'active' : ''}
                   onClick={() => setExportFormat('png')}
-                  title={`Download marks as transparent PNG (${PNG_LONGEST_EDGE}px)`}
+                  title="Download marks as transparent PNG at the selected size"
                 >
                   PNG
                 </button>

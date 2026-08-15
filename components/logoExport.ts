@@ -7,10 +7,6 @@
 
 export type ExportFormat = 'svg' | 'png'
 
-// Long enough for print comps and retina web use. The short side follows from
-// the artwork's own proportions, so nothing is ever stretched to fill it.
-export const PNG_LONGEST_EDGE = 2048
-
 const svgNS = 'http://www.w3.org/2000/svg'
 
 const save = (blob: Blob, filename: string) => {
@@ -24,17 +20,17 @@ const save = (blob: Blob, filename: string) => {
   URL.revokeObjectURL(url)
 }
 
-// The artwork's own dimensions, preferring the viewBox: it is what the mark is
-// drawn in, and it is what keeps a rasterised symbol square.
-const proportions = (svg: SVGSVGElement) => {
-  const viewBox = svg.getAttribute('viewBox')
-  if (viewBox) {
-    const [, , width, height] = viewBox.split(/[\s,]+/).map(Number)
-    if (width > 0 && height > 0) return { width, height }
-  }
-  const width = Number(svg.getAttribute('width')) || 200
-  const height = Number(svg.getAttribute('height')) || 200
-  return { width, height }
+// The size the caller asked the file to be — 16, 32 or 64 for a symbol, the
+// tier's own measurements for a lockup — which is what the PNG is rasterised
+// at. A side the caller left open is taken from the viewBox's proportions, so
+// a lockup keeps its shape instead of being squared off.
+const dimensions = (svg: SVGSVGElement) => {
+  const box = (svg.getAttribute('viewBox') ?? '').split(/[\s,]+/).map(Number)
+  const ratio = box[2] > 0 && box[3] > 0 ? box[2] / box[3] : 1
+  const asked = { width: Number(svg.getAttribute('width')), height: Number(svg.getAttribute('height')) }
+  const width = asked.width || (asked.height ? asked.height * ratio : box[2] || 200)
+  const height = asked.height || (asked.width ? asked.width / ratio : box[3] || 200)
+  return { width: Math.max(1, Math.round(width)), height: Math.max(1, Math.round(height)) }
 }
 
 const base64 = (buffer: ArrayBuffer) => {
@@ -117,17 +113,15 @@ async function embeddedFonts(svg: SVGSVGElement): Promise<string> {
 }
 
 async function rasterise(svg: SVGSVGElement): Promise<Blob | null> {
-  const { width, height } = proportions(svg)
-  const scale = PNG_LONGEST_EDGE / Math.max(width, height)
-  const pixelWidth = Math.round(width * scale)
-  const pixelHeight = Math.round(height * scale)
+  const { width, height } = dimensions(svg)
 
   const clone = svg.cloneNode(true) as SVGSVGElement
   clone.setAttribute('xmlns', svgNS)
-  // The viewBox is left alone and only the frame grows, so the artwork is
-  // rendered at size rather than scaled up from a small bitmap.
-  clone.setAttribute('width', String(pixelWidth))
-  clone.setAttribute('height', String(pixelHeight))
+  // The viewBox is left alone and the frame is stated in whole pixels, so the
+  // browser draws the vector at the export size rather than resampling a
+  // bitmap made at some other one.
+  clone.setAttribute('width', String(width))
+  clone.setAttribute('height', String(height))
 
   const fonts = await embeddedFonts(svg)
   if (fonts) {
@@ -142,13 +136,13 @@ async function rasterise(svg: SVGSVGElement): Promise<Blob | null> {
   await image.decode()
 
   const canvas = document.createElement('canvas')
-  canvas.width = pixelWidth
-  canvas.height = pixelHeight
+  canvas.width = width
+  canvas.height = height
   const context = canvas.getContext('2d')
   if (!context) return null
   // Nothing is painted underneath: the ground stays transparent unless the
   // artwork itself carries one.
-  context.drawImage(image, 0, 0, pixelWidth, pixelHeight)
+  context.drawImage(image, 0, 0, width, height)
 
   return new Promise((resolve) => canvas.toBlob(resolve, 'image/png'))
 }

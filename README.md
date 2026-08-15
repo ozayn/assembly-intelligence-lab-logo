@@ -446,7 +446,7 @@ https://assembly-intelligence-lab-logo.vercel.app
 | **Dark Mode** | `app/globals.css` + ThemeProvider | ✅ Light text + teal accents |
 | **Size Testing** | `LogoCard.tsx` → Size previews | ✅ 64px, 32px, 16px previews |
 | **SVG Download** | `LogoCard.tsx` → "↓ SVG" button | ✅ Downloads `AIL-concept-0X.svg` |
-| **PNG Download** | Header → Format: SVG / PNG, then the same button | ✅ Same artwork drawn to a transparent 2048px PNG (`logoExport.ts`) |
+| **PNG Download** | Header → Format: SVG / PNG, then the same button | ✅ Same artwork drawn to a transparent PNG at the selected size (`logoExport.ts`) |
 | **Reviewer Name System** | `ReviewerModal.tsx` + `ReviewerContext.tsx` | ✅ Modal on first visit, badge in header |
 | **Change Reviewer** | `ReviewerBadge` component | ✅ Click "Change" to switch name mid-session |
 | **Password Gate** | `PasswordGate.tsx` + `/api/verify-password` | ✅ Blocks unauthenticated access |
