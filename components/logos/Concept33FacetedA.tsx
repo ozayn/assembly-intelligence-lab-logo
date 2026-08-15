@@ -43,6 +43,46 @@ export function Concept33Static() {
   )
 }
 
+// The same seating as the component below, written out as a file that stands on
+// its own: each plane's transition becomes a CSS keyframe inside the SVG and the
+// tokens become the colours they resolve to, so nothing outside the file is
+// read. The keyframes only state where a plane comes from — it is left to rest
+// on the polygon's own attributes, which are the static mark's, so the frame it
+// settles on is that drawing rather than a copy of it held in place.
+export function buildConcept33Animated(colour: (token: string) => string): string {
+  const paint = (fill: string) =>
+    fill.replace(/var\((--logo-[a-z]+)\)/, (whole, token: string) => colour(token) || whole)
+
+  const scope = 'ail-concept-33-animated'
+
+  const seats = FACETS.map(
+    (facet, index) =>
+      `@keyframes ${scope}-seat-${index}{from{` +
+      `transform:translate(${facet.from.x}px,${facet.from.y}px);opacity:0}}`
+  ).join('')
+
+  const planes = FACETS.map(
+    (facet, index) =>
+      `<polygon class="plane" points="${facet.points}" fill="${paint(facet.fill)}"` +
+      ` style="animation-name:${scope}-seat-${index};animation-delay:${facet.seat}s"/>`
+  ).join('')
+
+  // Selectors are held inside the mark's own id so that pasting the file into a
+  // page cannot reach anything else on it. `backwards` rather than `both`: the
+  // offset is wanted before a plane's turn comes and gone once it has landed,
+  // leaving the polygon with no transform of its own at rest.
+  return (
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200" id="${scope}">` +
+    `<style>` +
+    `#${scope} .plane{animation-duration:${DURATION}s;` +
+    `animation-timing-function:cubic-bezier(${EASE.join(',')});animation-fill-mode:backwards}` +
+    seats +
+    `</style>` +
+    planes +
+    `</svg>`
+  )
+}
+
 export function Concept33Animated() {
   return (
     <svg viewBox="0 0 200 200" width="200" height="200" xmlns="http://www.w3.org/2000/svg">
