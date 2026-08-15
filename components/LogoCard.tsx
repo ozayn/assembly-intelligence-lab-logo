@@ -20,14 +20,14 @@ import { buildFittedLockupSvg, measureSymbolInk, FULL_INK } from './lockupFittin
 import { downloadMark, type ExportFormat } from './logoExport'
 import './LogoCard.css'
 
-type ExportSize = '16' | '32' | '64' | '512' | '1024'
+type ExportSize = '16' | '32' | '64' | '102' | '512' | '1024'
 type LogoVersion = 'symbol' | 'lockup'
 
 // What a symbol can be written at. The first three are the legibility sizes
 // the strip at the foot of the card shows at true size; the larger two are
 // there because a raster asset needs them — Concept 41's channels are a little
 // over a hundredth of the mark across and cannot survive a 64px PNG.
-const EXPORT_SIZES: ExportSize[] = ['16', '32', '64', '512', '1024']
+const EXPORT_SIZES: ExportSize[] = ['16', '32', '64', '102', '512', '1024']
 const PREVIEW_SIZES: ExportSize[] = ['64', '32', '16']
 
 interface LogoCardProps {
