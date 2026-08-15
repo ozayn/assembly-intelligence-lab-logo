@@ -1,0 +1,221 @@
+.ot-page {
+  min-height: 100vh;
+  background: #f5f3f0;
+  color: #1a1a18;
+  padding: 2rem;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+.ot-header {
+  max-width: 1200px;
+  margin: 0 auto 2rem;
+}
+
+.ot-header h1 {
+  font-size: 1.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.ot-header p {
+  color: #666661;
+  font-size: 0.9rem;
+  max-width: 720px;
+}
+
+.ot-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.ot-toolbar label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #666661;
+}
+
+.ot-bg-buttons button {
+  padding: 0.4rem 0.9rem;
+  border: 1px solid #d0d0c8;
+  background: white;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.ot-bg-buttons button:first-child { border-radius: 4px 0 0 4px; }
+.ot-bg-buttons button:last-child { border-radius: 0 4px 4px 0; margin-left: -1px; }
+
+.ot-bg-buttons button.active {
+  background: #001e3c;
+  color: white;
+  border-color: #001e3c;
+}
+
+.ot-concept {
+  max-width: 1200px;
+  margin: 0 auto 3.5rem;
+  background: white;
+  border: 1px solid #e0ded8;
+  border-radius: 8px;
+  padding: 1.75rem;
+}
+
+.ot-concept-title {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.ot-concept-title .num {
+  font-size: 1.5rem;
+  font-weight: 300;
+  color: #0d8b8f;
+}
+
+.ot-concept-title h2 {
+  font-size: 1.15rem;
+  font-weight: 600;
+}
+
+.ot-master-row {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1rem;
+  background: #f9f8f6;
+  border-radius: 6px;
+  margin-bottom: 1.5rem;
+}
+
+.ot-master-row .ot-swatch-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #999;
+  margin-top: 0.4rem;
+}
+
+.ot-tiers {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+}
+
+@media (max-width: 900px) {
+  .ot-tiers { grid-template-columns: 1fr; }
+}
+
+.ot-tier {
+  border: 1px solid #e8e5e0;
+  border-radius: 6px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.ot-tier-heading {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #001e3c;
+}
+
+.ot-compare-row {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: space-around;
+  align-items: flex-end;
+}
+
+.ot-swatch {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.ot-swatch-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fafafa;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+}
+
+.ot-swatch-box.bg-light { background: #ffffff; }
+.ot-swatch-box.bg-dark { background: #151b34; border-color: #2a3345; }
+
+.ot-swatch-caption {
+  font-size: 0.65rem;
+  color: #888;
+  text-align: center;
+  line-height: 1.3;
+}
+
+.ot-metric {
+  font-size: 0.68rem;
+  color: #0d8b8f;
+  font-variant-numeric: tabular-nums;
+}
+
+.ot-changes {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-size: 0.72rem;
+  color: #444;
+  line-height: 1.5;
+}
+
+.ot-changes li::before {
+  content: '+ ';
+  color: #0d8b8f;
+  font-weight: 700;
+}
+
+.ot-magnify-note {
+  font-size: 0.65rem;
+  color: #999;
+  font-style: italic;
+}
+
+.ot-optional {
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px dashed #d8a339;
+}
+
+.ot-optional-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #a8730f;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.4rem;
+}
+
+.ot-recommendation {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  border-radius: 6px;
+  background: #eef6f6;
+  border: 1px solid #cfe6e6;
+  font-size: 0.85rem;
+}
+
+.ot-recommendation strong {
+  color: #0d8b8f;
+}
+
+.ot-loading {
+  color: #999;
+  font-size: 0.65rem;
+}
