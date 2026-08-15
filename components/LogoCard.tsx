@@ -20,8 +20,15 @@ import { buildFittedLockupSvg, measureSymbolInk, FULL_INK } from './lockupFittin
 import { downloadMark, type ExportFormat } from './logoExport'
 import './LogoCard.css'
 
-type ExportSize = '64' | '32' | '16'
+type ExportSize = '16' | '32' | '64' | '512' | '1024'
 type LogoVersion = 'symbol' | 'lockup'
+
+// What a symbol can be written at. The first three are the legibility sizes
+// the strip at the foot of the card shows at true size; the larger two are
+// there because a raster asset needs them — Concept 41's channels are a little
+// over a hundredth of the mark across and cannot survive a 64px PNG.
+const EXPORT_SIZES: ExportSize[] = ['16', '32', '64', '512', '1024']
+const PREVIEW_SIZES: ExportSize[] = ['64', '32', '16']
 
 interface LogoCardProps {
   id: number
@@ -76,11 +83,7 @@ export function LogoCard({
     useState<TypographyDirection>(initialTypography)
   const [applicationTier, setApplicationTier] = useState<ApplicationTier>('full')
   const logoContainerRef = useRef<HTMLDivElement>(null)
-  const sizeContainerRefs = useRef<Record<ExportSize, HTMLDivElement | null>>({
-    '64': null,
-    '32': null,
-    '16': null,
-  })
+  const sizeContainerRefs = useRef<Partial<Record<ExportSize, HTMLDivElement | null>>>({})
   // Always-mounted, visually hidden source for the symbol's real SVG markup,
   // used by the lockup export regardless of which mode is currently visible.
   const exportSourceRef = useRef<HTMLDivElement>(null)
@@ -111,8 +114,13 @@ export function LogoCard({
   const handleDownloadSymbol = () => {
     // Pull geometry from the container matching the selected export size, so
     // that a future size-specific micro-mark is exported instead of the
-    // full mark scaled down.
-    const sourceContainer = sizeContainerRefs.current[selectedExportSize] || logoContainerRef.current
+    // full mark scaled down. The sizes above the legibility strip have no
+    // container of their own and come off the hidden source, which holds the
+    // full mark whether or not the card is mid-animation.
+    const sourceContainer =
+      sizeContainerRefs.current[selectedExportSize] ||
+      exportSourceRef.current ||
+      logoContainerRef.current
     if (!sourceContainer) return
 
     const svgElement = sourceContainer.querySelector('svg')
@@ -561,8 +569,28 @@ export function LogoCard({
       )}
 
       {logoVersion === 'symbol' && (
+        <div className="symbol-controls-row">
+          <div className="symbol-control-group">
+            <span className="control-mini-label">Export Size</span>
+            <div className="button-group-mini">
+              {EXPORT_SIZES.map((size) => (
+                <button
+                  key={size}
+                  className={selectedExportSize === size ? 'active' : ''}
+                  onClick={() => setSelectedExportSize(size)}
+                  title={`Export the symbol at ${size}px`}
+                >
+                  {size}px
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {logoVersion === 'symbol' && (
       <div className="logo-sizes">
-        {(['64', '32', '16'] as ExportSize[]).map((size) => (
+        {PREVIEW_SIZES.map((size) => (
           <button
             key={size}
             type="button"

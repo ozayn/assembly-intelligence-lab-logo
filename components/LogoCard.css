@@ -100,13 +100,23 @@ html.dark .button-group-mini button {
   border-color: var(--accent-navy);
 }
 
-.lockup-controls-row {
+/* The dark rule above sets every mini button and outranks the selected state,
+   which left the card's controls looking unset on a dark page. */
+html.dark .button-group-mini button.active {
+  background-color: var(--accent-navy);
+  color: white;
+  border-color: var(--accent-navy);
+}
+
+.lockup-controls-row,
+.symbol-controls-row {
   display: flex;
   flex-wrap: wrap;
   gap: 1.25rem;
 }
 
-.lockup-control-group {
+.lockup-control-group,
+.symbol-control-group {
   display: flex;
   align-items: center;
   gap: 0.6rem;
