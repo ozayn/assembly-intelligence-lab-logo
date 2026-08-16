@@ -57,25 +57,53 @@ const resolveLogoColours = (container: HTMLElement): Record<string, string> => {
   )
 }
 
-// The clipboard API refuses a document that does not hold focus, and Safari
-// refuses it outside a gesture it recognises, so the older selection-based copy
-// stands behind it rather than the reviewer being told it cannot be done.
+// The older selection-based copy, which is the one that still goes through in a
+// browser that will not give the page the clipboard permission. It is written
+// the long way — a field that can genuinely hold a selection, selected by range
+// as well as by index — because the short way silently copies nothing on iOS
+// and Safari, and a copy that quietly does not happen is worse than one that
+// says so: the reviewer pastes what they copied the time before.
+const copyBySelection = (text: string): boolean => {
+  const holder = document.createElement('textarea')
+  holder.value = text
+  holder.setAttribute('aria-hidden', 'true')
+  holder.style.cssText =
+    'position:fixed;top:0;left:0;width:1px;height:1px;padding:0;border:none;opacity:0'
+  document.body.appendChild(holder)
+
+  const previous = document.activeElement as HTMLElement | null
+  const selection = window.getSelection()
+  const range = document.createRange()
+  range.selectNodeContents(holder)
+  selection?.removeAllRanges()
+  selection?.addRange(range)
+  holder.focus()
+  holder.setSelectionRange(0, text.length)
+
+  let copied = false
+  try {
+    copied = document.execCommand('copy')
+  } catch {
+    copied = false
+  }
+
+  selection?.removeAllRanges()
+  holder.remove()
+  previous?.focus?.()
+  return copied
+}
+
+// The clipboard proper is asked first, from inside the click so the gesture it
+// wants is still standing. It refuses a document that does not hold focus, and
+// Safari refuses it outside a gesture it recognises, which is what the
+// selection copy is behind it for.
 const copyText = async (text: string): Promise<boolean> => {
   try {
     await navigator.clipboard.writeText(text)
     return true
   } catch {
-    // fall through
+    return copyBySelection(text)
   }
-  const holder = document.createElement('textarea')
-  holder.value = text
-  holder.setAttribute('readonly', '')
-  holder.style.cssText = 'position:fixed;top:0;left:0;opacity:0;pointer-events:none'
-  document.body.appendChild(holder)
-  holder.select()
-  const copied = document.execCommand('copy')
-  holder.remove()
-  return copied
 }
 
 interface LogoCardProps {
