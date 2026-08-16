@@ -114,16 +114,14 @@ async function embeddedFonts(svg: SVGSVGElement): Promise<string> {
   return [...new Set(written)].join('')
 }
 
-async function rasterise(svg: SVGSVGElement): Promise<Blob | null> {
-  const { width, height } = dimensions(svg)
-
+// The artwork as text, carrying any webfont it asks for. A mark of plain
+// geometry serialises to exactly what it always did; a lockup arrives with its
+// faces inside it, so the file sets in the typography it was drawn in on a page
+// that has never loaded it — pasted into someone else's HTML, say — instead of
+// falling back to whatever that page has.
+export async function markMarkup(svg: SVGSVGElement): Promise<string> {
   const clone = svg.cloneNode(true) as SVGSVGElement
   clone.setAttribute('xmlns', svgNS)
-  // The viewBox is left alone and the frame is stated in whole pixels, so the
-  // browser draws the vector at the export size rather than resampling a
-  // bitmap made at some other one.
-  clone.setAttribute('width', String(width))
-  clone.setAttribute('height', String(height))
 
   const fonts = await embeddedFonts(svg)
   if (fonts) {
@@ -132,7 +130,20 @@ async function rasterise(svg: SVGSVGElement): Promise<Blob | null> {
     clone.insertBefore(style, clone.firstChild)
   }
 
-  const markup = new XMLSerializer().serializeToString(clone)
+  return new XMLSerializer().serializeToString(clone)
+}
+
+async function rasterise(svg: SVGSVGElement): Promise<Blob | null> {
+  const { width, height } = dimensions(svg)
+
+  // The viewBox is left alone and the frame is stated in whole pixels, so the
+  // browser draws the vector at the export size rather than resampling a
+  // bitmap made at some other one.
+  const framed = svg.cloneNode(true) as SVGSVGElement
+  framed.setAttribute('width', String(width))
+  framed.setAttribute('height', String(height))
+
+  const markup = await markMarkup(framed)
   const image = new Image()
   image.src = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(markup)}`
   await image.decode()
@@ -162,5 +173,5 @@ export async function downloadMark(svg: SVGSVGElement, name: string, format: Exp
     if (png) save(png, `${name}.png`)
     return
   }
-  downloadMarkup(new XMLSerializer().serializeToString(svg), name)
+  downloadMarkup(await markMarkup(svg), name)
 }

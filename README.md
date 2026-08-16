@@ -445,9 +445,10 @@ https://assembly-intelligence-lab-logo.vercel.app
 | **Light Mode** | `app/globals.css` + ThemeProvider | ✅ Navy + teal color scheme |
 | **Dark Mode** | `app/globals.css` + ThemeProvider | ✅ Light text + teal accents |
 | **Size Testing** | `LogoCard.tsx` → Size previews | ✅ 64px, 32px, 16px previews |
-| **Export Size** | `LogoCard.tsx` → Export Size chips | ✅ 16 · 32 · 64 · 128 · 256 · 512 · 1024; the number is the symbol's side, or the lockup's longest edge |
-| **SVG Download** | `LogoCard.tsx` → "↓ SVG" button | ✅ Downloads `AIL-concept-0X.svg` |
-| **PNG Download** | Header → Format: SVG / PNG, then the same button | ✅ Same artwork drawn to a transparent PNG at the selected size (`logoExport.ts`) |
+| **Export Size** | `LogoCard.tsx` → Export Size chips | ✅ 16 · 32 · 64 · 128 · 256 · 512 · 1024 · 2048, shown for PNG only; both sides of a square symbol, the **width** of a lockup, whose height follows its own proportions |
+| **PNG Download** | Header → Format: SVG / PNG, then "↓ PNG" | ✅ The same artwork drawn to a transparent PNG at that size (`logoExport.ts`) |
+| **SVG Download** | `LogoCard.tsx` → "↓ SVG" button | ✅ Always offered, whichever format is set. Carries a viewBox and no fixed size, so it takes the width it is given; a lockup carries its webfonts inside it, so the type holds up wherever the file is opened |
+| **Copy SVG** | `LogoCard.tsx` → "Copy SVG" | ✅ The very file that button writes, on the clipboard instead, for pasting into a page's own markup |
 | **Animated SVG Download** | `LogoCard.tsx` → "↓ Animated SVG" | ✅ The concept's animation as a file that plays itself, for concepts registered in `logos/animatedMarks.ts` (Concepts 33 and 41) |
 | **Copy Animation Code** | `LogoCard.tsx` → "Copy Animation Code" | ✅ The same markup on the clipboard, bare, for pasting into a site's custom-code block |
 | **Reviewer Name System** | `ReviewerModal.tsx` + `ReviewerContext.tsx` | ✅ Modal on first visit, badge in header |

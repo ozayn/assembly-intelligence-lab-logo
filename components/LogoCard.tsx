@@ -17,11 +17,11 @@ import {
 import { BrandWordmark } from './BrandWordmark'
 import { FittedLockup } from './FittedLockup'
 import { buildFittedLockupSvg, measureSymbolInk, FULL_INK } from './lockupFitting'
-import { downloadMark, downloadMarkup, type ExportFormat } from './logoExport'
+import { downloadMark, downloadMarkup, markMarkup, type ExportFormat } from './logoExport'
 import { ANIMATED_MARKS } from './logos/animatedMarks'
 import './LogoCard.css'
 
-type ExportSize = '16' | '32' | '64' | '128' | '256' | '512' | '1024'
+type ExportSize = '16' | '32' | '64' | '128' | '256' | '512' | '1024' | '2048'
 type LogoVersion = 'symbol' | 'lockup'
 
 // What a symbol can be written at. The first three are the legibility sizes
@@ -29,8 +29,10 @@ type LogoVersion = 'symbol' | 'lockup'
 // raster assets, where a mark has to be drawn well above the size it is shown
 // at — the Squarespace header stands it at about 102 CSS pixels, which a 64px
 // PNG cannot serve on a retina screen, and Concept 41's channels are a little
-// over a hundredth of the mark across and need the room besides.
-const EXPORT_SIZES: ExportSize[] = ['16', '32', '64', '128', '256', '512', '1024']
+// over a hundredth of the mark across and need the room besides. The last two
+// are for the lockup, whose wordmark asks for far more width than the symbol
+// does before its type holds up in print or on a banner.
+const EXPORT_SIZES: ExportSize[] = ['16', '32', '64', '128', '256', '512', '1024', '2048']
 const PREVIEW_SIZES: ExportSize[] = ['64', '32', '16']
 
 // What a token falls back to if the scope it is read from has not been styled.
@@ -156,6 +158,7 @@ export function LogoCard({
   const [animationCodeState, setAnimationCodeState] = useState<'idle' | 'copied' | 'failed'>(
     'idle'
   )
+  const [svgCodeState, setSvgCodeState] = useState<'idle' | 'copied' | 'failed'>('idle')
   const [selectedExportSize, setSelectedExportSize] = useState<ExportSize>('64')
   const [logoVersion, setLogoVersion] = useState<LogoVersion>(initialLogoVersion)
   const [typographyDirection, setTypographyDirection] =
@@ -210,7 +213,18 @@ export function LogoCard({
     return () => watch.disconnect()
   }, [description, descriptionOpen])
 
-  const handleDownloadSymbol = () => {
+  // A vector file has no resolution to pick. The viewBox carries the geometry
+  // and the proportions; a width of 100% and no height lets the artwork take
+  // the width of whatever it is dropped into, with the height following from
+  // the ratio — which is what a paste into a page's own markup wants, and what
+  // an editor opening the file reads anyway.
+  const unframed = (svg: SVGSVGElement) => {
+    svg.setAttribute('width', '100%')
+    svg.removeAttribute('height')
+    return svg
+  }
+
+  const composeSymbolSvg = (format: ExportFormat): SVGSVGElement | null => {
     // Pull geometry from the container matching the selected export size, so
     // that a future size-specific micro-mark is exported instead of the
     // full mark scaled down. The sizes above the legibility strip have no
@@ -220,21 +234,25 @@ export function LogoCard({
       sizeContainerRefs.current[selectedExportSize] ||
       exportSourceRef.current ||
       logoContainerRef.current
-    if (!sourceContainer) return
+    if (!sourceContainer) return null
 
     const svgElement = sourceContainer.querySelector('svg')
-    if (!svgElement) return
+    if (!svgElement) return null
 
     const svgClone = svgElement.cloneNode(true) as SVGSVGElement
     svgClone.setAttribute('xmlns', 'http://www.w3.org/2000/svg')
 
-    // SVG is vector — set explicit target dimensions rather than rasterizing.
-    // viewBox is preserved from the source so geometry stays scalable/editable.
-    // A PNG of the same mark is written from its viewBox instead, so the size
-    // chosen here selects which mark is exported, not how coarse it is.
-    const dimension = Number(selectedExportSize)
-    svgClone.setAttribute('width', dimension.toString())
-    svgClone.setAttribute('height', dimension.toString())
+    // A symbol is square, so the size chosen is both its sides — and it is the
+    // raster frame only: the vector goes out unframed, and the size still
+    // decides which mark is taken, since 16 and 32 may hold a micro-mark of
+    // their own rather than the full one shrunk.
+    if (format === 'png') {
+      const dimension = Number(selectedExportSize)
+      svgClone.setAttribute('width', dimension.toString())
+      svgClone.setAttribute('height', dimension.toString())
+    } else {
+      unframed(svgClone)
+    }
 
     const colorForVar = resolveLogoColours(sourceContainer)
 
@@ -251,11 +269,23 @@ export function LogoCard({
       })
     })
 
+    return svgClone
+  }
+
+  // The size belongs in a raster's name, where it is a fact about the file.
+  // A vector has no size to state, so its name says what it is and leaves the
+  // measurement to whoever places it.
+  const measured = (format: ExportFormat) =>
+    format === 'png' ? `${selectedExportSize}px-` : ''
+
+  const handleDownloadSymbol = (format: ExportFormat) => {
+    const svg = composeSymbolSvg(format)
+    if (!svg) return
     const backgroundVariant = logoBackground || 'light'
     downloadMark(
-      svgClone,
-      `AIL-concept-${id.toString().padStart(2, '0')}-${selectedExportSize}px-${backgroundVariant}-symbol`,
-      exportFormat
+      svg,
+      `AIL-concept-${id.toString().padStart(2, '0')}-${measured(format)}${backgroundVariant}-symbol`,
+      format
     )
   }
 
@@ -313,30 +343,26 @@ export function LogoCard({
     return { width: bbox.width, height: bbox.height }
   }
 
-  const downloadLockup = (svg: SVGSVGElement) => {
+  const framedLockup = (svg: SVGSVGElement, format: ExportFormat) => {
+    if (format !== 'png') return unframed(svg)
     // A lockup is laid out at its tier's own measurements, which are far too
-    // small for a raster asset. The export size sets its longest edge and the
-    // viewBox is left alone, so the other side follows the artwork's own
-    // proportions and nothing is stretched.
+    // small for a raster asset. A lockup is not square and is placed by how
+    // wide it is, so the export size is its width; the height comes off the
+    // artwork's own proportions, and the viewBox is left alone so nothing is
+    // stretched to reach it.
     const laidOutWidth = Number(svg.getAttribute('width'))
     const laidOutHeight = Number(svg.getAttribute('height'))
-    const scale = Number(selectedExportSize) / Math.max(laidOutWidth, laidOutHeight)
-    svg.setAttribute('width', String(Math.round(laidOutWidth * scale)))
-    svg.setAttribute('height', String(Math.round(laidOutHeight * scale)))
-
-    const backgroundVariant = logoBackground || 'light'
-    downloadMark(
-      svg,
-      `AIL-concept-${id.toString().padStart(2, '0')}-${applicationTier}-${selectedExportSize}px-${backgroundVariant}-${typographyDirection}-lockup`,
-      exportFormat
-    )
+    const width = Number(selectedExportSize)
+    svg.setAttribute('width', String(width))
+    svg.setAttribute('height', String(Math.round((width * laidOutHeight) / laidOutWidth)))
+    return svg
   }
 
-  const handleDownloadLockup = () => {
+  const composeLockupSvg = (format: ExportFormat): SVGSVGElement | null => {
     const sourceContainer = exportSourceRef.current
-    if (!sourceContainer) return
+    if (!sourceContainer) return null
     const svgElement = sourceContainer.querySelector('svg')
-    if (!svgElement) return
+    if (!svgElement) return null
 
     const symbolClone = svgElement.cloneNode(true) as SVGElement
 
@@ -391,10 +417,7 @@ export function LogoCard({
         primaryColor: linePrimaryColor,
         secondaryColor: lineSecondaryColor,
       })
-      if (fittedSvg) {
-        downloadLockup(fittedSvg)
-        return
-      }
+      if (fittedSvg) return framedLockup(fittedSvg, format)
     }
 
     const fontSize = tier.fontSizeOverride ?? typeSystem.fontSize
@@ -504,7 +527,36 @@ export function LogoCard({
       lineSecondaryColor
     )
 
-    downloadLockup(outSvg)
+    return framedLockup(outSvg, format)
+  }
+
+  const handleDownloadLockup = (format: ExportFormat) => {
+    const svg = composeLockupSvg(format)
+    if (!svg) return
+    const backgroundVariant = logoBackground || 'light'
+    downloadMark(
+      svg,
+      `AIL-concept-${id.toString().padStart(2, '0')}-${applicationTier}-${measured(format)}${backgroundVariant}-${typographyDirection}-lockup`,
+      format
+    )
+  }
+
+  // What the card is showing, written in the format asked for. The page's
+  // Format choice sets the raster button; the vector is offered whichever way
+  // that is set, since a vector answers to no size and there is nothing to
+  // choose before taking one.
+  const handleDownload = (format: ExportFormat) =>
+    logoVersion === 'symbol' ? handleDownloadSymbol(format) : handleDownloadLockup(format)
+
+  // The very file the SVG download writes, on the clipboard instead: the same
+  // composed artwork, serialised the same way, fonts and all, so it can go
+  // straight into a page's own markup.
+  const handleCopySvg = async () => {
+    const svg = logoVersion === 'symbol' ? composeSymbolSvg('svg') : composeLockupSvg('svg')
+    const markup = svg ? await markMarkup(svg) : null
+    const copied = markup ? await copyText(markup) : false
+    setSvgCodeState(copied ? 'copied' : 'failed')
+    setTimeout(() => setSvgCodeState('idle'), 2400)
   }
 
   const handleFeedbackSubmit = (feedback: LogoFeedback) => {
@@ -541,8 +593,6 @@ export function LogoCard({
   const typeSystem = TYPOGRAPHY_SYSTEMS[typographyDirection]
   const lockupFontSize = tier.fontSizeOverride ?? typeSystem.fontSize
   const lockupLetterSpacing = typeSystem.letterSpacing * tier.letterSpacingScale
-  const formatLabel = exportFormat.toUpperCase()
-
   return (
     <div className="logo-card">
       <div className="logo-card-header">
@@ -645,23 +695,43 @@ export function LogoCard({
         >
           Replay
         </button>
-        {logoVersion === 'symbol' ? (
+        {exportFormat === 'png' && (
           <button
             className="btn-download"
-            onClick={handleDownloadSymbol}
-            title={`Download ${formatLabel} (${selectedExportSize}px, ${logoBackground || 'light'})`}
+            onClick={() => handleDownload('png')}
+            title={
+              logoVersion === 'symbol'
+                ? `Download PNG (${selectedExportSize} × ${selectedExportSize}, ${logoBackground || 'light'})`
+                : `Download PNG (${tier.label} at ${selectedExportSize}px wide, height to match, ${logoBackground || 'light'}, ${typeSystem.name})`
+            }
           >
-            ↓ {formatLabel} ({selectedExportSize}px)
-          </button>
-        ) : (
-          <button
-            className="btn-download"
-            onClick={handleDownloadLockup}
-            title={`Download ${formatLabel} (${tier.label} at ${selectedExportSize}px, ${logoBackground || 'light'}, ${typeSystem.name})`}
-          >
-            ↓ {formatLabel} ({tier.label})
+            ↓ PNG ({logoVersion === 'symbol' ? `${selectedExportSize}px` : tier.label})
           </button>
         )}
+        <button
+          className="btn-download"
+          onClick={() => handleDownload('svg')}
+          title={
+            logoVersion === 'symbol'
+              ? `Download the vector symbol — it carries no size (${logoBackground || 'light'})`
+              : `Download the vector ${tier.label.toLowerCase()} lockup — it carries no size (${logoBackground || 'light'}, ${typeSystem.name})`
+          }
+        >
+          ↓ SVG{logoVersion === 'symbol' ? '' : ` (${tier.label})`}
+        </button>
+        <button
+          className={`btn-download${svgCodeState === 'failed' ? ' failed' : ''}`}
+          onClick={handleCopySvg}
+          title={`Copy the vector markup of this ${
+            logoVersion === 'symbol' ? 'symbol' : 'lockup'
+          } to the clipboard (${logoBackground || 'light'})`}
+        >
+          {svgCodeState === 'copied'
+            ? 'Copied!'
+            : svgCodeState === 'failed'
+              ? 'Copy failed'
+              : 'Copy SVG'}
+        </button>
         {/* The animation belongs to the symbol, so it is offered in either
             mode rather than only alongside the symbol download — Final
             Nominees opens its cards on the lockup. */}
@@ -681,7 +751,7 @@ export function LogoCard({
             title={`Copy the same markup to the clipboard (${selectedExportSize}px, ${logoBackground || 'light'})`}
           >
             {animationCodeState === 'copied'
-              ? 'Copied'
+              ? 'Copied!'
               : animationCodeState === 'failed'
                 ? 'Copy failed'
                 : 'Copy Animation Code'}
@@ -732,27 +802,41 @@ export function LogoCard({
         </div>
       )}
 
-      <div className="symbol-controls-row">
-        <div className="symbol-control-group">
-          <span className="control-mini-label">Export Size</span>
-          <div className="button-group-mini">
-            {EXPORT_SIZES.map((size) => (
-              <button
-                key={size}
-                className={selectedExportSize === size ? 'active' : ''}
-                onClick={() => setSelectedExportSize(size)}
-                title={
-                  logoVersion === 'symbol'
-                    ? `Export the symbol at ${size}px`
-                    : `Export the lockup at ${size}px on its longest side`
-                }
-              >
-                {size}px
-              </button>
-            ))}
+      {/* Pixels are only ever chosen for something rastered. With the page set
+          to SVG there is nothing to choose, and the row goes — except on a
+          concept whose animation is written as a file at a stated size, where
+          it stays and says so. */}
+      {(exportFormat === 'png' || animatedMark) && (
+        <div className="symbol-controls-row">
+          <div className="symbol-control-group">
+            <span className="control-mini-label">
+              {exportFormat !== 'png'
+                ? 'Animation Size'
+                : logoVersion === 'symbol'
+                  ? 'Export Size'
+                  : 'Export Width'}
+            </span>
+            <div className="button-group-mini">
+              {EXPORT_SIZES.map((size) => (
+                <button
+                  key={size}
+                  className={selectedExportSize === size ? 'active' : ''}
+                  onClick={() => setSelectedExportSize(size)}
+                  title={
+                    exportFormat !== 'png'
+                      ? `Write the animated SVG at ${size}px`
+                      : logoVersion === 'symbol'
+                        ? `Export the symbol at ${size} × ${size}`
+                        : `Export the lockup ${size}px wide, its height following the lockup's own proportions`
+                  }
+                >
+                  {size}px
+                </button>
+              ))}
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       {logoVersion === 'symbol' && (
       <div className="logo-sizes">
