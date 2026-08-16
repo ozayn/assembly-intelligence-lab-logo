@@ -3,7 +3,7 @@ import { FINAL_NOMINEES } from '@/components/logos'
 
 export const metadata = {
   title: 'Final Nominees — Assembly Intelligence Lab',
-  description: 'The four remaining logo concepts — Axis, Faceted A, Hexagonal A and the Assembly Transition hybrid — shown together.',
+  description: 'The five remaining logo concepts — Axis, Faceted A, Hexagonal A, the Assembly Transition hybrid and the Honeycomb Facet — shown together.',
 }
 
 // The same collection view the review pages use, given the nominees instead of

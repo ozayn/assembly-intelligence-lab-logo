@@ -295,7 +295,7 @@ export const REFERENCE_REFINEMENT_CONCEPTS = REVIEW_CANDIDATES
 
 // The marks the team is choosing between. This is a view of them, not a change
 // of status: they stay in the review set and keep their own pages.
-const FINAL_NOMINEE_IDS = [25, 33, 34, 36]
+const FINAL_NOMINEE_IDS = [25, 33, 34, 36, 41]
 export const FINAL_NOMINEES = ALL_LOGO_CONCEPTS.filter(c => FINAL_NOMINEE_IDS.includes(c.id))
 
 export function getPageNumber(conceptId: number): number {
