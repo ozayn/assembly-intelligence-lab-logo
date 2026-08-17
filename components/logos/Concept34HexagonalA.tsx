@@ -1,6 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
+import { buildSeatedMark } from './seatedMark'
 
 type HexModule = {
   cx: number
@@ -55,6 +56,30 @@ export function Concept34Static() {
         />
       ))}
     </svg>
+  )
+}
+
+// The modules docking, as a file that plays on its own. A module is written at
+// the points it occupies once seated, so the animation ends on the static mark
+// rather than on a second drawing of it.
+export function buildConcept34Animated(
+  colour: (token: string) => string,
+  size: number
+): string {
+  return buildSeatedMark(
+    {
+      scope: 'ail-concept-34-animated',
+      pieces: modules.map((module) => ({
+        points: points(module.cx, module.cy),
+        fill: module.fill,
+        from: module.from,
+        seat: module.seat,
+      })),
+      duration: DURATION,
+      ease: EASE,
+    },
+    colour,
+    size
   )
 }
 

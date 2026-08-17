@@ -1,6 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
+import { buildSeatedMark } from './seatedMark'
 
 // Concept 35 — one A built from both of the languages already on the table:
 // the folded planes of Concept 33 and the hexagonal modules of Concept 34.
@@ -137,6 +138,20 @@ const CONCEPT_35B: Piece[] = [
   { points: hex(141.1, 120.5, 22), fill: 'var(--logo-accent)', from: { x: 11, y: -5 }, seat: 0.96 },
   { points: hex(156.4, 156.1, 17), fill: 'var(--logo-light)', from: { x: 12, y: 7 }, seat: 1.14 },
 ]
+
+// 35B is the variation that stands in the exploration as Concept 36, so the
+// file it writes is named for the concept the reviewer is looking at. The
+// planes and the two modules seat exactly as they do on the page.
+export function buildConcept36Animated(
+  colour: (token: string) => string,
+  size: number
+): string {
+  return buildSeatedMark(
+    { scope: 'ail-concept-36-animated', pieces: CONCEPT_35B, duration: DURATION, ease: EASE },
+    colour,
+    size
+  )
+}
 
 export function Concept35BStatic() {
   return <Mark pieces={CONCEPT_35B} animated={false} />

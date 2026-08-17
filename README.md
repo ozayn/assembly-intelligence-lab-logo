@@ -449,7 +449,7 @@ https://assembly-intelligence-lab-logo.vercel.app
 | **PNG Download** | Header → Format: SVG / PNG, then "↓ PNG" | ✅ The same artwork drawn to a transparent PNG at that size (`logoExport.ts`) |
 | **SVG Download** | `LogoCard.tsx` → "↓ SVG" button | ✅ Always offered, whichever format is set. Carries a viewBox and no fixed size, so it takes the width it is given; a lockup carries its webfonts inside it, so the type holds up wherever the file is opened |
 | **Copy SVG** | `LogoCard.tsx` → "Copy SVG" | ✅ The very file that button writes, on the clipboard instead, for pasting into a page's own markup |
-| **Animated SVG Download** | `LogoCard.tsx` → "↓ Animated SVG" | ✅ The concept's animation as a file that plays itself, for concepts registered in `logos/animatedMarks.ts` (Concepts 33 and 41) |
+| **Animated SVG Download** | `LogoCard.tsx` → "↓ Animated SVG" | ✅ The concept's animation as a file that plays itself, for concepts registered in `logos/animatedMarks.ts` (25, 33, 34, 36, 41 — every final nominee). A concept whose animation is stated as pieces seating into place needs only to hand them to `logos/seatedMark.ts`; one absent from the registry shows no animated export at all |
 | **Copy Animation Code** | `LogoCard.tsx` → "Copy Animation Code" | ✅ The same markup on the clipboard, bare, for pasting into a site's custom-code block |
 | **Reviewer Name System** | `ReviewerModal.tsx` + `ReviewerContext.tsx` | ✅ Modal on first visit, badge in header |
 | **Change Reviewer** | `ReviewerBadge` component | ✅ Click "Change" to switch name mid-session |
