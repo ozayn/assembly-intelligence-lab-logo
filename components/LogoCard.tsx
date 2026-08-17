@@ -295,27 +295,54 @@ export function LogoCard({
   // colours, which go into it as literal values, and the selected size the side
   // it is written at — as with the still exports. Saving it and copying it both
   // come through here, so a downloaded file and a pasted one cannot differ.
-  const composeAnimated = (): string | null => {
+  //
+  // The card may be showing the mark on its own or the whole lockup, and the
+  // file follows: for a lockup the animated mark is set into the same layout
+  // the still export uses, so the company name is in the file, at the size and
+  // spacing it is drawn at on the page, standing while the mark assembles
+  // beside it. It goes in whole rather than as loose shapes — the animation's
+  // rules are written against the mark's own id, and taking it apart would
+  // leave them addressing nothing.
+  const composeAnimated = async (): Promise<string | null> => {
     const sourceContainer = exportSourceRef.current || logoContainerRef.current
     if (!sourceContainer || !animatedMark) return null
     const colours = resolveLogoColours(sourceContainer)
-    return animatedMark((token) => colours[token], Number(selectedExportSize))
+    const side = Number(selectedExportSize)
+    const markup = animatedMark((token) => colours[token], side)
+    if (logoVersion === 'symbol') return markup
+
+    const mark = new DOMParser().parseFromString(markup, 'image/svg+xml').documentElement
+    if (mark.tagName !== 'svg') return null
+    // The lockup lays the mark out in its own 200-unit square and scales the
+    // whole thing from there.
+    mark.setAttribute('width', '200')
+    mark.setAttribute('height', '200')
+    const carrier = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
+    carrier.appendChild(mark)
+
+    const lockup = composeLockupSvg(side, carrier)
+    return lockup ? markMarkup(lockup) : null
   }
 
-  const handleDownloadAnimated = () => {
-    const markup = composeAnimated()
-    if (!markup) return
-    const backgroundVariant = logoBackground || 'light'
-    downloadMarkup(
-      markup,
-      `AIL-concept-${id.toString().padStart(2, '0')}-${selectedExportSize}px-${backgroundVariant}-animated`
-    )
+  // A still names the size only when it has one; an animation always states a
+  // size, and a lockup says which lockup it is, as the still exports do.
+  const animatedName = () => {
+    const concept = `AIL-concept-${id.toString().padStart(2, '0')}`
+    const ground = logoBackground || 'light'
+    return logoVersion === 'symbol'
+      ? `${concept}-${selectedExportSize}px-${ground}-animated`
+      : `${concept}-${applicationTier}-${selectedExportSize}px-${ground}-${typographyDirection}-animated`
+  }
+
+  const handleDownloadAnimated = async () => {
+    const markup = await composeAnimated()
+    if (markup) downloadMarkup(markup, animatedName())
   }
 
   // The same markup on the clipboard, bare, for pasting into a page's own
   // custom-code block.
   const handleCopyAnimated = async () => {
-    const markup = composeAnimated()
+    const markup = await composeAnimated()
     const copied = markup ? await copyText(markup) : false
     setAnimationCodeState(copied ? 'copied' : 'failed')
     setTimeout(() => setAnimationCodeState('idle'), 2400)
@@ -343,8 +370,10 @@ export function LogoCard({
     return { width: bbox.width, height: bbox.height }
   }
 
-  const framedLockup = (svg: SVGSVGElement, format: ExportFormat) => {
-    if (format !== 'png') return unframed(svg)
+  // `width` is the side the file should state, or null to leave it unstated —
+  // a still vector, which answers to whatever it is placed in.
+  const framedLockup = (svg: SVGSVGElement, width: number | null) => {
+    if (width === null) return unframed(svg)
     // A lockup is laid out at its tier's own measurements, which are far too
     // small for a raster asset. A lockup is not square and is placed by how
     // wide it is, so the export size is its width; the height comes off the
@@ -352,19 +381,26 @@ export function LogoCard({
     // stretched to reach it.
     const laidOutWidth = Number(svg.getAttribute('width'))
     const laidOutHeight = Number(svg.getAttribute('height'))
-    const width = Number(selectedExportSize)
     svg.setAttribute('width', String(width))
     svg.setAttribute('height', String(Math.round((width * laidOutHeight) / laidOutWidth)))
     return svg
   }
 
-  const composeLockupSvg = (format: ExportFormat): SVGSVGElement | null => {
+  // The lockup as it is laid out on the card: the mark at the tier's size with
+  // the company name set beside or beneath it. `mark` replaces the still symbol
+  // the page is showing — the animated one is handed in here, so what is
+  // exported is the whole lockup with a moving mark in it rather than the mark
+  // on its own.
+  const composeLockupSvg = (
+    width: number | null,
+    mark?: SVGElement
+  ): SVGSVGElement | null => {
     const sourceContainer = exportSourceRef.current
     if (!sourceContainer) return null
     const svgElement = sourceContainer.querySelector('svg')
     if (!svgElement) return null
 
-    const symbolClone = svgElement.cloneNode(true) as SVGElement
+    const symbolClone = mark ?? (svgElement.cloneNode(true) as SVGElement)
 
     // Resolve colors from the same target-background-scoped container used
     // by the symbol export, so symbol + wordmark always match the selected
@@ -417,7 +453,7 @@ export function LogoCard({
         primaryColor: linePrimaryColor,
         secondaryColor: lineSecondaryColor,
       })
-      if (fittedSvg) return framedLockup(fittedSvg, format)
+      if (fittedSvg) return framedLockup(fittedSvg, width)
     }
 
     const fontSize = tier.fontSizeOverride ?? typeSystem.fontSize
@@ -527,11 +563,17 @@ export function LogoCard({
       lineSecondaryColor
     )
 
-    return framedLockup(outSvg, format)
+    return framedLockup(outSvg, width)
   }
 
+  // What a lockup states as its width: the chosen size for a raster, nothing
+  // for a still vector, and the chosen size again for an animation, which is
+  // written at a stated size like the symbol's.
+  const lockupWidth = (format: ExportFormat) =>
+    format === 'png' ? Number(selectedExportSize) : null
+
   const handleDownloadLockup = (format: ExportFormat) => {
-    const svg = composeLockupSvg(format)
+    const svg = composeLockupSvg(lockupWidth(format))
     if (!svg) return
     const backgroundVariant = logoBackground || 'light'
     downloadMark(
@@ -552,7 +594,7 @@ export function LogoCard({
   // composed artwork, serialised the same way, fonts and all, so it can go
   // straight into a page's own markup.
   const handleCopySvg = async () => {
-    const svg = logoVersion === 'symbol' ? composeSymbolSvg('svg') : composeLockupSvg('svg')
+    const svg = logoVersion === 'symbol' ? composeSymbolSvg('svg') : composeLockupSvg(null)
     const markup = svg ? await markMarkup(svg) : null
     const copied = markup ? await copyText(markup) : false
     setSvgCodeState(copied ? 'copied' : 'failed')
