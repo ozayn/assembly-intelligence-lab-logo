@@ -377,9 +377,10 @@ export function Concept41Static() {
 // The same growth as the component below, written out as a file that stands on
 // its own: the transitions become CSS keyframes inside the SVG, the tokens
 // become the colours they resolve to, and nothing outside the file is read. It
-// steps from the masked plane to the static drawing at the moment the last wall
-// lands, for the reason given in the component, so the frame it rests on is the
-// approved one rather than a masked likeness of it.
+// steps from the masked plane to the static drawing after the same hold the
+// component keeps, for the reason given there, so the frame it rests on is the
+// approved one rather than a masked likeness of it — and the file and the page
+// change over on the same beat.
 export function buildConcept41Animated(
   colour: (token: string) => string,
   size: number
@@ -388,7 +389,7 @@ export function buildConcept41Animated(
     fill.replace(/var\((--logo-[a-z]+)\)/, (whole, token: string) => colour(token) || whole)
 
   const scope = 'ail-concept-41-animated'
-  const settles = snap(LEAD + SPREAD)
+  const settles = snap(TOTAL)
 
   const walls = GROWTH.map(({ from, to, start, draw }) => {
     const length = snap(Math.hypot(to[0] - from[0], to[1] - from[1]))
